@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="bb_consent_general_more">More</string>
+
+    <string name="bb_consent_dashboard_overview">Overview</string>
+    <string name="bb_consent_dashboard_usage_purpose">Usage Purposes</string>
+    <string name="bb_consent_dashboard_disallow">Disallow</string>
+    <string name="bb_consent_dashboard_allow">Allow : %1$d of %2$d</string>
+    <string name="bb_consent_dashboard_read_less">Read less</string>
+    <string name="bb_consent_dashboard_read_more">Read more</string>
+
+    <string name="bb_consent_error_internet">Network not available.</string>
+    <string name="bb_consent_error_unexpected">Unexpected error, Please try again.</string>
+
+</resources>

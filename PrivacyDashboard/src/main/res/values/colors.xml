@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bbConsentWhite">#ffffff</color>
+    <color name="bbConsentBGColor">#f2f2f6</color>
+    <color name="bbConsentTransWhite">#6fff</color>
+
+
+    <color name="bbConsentPrimaryTitleTextColor">#000000</color>
+    <color name="bbConsentTextColor">#414141</color>
+    <color name="bbConsentTextColorLight">#9b9b9b</color>
+
+    <color name="bb_consent_divider_color">#bebebe</color>
+    <color name="bb_consent_read_more_color">#9b9b9b</color>
+
+</resources>
