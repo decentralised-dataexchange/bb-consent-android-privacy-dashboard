@@ -1,6 +1,7 @@
 package com.github.privacyDashboard.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Purpose (
     @SerializedName("ID")
@@ -13,4 +14,4 @@ data class Purpose (
     var lawfulUsage: Boolean? = null,
     @SerializedName("PolicyURL")
     var policyURL: String? = null
-){}
+): Serializable {}

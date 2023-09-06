@@ -8,5 +8,7 @@
     <application>
         <activity android:name=".modules.home.BBConsentDashboardActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".modules.dataAttribute.BBConsentDataAttributeListingActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 </manifest>
