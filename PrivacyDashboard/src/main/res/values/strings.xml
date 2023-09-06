@@ -10,6 +10,10 @@
     <string name="bb_consent_dashboard_read_less">Read less</string>
     <string name="bb_consent_dashboard_read_more">Read more</string>
 
+    <string name="bb_consent_data_attribute_allow">Allow</string>
+    <string name="bb_consent_data_attribute_my_data_consents">My data consents</string>
+    <string name="bb_consent_data_attribute_read_policy">Read policy</string>
+
     <string name="bb_consent_error_internet">Network not available.</string>
     <string name="bb_consent_error_unexpected">Unexpected error, Please try again.</string>
 

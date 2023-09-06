@@ -1,5 +1,6 @@
 package com.github.privacyDashboard.modules.home
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
@@ -15,7 +16,12 @@ import com.github.privacyDashboard.databinding.BbconsentActivityDashboardBinding
 import com.github.privacyDashboard.models.Organization
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.PurposeConsent
+import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
+import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
+import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_DATA_ATTRIBUTES
+import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_EXTRA_DESCRIPTION
+import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_EXTRA_NAME
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentImageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
@@ -99,7 +105,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 //                                            setOverallStatus(consent, isChecked)
                                         }
                                     })
-                                binding.rvUsagePurposes.adapter = adapter
+                                binding.rvDataAgreements.adapter = adapter
                                 consentId = response.body()?.consentID
                                 organization =
                                     response.body()?.organization
@@ -153,13 +159,26 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     .textLengthType(ReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
                     .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
                     .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
-                    .moreLabelColor(ContextCompat.getColor(this, R.color.bb_consent_read_more_color))
-                    .lessLabelColor(ContextCompat.getColor(this, R.color.bb_consent_read_more_color))
+                    .moreLabelColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.bb_consent_read_more_color
+                        )
+                    )
+                    .lessLabelColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.bb_consent_read_more_color
+                        )
+                    )
                     .labelUnderLine(false)
                     .expandAnimation(true)
                     .build()
 
-                readMoreOption.addReadMoreTo(binding.tvDescription, "sfkhbdf sdjasf afasd fadfdafas adsfadfadf dafadfad adfadfadfad dafdafadf dafadfafad dafadfadf adfadfdafd dsf df d fad fadfadf adf dafadfda adfadfda adfadfadf adsfafd dsf ad adfadfad")
+                readMoreOption.addReadMoreTo(
+                    binding.tvDescription,
+                    "sfkhbdf sdjasf afasd fadfdafas adsfadfadf dafadfad adfadfadfad dafdafadf dafadfafad dafadfadf adfadfdafd dsf df d fad fadfadf adf dafadfda adfadfda adfadfadf adsfafd dsf ad adfadfad"
+                )
                 //todo readmore implementation
             } else {
                 binding.tvDescription.visibility = View.GONE
@@ -170,67 +189,66 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
     }
 
     private fun getConsentList(consent: PurposeConsent?) {
-//        binding.llProgressBar.visibility = View.VISIBLE
-//        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-//            val callback: Callback<ConsentListResponse> = object : Callback<ConsentListResponse?> {
-//                override fun onResponse(
-//                    call: Call<ConsentListResponse?>,
-//                    response: Response<ConsentListResponse?>
-//                ) {
-//                    binding.llProgressBar.visibility = View.GONE
-//                    if (response.code() == 200) {
-//                        val intent: Intent = Intent(
-//                            this@BBConsentDashboardActivity,
-//                            UsagePurposesActivity::class.java
-//                        )
-//                        UsagePurposesActivity.consentList = response.body()
-//                        intent.putExtra(TAG_EXTRA_NAME, consent.getPurpose().getName())
-//                        intent.putExtra(
-//                            TAG_EXTRA_DESCRIPTION,
-//                            consent.getPurpose().getDescription()
-//                        )
-//                        startActivity(intent)
-//                        overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<ConsentListResponse?>, t: Throwable) {
-//                    binding.llProgressBar.visibility = View.GONE
-//                    Toast.makeText(
-//                        this@BBConsentDashboardActivity,
-//                        resources.getString(R.string.bb_consent_error_unexpected),
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
-//            try {
-//                BBConsentAPIManager.getApi(
-//                    BBConsentDataUtils.getStringValue(
-//                        this,
-//                        BBConsentDataUtils.EXTRA_TAG_TOKEN
-//                    )?:"",
-//                    BBConsentDataUtils.getStringValue(
-//                        this,
-//                        BBConsentDataUtils.EXTRA_TAG_BASE_URL
-//                    )
-//                )?.service
-//                    .getConsentList(
-//                        DataUtils.getStringValue(
-//                            this@OrganizationDetailActivity,
-//                            DataUtils.EXTRA_TAG_ORG_ID
-//                        ),
-//                        DataUtils.getStringValue(
-//                            this@OrganizationDetailActivity,
-//                            DataUtils.EXTRA_TAG_USERID
-//                        ),
-//                        consentId,
-//                        consent.getPurpose().getID()
-//                    )
-//                    .enqueue(callback)
-//            } catch (e: java.lang.Exception) {
-//                llProgressBar.setVisibility(View.GONE)
-//                e.printStackTrace()
-//            }
-//        }
+        binding.llProgressBar.visibility = View.VISIBLE
+        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
+            val callback: Callback<DataAttributesResponse?> =
+                object : Callback<DataAttributesResponse?> {
+                    override fun onResponse(
+                        call: Call<DataAttributesResponse?>,
+                        response: Response<DataAttributesResponse?>
+                    ) {
+                        binding.llProgressBar.visibility = View.GONE
+                        if (response.code() == 200) {
+                            val intent: Intent = Intent(
+                                this@BBConsentDashboardActivity,
+                                BBConsentDataAttributeListingActivity::class.java
+                            )
+                            intent.putExtra(TAG_DATA_ATTRIBUTES, response.body())
+                            intent.putExtra(TAG_EXTRA_NAME, consent?.purpose?.name)
+                            intent.putExtra(
+                                TAG_EXTRA_DESCRIPTION,
+                                consent?.purpose?.description
+                            )
+                            startActivity(intent)
+//                            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<DataAttributesResponse?>, t: Throwable) {
+                        binding.llProgressBar.visibility = View.GONE
+                        Toast.makeText(
+                            this@BBConsentDashboardActivity,
+                            resources.getString(R.string.bb_consent_error_unexpected),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            try {
+                BBConsentAPIManager.getApi(
+                    BBConsentDataUtils.getStringValue(
+                        this,
+                        BBConsentDataUtils.EXTRA_TAG_TOKEN
+                    ) ?: "",
+                    BBConsentDataUtils.getStringValue(
+                        this,
+                        BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                    )
+                )?.service?.getConsentList(
+                    BBConsentDataUtils.getStringValue(
+                        this,
+                        BBConsentDataUtils.EXTRA_TAG_ORG_ID
+                    ),
+                    BBConsentDataUtils.getStringValue(
+                        this,
+                        BBConsentDataUtils.EXTRA_TAG_USERID
+                    ),
+                    consentId,
+                    consent?.purpose?.iD
+                )?.enqueue(callback)
+            } catch (e: java.lang.Exception) {
+                binding.llProgressBar.visibility = View.GONE
+                e.printStackTrace()
+            }
+        }
     }
 }

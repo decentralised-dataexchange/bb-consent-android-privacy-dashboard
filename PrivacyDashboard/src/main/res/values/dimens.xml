@@ -10,4 +10,5 @@
 
     <dimen name="bb_consent_border_width">0.5dp</dimen>
 
+    <dimen name="bb_consent_button_radius">5dp</dimen>
 </resources>
