@@ -12,6 +12,11 @@ import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributesBi
 import com.github.privacyDashboard.models.attributes.DataAttribute
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
+import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity
+import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_CONSENT
+import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_CONSENTID
+import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_ORGID
+import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_PURPOSEID
 
 class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
     private lateinit var binding: BbconsentActivityDataAttributesBinding
@@ -46,7 +51,27 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                 override fun onAttributeClick(dataAttribute: DataAttribute) {
                     if (dataAttributesResponse?.consents?.purpose?.lawfulUsage == false
                     ) {
-
+                        val intent: Intent = Intent(
+                            this@BBConsentDataAttributeListingActivity,
+                            BBConsentDataAttributeDetailActivity::class.java
+                        )
+                        intent.putExtra(
+                            EXTRA_TAG_ORGID,
+                            dataAttributesResponse?.orgID
+                        )
+                        intent.putExtra(
+                            EXTRA_TAG_CONSENTID,
+                            dataAttributesResponse?.consentID
+                        )
+                        intent.putExtra(
+                            EXTRA_TAG_PURPOSEID,
+                            dataAttributesResponse?.iD
+                        )
+                        intent.putExtra(
+                            EXTRA_TAG_CONSENT,
+                            dataAttribute
+                        )
+                        startActivity(intent)
                     }
                 }
             })
