@@ -1,7 +1,6 @@
 package com.github.privacyDashboard.modules.home
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import com.cocosw.bottomsheet.BottomSheet
 import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
@@ -22,6 +22,9 @@ import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeL
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_DATA_ATTRIBUTES
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_EXTRA_DESCRIPTION
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_EXTRA_NAME
+import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
+import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_TITLE
+import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_URL
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentImageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
@@ -67,8 +70,30 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
             finish()
             return true
         } else if (item.itemId == R.id.menu_more) {
-            // TODO: need to implement
-            Toast.makeText(this, "Need to implement", Toast.LENGTH_SHORT).show()
+            BottomSheet.Builder(this, com.cocosw.bottomsheet.R.style.BottomSheet_Dialog)
+                .sheet(R.menu.menu_more_items)
+                .listener { dialog, which -> 
+                    if (which == R.id.action_webpage) {
+                        val intent = Intent(
+                            this,
+                            BBConsentWebViewActivity::class.java
+                        )
+                        intent.putExtra(
+                            TAG_EXTRA_WEB_URL,
+                            organization?.policyURL?:""
+                        )
+                        intent.putExtra(
+                            TAG_EXTRA_WEB_TITLE,
+                            resources.getString(R.string.bb_consent_web_view_privacy_policy)
+                        )
+                        startActivity(intent)
+                    } else if (which == R.id.action_consent_history) {
+                        Toast.makeText(this,"To be implemented",Toast.LENGTH_SHORT).show()
+                    }
+//                    else if (which == R.id.action_request) {
+//                        Toast.makeText(this,"To be implemented",Toast.LENGTH_SHORT).show()
+//                    }
+                }.show()
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -199,7 +224,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     ) {
                         binding.llProgressBar.visibility = View.GONE
                         if (response.code() == 200) {
-                            val intent: Intent = Intent(
+                            val intent = Intent(
                                 this@BBConsentDashboardActivity,
                                 BBConsentDataAttributeListingActivity::class.java
                             )

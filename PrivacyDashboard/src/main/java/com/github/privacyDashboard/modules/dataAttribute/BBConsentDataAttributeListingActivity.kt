@@ -3,6 +3,7 @@ package com.github.privacyDashboard.modules.dataAttribute
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,9 @@ import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributesBi
 import com.github.privacyDashboard.models.attributes.DataAttribute
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
+import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
+import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_TITLE
+import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_URL
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_CONSENT
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_CONSENTID
@@ -42,6 +46,7 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
         setUpToolBar()
         setUpDescription()
         setUpDataAttributeList()
+        initListener()
     }
 
     private fun setUpDataAttributeList() {
@@ -138,6 +143,24 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun initListener() {
+        binding.btnPrivacyPolicy.setOnClickListener {
+            val intent = Intent(
+                this,
+                BBConsentWebViewActivity::class.java
+            )
+            intent.putExtra(
+                TAG_EXTRA_WEB_URL,
+                dataAttributesResponse?.consents?.purpose?.policyURL
+            )
+            intent.putExtra(
+                TAG_EXTRA_WEB_TITLE,
+                resources.getString(R.string.bb_consent_web_view_policy)
+            )
+            startActivity(intent)
         }
     }
 }
