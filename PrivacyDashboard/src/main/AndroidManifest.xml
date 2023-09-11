@@ -10,6 +10,8 @@
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".modules.dataAttribute.BBConsentDataAttributeListingActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".modules.webView.BBConsentWebViewActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".modules.attributeDetail.BBConsentDataAttributeDetailActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
