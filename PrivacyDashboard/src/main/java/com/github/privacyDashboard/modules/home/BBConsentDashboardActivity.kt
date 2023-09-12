@@ -17,6 +17,8 @@ import com.github.privacyDashboard.models.Organization
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.PurposeConsent
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
+import com.github.privacyDashboard.models.consent.ConsentStatusRequest
+import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_DATA_ATTRIBUTES
@@ -47,7 +49,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.bbconsent_activity_dashboard)
         setUpToolBar()
-        getOrganizationDetail()
+        getOrganizationDetail(true)
     }
 
     private fun setUpToolBar() {
@@ -109,9 +111,9 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun getOrganizationDetail() {
+    private fun getOrganizationDetail(showProgress: Boolean) {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            binding.llProgressBar.visibility = View.VISIBLE
+            binding.llProgressBar.visibility = if (showProgress) View.VISIBLE else View.GONE
             val callback: Callback<OrganizationDetailResponse?> =
                 object : Callback<OrganizationDetailResponse?> {
 
@@ -137,14 +139,15 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                                             consent: PurposeConsent?,
                                             isChecked: Boolean?
                                         ) {
-//                                            setOverallStatus(consent, isChecked)
+                                            setOverallStatus(consent, isChecked)
                                         }
                                     })
                                 binding.rvDataAgreements.adapter = adapter
                                 consentId = response.body()?.consentID
                                 organization =
                                     response.body()?.organization
-                                initView(response.body()?.organization)
+                                if (showProgress)
+                                    initView(response.body()?.organization)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
@@ -284,6 +287,57 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                 binding.llProgressBar.visibility = View.GONE
                 e.printStackTrace()
             }
+        }
+    }
+
+    private fun setOverallStatus(consent: PurposeConsent?, isChecked: Boolean?) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
+            binding.llProgressBar.visibility = View.VISIBLE
+            val body = ConsentStatusRequest()
+            body.consented = if (isChecked == true) "Allow" else "DisAllow"
+            val callback: Callback<UpdateConsentStatusResponse?> =
+                object : Callback<UpdateConsentStatusResponse?> {
+                    override fun onResponse(
+                        call: Call<UpdateConsentStatusResponse?>,
+                        response: Response<UpdateConsentStatusResponse?>
+                    ) {
+                        binding.llProgressBar.visibility = View.GONE
+                        if (response.code() == 200) {
+                            getOrganizationDetail(false)
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<UpdateConsentStatusResponse?>,
+                        t: Throwable
+                    ) {
+                        binding.llProgressBar.visibility = View.GONE
+                    }
+                }
+            BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service?.setOverallStatus(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
+                ),
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_USERID
+                ),
+                consentId,
+                consent?.purpose?.iD,
+                body
+            )?.enqueue(callback)
+        } else {
+            adapter!!.notifyDataSetChanged()
         }
     }
 }
