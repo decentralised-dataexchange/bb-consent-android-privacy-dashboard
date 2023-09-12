@@ -18,6 +18,7 @@
     <string name="bb_consent_web_view_policy">Policy</string>
 
     <string name="bb_consent_history_consent_history">Consent history</string>
+    <string name="bb_consent_history_empty_consent_history">No history available</string>
 
     <string name="bb_consent_data_attribute_detail_ask_me">Ask Me</string>
     <string name="bb_consent_data_attribute_detail_allow_consent_rule">If you choose \"Allow\", you are consenting to the use of your personal data permanently for any analytic or third party usage beyond the purposes you have signed up with.</string>

@@ -22,6 +22,8 @@ import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeL
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_DATA_ATTRIBUTES
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_EXTRA_DESCRIPTION
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_EXTRA_NAME
+import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity
+import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity.Companion.TAG_EXTRA_ORG_ID
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_TITLE
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_URL
@@ -72,7 +74,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
         } else if (item.itemId == R.id.menu_more) {
             BottomSheet.Builder(this, com.cocosw.bottomsheet.R.style.BottomSheet_Dialog)
                 .sheet(R.menu.menu_more_items)
-                .listener { dialog, which -> 
+                .listener { dialog, which ->
                     if (which == R.id.action_webpage) {
                         val intent = Intent(
                             this,
@@ -80,7 +82,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         )
                         intent.putExtra(
                             TAG_EXTRA_WEB_URL,
-                            organization?.policyURL?:""
+                            organization?.policyURL ?: ""
                         )
                         intent.putExtra(
                             TAG_EXTRA_WEB_TITLE,
@@ -88,7 +90,15 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         )
                         startActivity(intent)
                     } else if (which == R.id.action_consent_history) {
-                        Toast.makeText(this,"To be implemented",Toast.LENGTH_SHORT).show()
+                        val consentHistory = Intent(
+                            this,
+                            BBConsentLoggingActivity::class.java
+                        )
+                        consentHistory.putExtra(
+                            TAG_EXTRA_ORG_ID,
+                            organization?.iD
+                        )
+                        startActivity(consentHistory)
                     }
 //                    else if (which == R.id.action_request) {
 //                        Toast.makeText(this,"To be implemented",Toast.LENGTH_SHORT).show()

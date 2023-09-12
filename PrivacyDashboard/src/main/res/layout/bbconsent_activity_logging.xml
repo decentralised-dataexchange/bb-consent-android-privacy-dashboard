@@ -18,13 +18,24 @@
             app:theme="@style/ToolBarStyle"
             app:titleTextColor="@color/bbConsentPrimaryTitleTextColor" />
 
-        <WebView
-            android:id="@+id/webView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvConsentHistory"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/bbConsentBGColor"
+            android:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolBarCommon" />
+
+        <TextView
+            android:id="@+id/tvEmptyMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/bb_consent_history_empty_consent_history"
+            android:visibility="gone"
+            android:textColor="@color/bbConsentTextColor"
+            android:textSize="@dimen/text_size_large" />
 
         <LinearLayout
             android:id="@+id/llProgressBar"
@@ -37,8 +48,7 @@
             android:orientation="vertical"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolBarCommon"
-            android:focusable="true">
+            app:layout_constraintTop_toBottomOf="@+id/toolBarCommon">
 
             <ProgressBar
                 android:id="@+id/progressBar"
