@@ -7,10 +7,21 @@ import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.github.privacyDashboard.R
+import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributeDetailBinding
+import com.github.privacyDashboard.events.RefreshList
 import com.github.privacyDashboard.models.attributes.DataAttribute
+import com.github.privacyDashboard.models.attributes.Status
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
+import com.github.privacyDashboard.models.consent.ResultResponse
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
+import com.github.privacyDashboard.utils.BBConsentDataUtils
+import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
+import org.greenrobot.eventbus.EventBus
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
 
@@ -20,14 +31,13 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
         const val EXTRA_TAG_ORGID =
             "com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.orgId"
         const val EXTRA_TAG_CONSENTID =
-            "com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.orgId"
+            "com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.consentId"
         const val EXTRA_TAG_PURPOSEID =
-            "com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.orgId"
+            "com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.purposeId"
         const val EXTRA_TAG_CONSENT =
             "com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.consent"
     }
 
-    private var mAttributeName: String? = ""
     private var mPurposeId: String? = ""
     private var mConsentId: String? = ""
     private var mOrgId: String? = ""
@@ -39,6 +49,7 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
         getIntentData()
         setUpToolBar()
         initValues()
+        initListeners()
     }
 
     private fun getIntentData() {
@@ -115,13 +126,13 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
         binding.llAllow.setOnClickListener {
             val body = ConsentStatusRequest()
             body.consented = "Allow"
-//            AllowConsentService(body)
+            updateConsentStatus(body)
         }
 
         binding.llDisallow.setOnClickListener {
             val body = ConsentStatusRequest()
             body.consented = "Disallow"
-//            AllowConsentService(body)
+            updateConsentStatus(body)
         }
 
         binding.sbDays.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -137,9 +148,64 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
                     resources.getString(R.string.bb_consent_data_attribute_detail_askme_consent_rule)
                 body.days = seekBar.progress
                 body.consented = "Askme"
-//                AllowConsentService(body)
+                updateConsentStatus(body)
             }
         })
+    }
+
+    private fun updateConsentStatus(body: ConsentStatusRequest) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
+            binding.llProgressBar.visibility = View.VISIBLE
+            val callback: Callback<ResultResponse?> = object : Callback<ResultResponse?> {
+                override fun onResponse(
+                    call: Call<ResultResponse?>,
+                    response: Response<ResultResponse?>
+                ) {
+                    binding.llProgressBar.visibility = View.GONE
+                    if (response.code() == 200) {
+                        val status: Status? = mDataAttribute?.status
+                        status?.consented = (body.consented)
+                        status?.remaining = (body.days)
+                        mDataAttribute?.status = status
+                        try {
+                            setChecked()
+                        } catch (e: java.lang.Exception) {
+                            e.printStackTrace()
+                        }
+                        EventBus.getDefault().post(RefreshList())
+                    }
+                }
+
+                override fun onFailure(call: Call<ResultResponse?>, t: Throwable) {
+                    binding.llProgressBar.visibility = View.GONE
+                }
+            }
+
+            //todo user id
+            BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                )?:"",
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service?.setAttributeStatus(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
+                ),
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_USERID
+                ),
+                mConsentId,
+                mPurposeId,
+                mDataAttribute?.iD,
+                body
+            )?.enqueue(callback)
+        }
     }
 
 }
