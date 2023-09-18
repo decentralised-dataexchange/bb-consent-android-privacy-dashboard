@@ -107,8 +107,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                             organization?.iD
                         )
                         startActivity(consentHistory)
-                    }
-                    else if (which == R.id.action_request) {
+                    } else if (which == R.id.action_request) {
                         val userOrgRequestIntent = Intent(
                             this,
                             BBConsentUserRequestActivity::class.java
@@ -233,7 +232,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
                 readMoreOption.addReadMoreTo(
                     binding.tvDescription,
-                    "sfkhbdf sdjasf afasd fadfdafas adsfadfadf dafadfad adfadfadfad dafdafadf dafadfafad dafadfadf adfadfdafd dsf df d fad fadfadf adf dafadfda adfadfda adfadfadf adsfafd dsf ad adfadfad"
+                    mOrg?.description ?: ""
                 )
                 //todo readmore implementation
             } else {
