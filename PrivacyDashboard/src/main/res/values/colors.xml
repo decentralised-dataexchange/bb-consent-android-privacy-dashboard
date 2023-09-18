@@ -13,7 +13,11 @@
 
     <color name="bb_consent_accent_blue">#006aa7</color>
 
-    <color name="bb_consent_faded_white">#e9e9e9</color>
-
     <color name="bb_consent_button_bg">#f9f9f9</color>
+
+    <color name="bb_consent_stepview_uncompleted">#A3E0D9</color>
+    <color name="bb_consent_stepview_uncompleted_text_color">#F8F8F8</color>
+    <color name="bbconsent_error_red">#B80202</color>
+
+    <color name="bb_consent_faded_white">#ecf8ff</color>
 </resources>
