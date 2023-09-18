@@ -3,8 +3,8 @@ package com.github.privacyDashboard.communication
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
 import com.github.privacyDashboard.models.consent.ResultResponse
+import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
 import com.github.privacyDashboard.models.logging.ConsentHistoryResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestStatus
@@ -68,4 +68,14 @@ interface BBConsentAPIServices {
     fun getDataDeleteStatus(
         @Path("orgId") orgId: String?
     ): Call<UserRequestStatus?>
+
+    @POST("v1/user/organizations/{orgId}/data-delete")
+    fun dataDeleteRequest(
+        @Path("orgId") orgId: String?
+    ): Call<Void>
+
+    @POST("v1/user/organizations/{orgId}/data-download")
+    fun dataDownloadRequest(
+        @Path("orgId") orgId: String?
+    ): Call<Void>
 }
