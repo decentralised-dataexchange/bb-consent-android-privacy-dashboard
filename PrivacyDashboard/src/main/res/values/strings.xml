@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="bb_consent_general_cancel">Cancel</string>
     <string name="bb_consent_general_more">More</string>
 
     <string name="bb_consent_dashboard_overview">Overview</string>
@@ -26,6 +27,11 @@
     <string name="bb_consent_data_attribute_detail_askme_consent_rule">If you choose \"Ask me\", you consent to the use of your data for the selected period. When time period expires, you get notified in real time requesting for consent when the data provider is using your data.</string>
     <string name="bb_consent_data_attribute_detail_consent">Consent</string>
     <string name="bb_consent_data_attribute_detail_days_with_count">%1$d Days</string>
+
+    <string name="bb_consent_user_request_new_request">New Request</string>
+    <string name="bb_consent_user_request_user_request">User Requests</string>
+    <string name="bb_consent_user_request_download_data">Download data</string>
+    <string name="bb_consent_user_request_forget_me">Forgot me</string>
 
     <string name="bb_consent_error_internet">Network not available.</string>
     <string name="bb_consent_error_unexpected">Unexpected error, Please try again.</string>

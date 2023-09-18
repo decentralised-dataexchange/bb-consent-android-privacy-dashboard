@@ -178,7 +178,7 @@
                             android:min="30"
                             android:progress="30"
                             android:progressBackgroundTint="@color/bbConsentTextColor"
-                            android:progressTint="@color/bb_consent_seek_bar_color" />
+                            android:progressTint="@color/bb_consent_accent_blue" />
 
                         <TextView
                             android:layout_width="wrap_content"

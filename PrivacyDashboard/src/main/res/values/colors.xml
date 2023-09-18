@@ -11,7 +11,9 @@
     <color name="bb_consent_divider_color">#bebebe</color>
     <color name="bb_consent_read_more_color">#9b9b9b</color>
 
-    <color name="bb_consent_seek_bar_color">#006aa7</color>
+    <color name="bb_consent_accent_blue">#006aa7</color>
+
+    <color name="bb_consent_faded_white">#e9e9e9</color>
 
     <color name="bb_consent_button_bg">#f9f9f9</color>
 </resources>

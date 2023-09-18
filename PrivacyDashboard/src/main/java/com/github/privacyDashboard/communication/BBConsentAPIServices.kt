@@ -3,9 +3,10 @@ package com.github.privacyDashboard.communication
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
 import com.github.privacyDashboard.models.consent.ResultResponse
+import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
 import com.github.privacyDashboard.models.logging.ConsentHistoryResponse
+import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -49,4 +50,10 @@ interface BBConsentAPIServices {
         @Path("purposeId") purposeId: String?,
         @Body body: ConsentStatusRequest?
     ): Call<UpdateConsentStatusResponse?>?
+
+    @GET("v1/user/organizations/{orgId}/data-status")
+    fun getOrgRequestStatus(
+        @Path("orgId") orgId: String?,
+        @Query("startid") startid: String?
+    ): Call<UserRequestHistoryResponse>
 }
