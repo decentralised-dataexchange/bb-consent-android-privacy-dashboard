@@ -3,10 +3,11 @@ package com.github.privacyDashboard.communication
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.consent.ResultResponse
 import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
+import com.github.privacyDashboard.models.consent.ResultResponse
 import com.github.privacyDashboard.models.logging.ConsentHistoryResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
+import com.github.privacyDashboard.models.userRequests.UserRequestStatus
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -56,4 +57,15 @@ interface BBConsentAPIServices {
         @Path("orgId") orgId: String?,
         @Query("startid") startid: String?
     ): Call<UserRequestHistoryResponse>
+
+    //data download and delete
+    @GET("v1/user/organizations/{orgId}/data-download/status")
+    fun getDataDownloadStatus(
+        @Path("orgId") orgId: String?
+    ): Call<UserRequestStatus?>
+
+    @GET("v1/user/organizations/{orgId}/data-delete/status")
+    fun getDataDeleteStatus(
+        @Path("orgId") orgId: String?
+    ): Call<UserRequestStatus?>
 }
