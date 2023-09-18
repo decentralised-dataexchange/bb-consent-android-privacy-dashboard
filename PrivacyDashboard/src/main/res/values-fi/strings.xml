@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="bb_consent_general_cancel">Peruuta</string>
+    <string name="bb_consent_general_more">Lisää</string>
+
+    <string name="bb_consent_dashboard_overview">Yleiskatsaus</string>
+    <string name="bb_consent_dashboard_usage_purpose">Käyttötarkoitukset</string>
+    <string name="bb_consent_dashboard_disallow">Disallow</string>
+    <string name="bb_consent_dashboard_allow">Sallia : %1$d of %2$d</string>
+    <string name="bb_consent_dashboard_read_less">Lue vähemmän</string>
+    <string name="bb_consent_dashboard_read_more">Lue lisää</string>
+
+    <string name="bb_consent_data_attribute_allow">Sallia</string>
+    <string name="bb_consent_data_attribute_my_data_consents">Tietojeni suostumukset</string>
+    <string name="bb_consent_data_attribute_read_policy">Lue politiikka</string>
+
+    <string name="bb_consent_web_view_privacy_policy">Tietosuojakäytäntö</string>
+    <string name="bb_consent_web_view_policy">Politiikka</string>
+
+    <string name="bb_consent_history_consent_history">Suostumushistoria</string>
+    <string name="bb_consent_history_empty_consent_history">Historiaa ei ole saatavilla</string>
+
+    <string name="bb_consent_data_attribute_detail_ask_me">Kysy minulta</string>
+    <string name="bb_consent_data_attribute_detail_allow_consent_rule">Jos valitset \"Salli\", annat suostumuksesi siihen, että henkilötietojasi käytetään pysyvästi mihin tahansa analyyttiseen tai kolmannen osapuolen käyttöön niiden tarkoitusten lisäksi, joihin olet rekisteröitynyt.</string>
+    <string name="bb_consent_data_attribute_detail_disallow_consent_rule">Jos valitset \"Disallow\", kiellät henkilötietojesi käytön analyyttiseen tai kolmannen osapuolen käyttöön muuhun kuin niihin tarkoituksiin, joihin olet rekisteröitynyt.</string>
+    <string name="bb_consent_data_attribute_detail_askme_consent_rule">Jos valitset \"Kysy minulta\", annat suostumuksesi tietojesi käyttöön valitun ajanjakson ajan. Kun ajanjakso päättyy, saat reaaliaikaisen ilmoituksen, jossa pyydät suostumusta, kun tietojen toimittaja käyttää tietojasi.</string>
+    <string name="bb_consent_data_attribute_detail_consent">Suostumus</string>
+    <string name="bb_consent_data_attribute_detail_days_with_count">%1$d Days</string>
+
+    <string name="bb_consent_user_request_new_request">New Request</string>
+    <string name="bb_consent_user_request_user_request">User Requests</string>
+    <string name="bb_consent_user_request_download_data">Download data</string>
+    <string name="bb_consent_user_request_forget_me">Forgot me</string>
+
+    <string name="bb_consent_error_internet">Verkko ei ole käytettävissä.</string>
+    <string name="bb_consent_error_unexpected">Unexpected error, Please try again.</string>
+
+</resources>
