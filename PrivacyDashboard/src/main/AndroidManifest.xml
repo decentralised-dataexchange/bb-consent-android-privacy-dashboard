@@ -16,5 +16,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".modules.logging.BBConsentLoggingActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".modules.userRequest.BBConsentUserRequestActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 </manifest>

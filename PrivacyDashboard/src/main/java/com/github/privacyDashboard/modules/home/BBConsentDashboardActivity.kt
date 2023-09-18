@@ -27,6 +27,7 @@ import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeL
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_EXTRA_NAME
 import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity
 import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity.Companion.TAG_EXTRA_ORG_ID
+import com.github.privacyDashboard.modules.userRequest.BBConsentUserRequestActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_TITLE
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_URL
@@ -107,9 +108,21 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         )
                         startActivity(consentHistory)
                     }
-//                    else if (which == R.id.action_request) {
-//                        Toast.makeText(this,"To be implemented",Toast.LENGTH_SHORT).show()
-//                    }
+                    else if (which == R.id.action_request) {
+                        val userOrgRequestIntent = Intent(
+                            this,
+                            BBConsentUserRequestActivity::class.java
+                        )
+                        userOrgRequestIntent.putExtra(
+                            BBConsentUserRequestActivity.EXTRA_TAG_USER_REQUEST_ORGID,
+                            organization?.iD
+                        )
+                        userOrgRequestIntent.putExtra(
+                            BBConsentUserRequestActivity.EXTRA_TAG_USER_REQUEST_ORG_NAME,
+                            organization?.name
+                        )
+                        startActivity(userOrgRequestIntent)
+                    }
                 }.show()
             return true
         }

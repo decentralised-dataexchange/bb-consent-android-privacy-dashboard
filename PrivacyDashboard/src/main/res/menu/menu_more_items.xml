@@ -10,4 +10,9 @@
         android:id="@+id/action_consent_history"
         android:title="@string/bb_consent_history_consent_history"
         app:showAsAction="never|withText" />
+
+    <item
+        android:id="@+id/action_request"
+        android:title="@string/bb_consent_user_request_user_request"
+        app:showAsAction="never|withText" />
 </menu>
