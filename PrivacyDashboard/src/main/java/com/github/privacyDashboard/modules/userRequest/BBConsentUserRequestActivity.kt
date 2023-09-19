@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.cocosw.bottomsheet.BottomSheet
@@ -14,6 +15,7 @@ import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityUserRequestBinding
 import com.github.privacyDashboard.models.userRequests.UserRequest
+import com.github.privacyDashboard.models.userRequests.UserRequestGenResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestStatus
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
@@ -184,14 +186,17 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
 
                 override fun onFailure(call: Call<UserRequestStatus?>, t: Throwable) {
                     binding.llProgressBar.visibility = View.GONE
-                    BBConsentMessageUtils.showSnackbar(binding.root, resources.getString(R.string.bb_consent_error_unexpected))
+                    BBConsentMessageUtils.showSnackbar(
+                        binding.root,
+                        resources.getString(R.string.bb_consent_error_unexpected)
+                    )
                 }
             }
             BBConsentAPIManager.getApi(
                 BBConsentDataUtils.getStringValue(
                     this,
                     BBConsentDataUtils.EXTRA_TAG_TOKEN
-                )?:"",
+                ) ?: "",
                 BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
             )?.service?.getDataDownloadStatus(
                 BBConsentDataUtils.getStringValue(
@@ -209,7 +214,7 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
                 resources.getString(
                     R.string.bb_consent_user_request_confirmation_message,
                     if (isDelete) resources.getString(R.string.bb_consent_user_request_data_delete) else resources.getString(
-                        R.string.bb_consent_user_request_data_delete
+                        R.string.bb_consent_user_request_download_data
                     ),
                     mOrgName
                 )
@@ -220,7 +225,7 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
                     } else {
                         dataDownloadRequest()
                     }
-                }).setNegativeButton(R.string.bb_consent_user_request_confirm, null).show()
+                }).setNegativeButton(R.string.bb_consent_general_cancel, null).show()
     }
 
     private fun dataDeleteRequest() {
@@ -410,7 +415,58 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
     }
 
     private fun cancelDataRequest(isDownloadData: Boolean, request: UserRequest) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
+            binding.llProgressBar.visibility = View.VISIBLE
+            val callback: Callback<UserRequestGenResponse?> =
+                object : Callback<UserRequestGenResponse?> {
+                    override fun onResponse(
+                        call: Call<UserRequestGenResponse?>,
+                        response: Response<UserRequestGenResponse?>
+                    ) {
+                        binding.llProgressBar.visibility = View.GONE
+                        if (response.code() == 200) {
+                            Toast.makeText(
+                                this@BBConsentUserRequestActivity,
+                                resources.getString(R.string.bb_consent_user_request_request_cancelled),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            refreshData()
+                        } else {
+                            Toast.makeText(
+                                this@BBConsentUserRequestActivity,
+                                resources.getString(R.string.bb_consent_error_unexpected),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
 
+                    override fun onFailure(call: Call<UserRequestGenResponse?>, t: Throwable) {
+                        binding.llProgressBar.visibility = View.GONE
+                        Toast.makeText(
+                            this@BBConsentUserRequestActivity,
+                            resources.getString(R.string.bb_consent_error_unexpected),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            if (isDownloadData) BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
+            )?.service?.dataDownloadCancelRequest(
+                mOrgId, request.iD
+            )?.enqueue(callback) else BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
+            )?.service?.dataDeleteCancelRequest(
+                mOrgId, request.iD
+            )?.enqueue(callback)
+        }
     }
 
     private fun setOngoingRequests(dataRequests: ArrayList<UserRequest>?): Collection<UserRequest> {
