@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -63,4 +64,23 @@ dependencies {
 
     implementation 'org.greenrobot:eventbus:3.2.0'
 
+}
+
+def getVersionName = { ->
+    return "2023.9.0"  // Replace with version Name
+}
+
+def getArtifactId = { ->
+    return "PrivacyDashboard" // Replace with library name ID
+}
+
+publishing {
+    publications {
+        bar(MavenPublication) {
+            groupId 'com.github.decentralised-dataexchange' // Replace with group ID
+            artifactId getArtifactId()
+            version getVersionName()
+            artifact("$buildDir/outputs/aar/${getArtifactId()}-release.aar")
+        }
+    }
 }
