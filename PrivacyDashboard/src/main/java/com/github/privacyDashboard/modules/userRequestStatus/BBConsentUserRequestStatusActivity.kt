@@ -3,11 +3,13 @@ package com.github.privacyDashboard.modules.userRequestStatus
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityUserRequestStatusBinding
+import com.github.privacyDashboard.models.userRequests.UserRequestGenResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestStatus
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
@@ -38,6 +40,7 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
         getIntentData()
         setUpToolBar()
         getDataRequestStatus()
+        initListener()
     }
 
     private fun getIntentData() {
@@ -209,4 +212,68 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
             else -> 0
         }
     }
+
+    private fun initListener() {
+        binding.btnCancel.setOnClickListener { cancelDataRequest() }
+    }
+
+    private fun cancelDataRequest() {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
+            binding.llProgressBar.visibility = View.VISIBLE
+            val callback: Callback<UserRequestGenResponse?> =
+                object : Callback<UserRequestGenResponse?> {
+                    override fun onResponse(
+                        call: Call<UserRequestGenResponse?>,
+                        response: Response<UserRequestGenResponse?>
+                    ) {
+                        binding.llProgressBar.visibility = View.GONE
+                        if (response.code() == 200) {
+                            Toast.makeText(
+                                this@BBConsentUserRequestStatusActivity,
+                                resources.getString(R.string.bb_consent_user_request_request_cancelled),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            finish()
+                        } else {
+                            BBConsentMessageUtils.showSnackbar(
+                                window.decorView.findViewById(android.R.id.content),
+                                resources.getString(R.string.bb_consent_error_unexpected)
+                            )
+                        }
+                    }
+
+                    override fun onFailure(call: Call<UserRequestGenResponse?>, t: Throwable) {
+                        binding.llProgressBar.visibility = View.GONE
+                        BBConsentMessageUtils.showSnackbar(
+                            window.decorView.findViewById(android.R.id.content),
+                            resources.getString(R.string.bb_consent_error_unexpected)
+                        )
+                    }
+                }
+            if (mIsDownloadData == true) BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_TOKEN) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service?.dataDownloadCancelRequest(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
+                ), status?.iD
+            )?.enqueue(callback) else BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_TOKEN) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service?.dataDeleteCancelRequest(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
+                ), status?.iD
+            )?.enqueue(callback)
+        }
+    }
+
 }

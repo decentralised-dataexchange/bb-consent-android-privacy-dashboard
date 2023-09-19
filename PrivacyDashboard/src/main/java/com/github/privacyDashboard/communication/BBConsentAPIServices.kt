@@ -6,6 +6,7 @@ import com.github.privacyDashboard.models.consent.ConsentStatusRequest
 import com.github.privacyDashboard.models.consent.ResultResponse
 import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
 import com.github.privacyDashboard.models.logging.ConsentHistoryResponse
+import com.github.privacyDashboard.models.userRequests.UserRequestGenResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestStatus
 import retrofit2.Call
@@ -78,4 +79,16 @@ interface BBConsentAPIServices {
     fun dataDownloadRequest(
         @Path("orgId") orgId: String?
     ): Call<Void>
+
+    @POST("v1/user/organizations/{orgId}/data-delete/{requestId}/cancel")
+    fun dataDeleteCancelRequest(
+        @Path("orgId") orgId: String?,
+        @Path("requestId") requestId: String?
+    ): Call<UserRequestGenResponse?>
+
+    @POST("v1/user/organizations/{orgId}/data-download/{requestId}/cancel")
+    fun dataDownloadCancelRequest(
+        @Path("orgId") orgId: String?,
+        @Path("requestId") requestId: String?
+    ): Call<UserRequestGenResponse?>
 }
