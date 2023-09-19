@@ -32,6 +32,15 @@
     <string name="bb_consent_user_request_user_request">User Requests</string>
     <string name="bb_consent_user_request_download_data">Download data</string>
     <string name="bb_consent_user_request_forget_me">Forgot me</string>
+    <string name="bb_consent_user_request_cancel_request">Cancel request</string>
+    <string name="bb_consent_user_request_request_initiated">Request Initiated</string>
+    <string name="bb_consent_user_request_request_acknowledged">Request Acknowledged</string>
+    <string name="bb_consent_user_request_request_processed">Request processed</string>
+    <string name="bb_consent_user_request_confirmation">Confirmation</string>
+    <string name="bb_consent_user_request_confirmation_message">A new request to %1$s will be sent to the %2$s</string>
+    <string name="bb_consent_user_request_data_delete">data delete</string>
+    <string name="bb_consent_user_request_confirm">Confirm</string>
+    <string name="bb_consent_user_request_request_cancelled">Request cancelled successfully.</string>
 
     <string name="bb_consent_error_internet">Verkko ei ole käytettävissä.</string>
     <string name="bb_consent_error_unexpected">Unexpected error, Please try again.</string>
