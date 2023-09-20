@@ -22,9 +22,8 @@
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:text="---------- -------"
-                android:paddingStart="5dp"
                 android:textColor="@color/bbConsentTextColor"
-                android:textSize="@dimen/text_size_normal" />
+                android:textSize="@dimen/text_size_medium" />
 
             <TextView
                 android:id="@+id/ctvStatus"
@@ -32,12 +31,14 @@
                 android:layout_height="wrap_content"
                 android:text="-------"
                 android:textColor="@color/bbConsentTextColorLight"
-                android:textSize="@dimen/text_size_normal" />
+                android:textSize="@dimen/text_size_medium" />
 
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:padding="10dp"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:src="@drawable/ic_arrow_forward" />
         </LinearLayout>
 

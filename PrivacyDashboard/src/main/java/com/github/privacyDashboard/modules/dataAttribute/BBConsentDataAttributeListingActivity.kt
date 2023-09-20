@@ -85,31 +85,35 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
     }
 
     private fun setUpDescription() {
-        val readMoreOption: ReadMoreOption = ReadMoreOption.Builder(this)
-            .textLength(3) // OR
-            .textLengthType(ReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
-            .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
-            .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
-            .moreLabelColor(
-                ContextCompat.getColor(
-                    this,
-                    R.color.bb_consent_read_more_color
+        if (mDescription.length > 120) {
+            val readMoreOption: ReadMoreOption = ReadMoreOption.Builder(this)
+                .textLength(3) // OR
+                .textLengthType(ReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
+                .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
+                .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
+                .moreLabelColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.bb_consent_read_more_color
+                    )
                 )
-            )
-            .lessLabelColor(
-                ContextCompat.getColor(
-                    this,
-                    R.color.bb_consent_read_more_color
+                .lessLabelColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.bb_consent_read_more_color
+                    )
                 )
-            )
-            .labelUnderLine(false)
-            .expandAnimation(true)
-            .build()
+                .labelUnderLine(false)
+                .expandAnimation(true)
+                .build()
 
-        readMoreOption.addReadMoreTo(
-            binding.tvDescription,
-            "sfkhbdf sdjasf afasd fadfdafas adsfadfadf dafadfad adfadfadfad dafdafadf dafadfafad dafadfadf adfadfdafd dsf df d fad fadfadf adf dafadfda adfadfda adfadfadf adsfafd dsf ad adfadfad"
-        )
+            readMoreOption.addReadMoreTo(
+                binding.tvDescription,
+                mDescription
+            )
+        } else {
+            binding.tvDescription.text = mDescription
+        }
     }
 
     private fun getIntentData() {
