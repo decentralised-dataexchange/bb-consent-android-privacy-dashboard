@@ -29,18 +29,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
-                android:orientation="vertical"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
                     android:text="@string/bb_consent_data_attribute_detail_consent"
                     android:textAllCaps="true"
                     android:textColor="@color/bbConsentTextColorLight"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_medium" />
 
                 <LinearLayout
                     android:id="@+id/llAllow"
@@ -49,15 +49,16 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/bbConsentWhite"
                     android:orientation="horizontal"
-                    android:padding="5dp"
+                    android:paddingStart="20dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="5dp"
                     android:visibility="visible">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-
-                        android:paddingStart="5dp"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:text="@string/bb_consent_data_attribute_allow"
@@ -86,15 +87,16 @@
                     android:layout_height="wrap_content"
                     android:background="@color/bbConsentWhite"
                     android:orientation="horizontal"
-                    android:padding="5dp"
+                    android:paddingStart="20dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="5dp"
                     android:visibility="visible">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-
-                        android:paddingStart="5dp"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:text="@string/bb_consent_dashboard_disallow"
@@ -122,7 +124,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/bbConsentWhite"
                     android:orientation="vertical"
-                    android:padding="5dp"
+                    android:paddingStart="20dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="10dp"
                     android:visibility="visible">
 
                     <LinearLayout
@@ -134,8 +139,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-
-                            android:paddingStart="5dp"
                             android:paddingTop="10dp"
                             android:paddingBottom="10dp"
                             android:text="@string/bb_consent_data_attribute_detail_ask_me"
@@ -147,7 +150,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:layout_marginEnd="20dp"
                             android:text="-- days"
                             android:textColor="@color/bbConsentTextColorLight"
                             android:textSize="@dimen/text_size_medium" />
@@ -162,8 +164,6 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-
-                            android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
                             android:text="30"
                             android:textColor="@color/bbConsentTextColorLight"
@@ -183,9 +183,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-
                             android:layout_marginStart="5dp"
-                            android:layout_marginEnd="10dp"
                             android:text="90"
                             android:textColor="@color/bbConsentTextColorLight"
                             android:textSize="@dimen/text_size_medium" />
@@ -197,7 +195,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
                     android:text="@string/bb_consent_data_attribute_detail_allow_consent_rule"
                     android:textColor="@color/bbConsentTextColorLight"
                     android:textSize="@dimen/text_size_medium" />
@@ -211,12 +210,12 @@
             android:layout_height="0dp"
             android:animateLayoutChanges="true"
             android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolBarCommon"
-            android:focusable="true">
+            app:layout_constraintTop_toBottomOf="@+id/toolBarCommon">
 
             <ProgressBar
                 android:id="@+id/progressBar"
