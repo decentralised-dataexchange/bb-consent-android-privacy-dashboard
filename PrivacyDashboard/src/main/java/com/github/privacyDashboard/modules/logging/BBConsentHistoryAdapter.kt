@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.github.marlonlom.utilities.timeago.TimeAgo
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentItemConsentHistoryBinding
 import com.github.privacyDashboard.models.logging.ConsentHistory
 import com.github.privacyDashboard.utils.BBConsentDateUtils
+import com.github.privacyDashboard.utils.BBConsentDateUtils.getApiFormatDate
 
 class BBConsentHistoryAdapter(
     consentHistories: ArrayList<ConsentHistory>
@@ -27,7 +29,7 @@ class BBConsentHistoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val consentHistory: ConsentHistory = mList[position]
-        holder.bind(consentHistory,position)
+        holder.bind(consentHistory, position)
     }
 
     override fun getItemCount(): Int {
@@ -45,7 +47,8 @@ class BBConsentHistoryAdapter(
             )
 
             itemRowBinding.tvLog.text = consentHistory.log
-            itemRowBinding.tvTimeStamp.setText(BBConsentDateUtils.getRelativeTime(consentHistory.timeStamp))
+            itemRowBinding.tvTimeStamp.text =
+                TimeAgo.using(getApiFormatDate(consentHistory.timeStamp).time)
         }
 
         init {

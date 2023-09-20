@@ -33,6 +33,17 @@ object BBConsentDateUtils {
         return sdf1.format(dDate)
     }
 
+    fun getApiFormatDate(date: String?): Date {
+        val sdf = SimpleDateFormat(API_FORMAT, Locale.ENGLISH)
+        var dDate: Date? = null
+        dDate = try {
+            BBConsentUtcUtils.gmtToLocalDate(sdf.parse(date))
+        } catch (e: Exception) {
+            Date()
+        }
+        return dDate?:Date()
+    }
+
     fun getApiFormatTime(fromFormat: String?, toFormat: String?, date: String?): String {
         val sdf = SimpleDateFormat(fromFormat, Locale.ENGLISH)
         var dDate: Date? = null

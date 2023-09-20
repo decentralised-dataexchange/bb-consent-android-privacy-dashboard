@@ -13,9 +13,9 @@
             android:layout_height="wrap_content"
             android:textAlignment="textStart"
             android:textColor="@color/bbConsentTextColor"
-            android:textSize="@dimen/text_size_normal"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
+            android:textSize="@dimen/text_size_medium"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             app:layout_constraintBottom_toTopOf="@+id/tvTimeStamp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -27,7 +27,7 @@
             android:text=""
             android:textColor="@color/bbConsentTextColor"
             android:textSize="@dimen/text_size_medium"
-            android:paddingEnd="15dp"
+            android:paddingEnd="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLog" />
     </androidx.constraintlayout.widget.ConstraintLayout>
