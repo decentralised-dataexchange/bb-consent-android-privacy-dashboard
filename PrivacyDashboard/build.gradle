@@ -63,7 +63,7 @@ dependencies {
     implementation 'com.github.markomilos:paginate:1.0.0'
 
     implementation 'org.greenrobot:eventbus:3.2.0'
-
+    api 'com.github.marlonlom:timeago:4.0.3'
 }
 
 def getVersionName = { ->
