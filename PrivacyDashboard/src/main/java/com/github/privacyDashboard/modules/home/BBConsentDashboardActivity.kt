@@ -200,41 +200,44 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
     private fun initView(mOrg: Organization?) {
         try {
-            BBConsentImageUtils.setImage(binding.ivLogo, mOrg?.logoImageURL, R.drawable.ic_back_bg)
+            BBConsentImageUtils.setImage(binding.ivLogo, mOrg?.logoImageURL, R.drawable.bb_consent_default_logo)
             BBConsentImageUtils.setImage(
                 binding.ivCoverUrl,
                 mOrg?.coverImageURL,
-                R.drawable.ic_back_bg
+                R.drawable.bb_consent_default_cover
             )
             binding.tvName.text = mOrg?.name
             binding.tvLocation.text = mOrg?.location
             if (mOrg?.description != null || !mOrg?.description.equals("")) {
-                val readMoreOption: ReadMoreOption = ReadMoreOption.Builder(this)
-                    .textLength(3) // OR
-                    .textLengthType(ReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
-                    .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
-                    .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
-                    .moreLabelColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.bb_consent_read_more_color
+                if ((mOrg?.description?.length ?: 0) > 120) {
+                    val readMoreOption: ReadMoreOption = ReadMoreOption.Builder(this)
+                        .textLength(3) // OR
+                        .textLengthType(ReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
+                        .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
+                        .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
+                        .moreLabelColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.bb_consent_read_more_color
+                            )
                         )
-                    )
-                    .lessLabelColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.bb_consent_read_more_color
+                        .lessLabelColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.bb_consent_read_more_color
+                            )
                         )
-                    )
-                    .labelUnderLine(false)
-                    .expandAnimation(true)
-                    .build()
+                        .labelUnderLine(false)
+                        .expandAnimation(true)
+                        .build()
 
-                readMoreOption.addReadMoreTo(
-                    binding.tvDescription,
-                    mOrg?.description ?: ""
-                )
-                //todo readmore implementation
+                    readMoreOption.addReadMoreTo(
+                        binding.tvDescription,
+                        mOrg?.description ?: ""
+                    )
+                } else {
+                    binding.tvDescription.text = mOrg?.description ?: ""
+                }
             } else {
                 binding.tvDescription.visibility = View.GONE
             }
