@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.github.marlonlom.utilities.timeago.TimeAgo
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentItemUserRequestBinding
 import com.github.privacyDashboard.models.userRequests.UserRequest
 import com.github.privacyDashboard.utils.BBConsentDateUtils
+import com.github.privacyDashboard.utils.BBConsentDateUtils.YYYYMMDDHHMMSS
+import com.github.privacyDashboard.utils.BBConsentDateUtils.getApiFormatDate
 
 class BBConsentUserRequestHistoryAdapter(
     userRequests: ArrayList<UserRequest>,
@@ -54,10 +57,11 @@ class BBConsentUserRequestHistoryAdapter(
             )
             itemRowBinding.tvRequestType.text = userRequest.typeStr
             itemRowBinding.tvRequestDate.setText(
-                BBConsentDateUtils.getApiFormatTime(
-                    BBConsentDateUtils.YYYYMMDDHHMMSS,
-                    BBConsentDateUtils.DDMMYYYYHHMMA,
-                    userRequest.requestedDate?.replace(" +0000 UTC", "")
+                TimeAgo.using(
+                    getApiFormatDate(
+                        userRequest.requestedDate?.replace(" +0000 UTC", ""),
+                        YYYYMMDDHHMMSS
+                    ).time
                 )
             )
             itemRowBinding.tvRequestStatus.text = userRequest.stateStr
