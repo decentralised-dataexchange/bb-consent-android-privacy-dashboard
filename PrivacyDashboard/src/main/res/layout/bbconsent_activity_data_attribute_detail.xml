@@ -62,6 +62,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:text="@string/bb_consent_data_attribute_allow"
+                        android:textStyle="bold"
                         android:textColor="@color/bbConsentTextColor"
                         android:textSize="@dimen/text_size_medium" />
 
@@ -100,6 +101,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:text="@string/bb_consent_dashboard_disallow"
+                        android:textStyle="bold"
                         android:textColor="@color/bbConsentTextColor"
                         android:textSize="@dimen/text_size_medium" />
 
@@ -142,6 +144,7 @@
                             android:paddingTop="10dp"
                             android:paddingBottom="10dp"
                             android:text="@string/bb_consent_data_attribute_detail_ask_me"
+                            android:textStyle="bold"
                             android:textColor="@color/bbConsentTextColor"
                             android:textSize="@dimen/text_size_medium" />
 
@@ -166,7 +169,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
                             android:text="30"
-                            android:textColor="@color/bbConsentTextColorLight"
+                            android:textColor="@color/bb_consent_accent_blue"
                             android:textSize="@dimen/text_size_medium" />
 
                         <SeekBar
@@ -177,7 +180,8 @@
                             android:max="90"
                             android:min="30"
                             android:progress="30"
-                            android:progressBackgroundTint="@color/bbConsentTextColor"
+                            android:thumbTint="@color/bb_consent_accent_blue"
+                            android:progressBackgroundTint="@color/bb_consent_accent_blue"
                             android:progressTint="@color/bb_consent_accent_blue" />
 
                         <TextView
@@ -185,7 +189,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:text="90"
-                            android:textColor="@color/bbConsentTextColorLight"
+                            android:textColor="@color/bb_consent_accent_blue"
                             android:textSize="@dimen/text_size_medium" />
                     </LinearLayout>
                 </LinearLayout>

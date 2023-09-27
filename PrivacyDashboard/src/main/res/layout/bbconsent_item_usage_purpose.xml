@@ -32,7 +32,8 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:src="@drawable/ic_arrow_forward"
-                app:tint="@color/bbConsentTextColor" />
+                android:padding="5dp"
+                app:tint="@color/bbConsentTextColorLight" />
         </LinearLayout>
 
         <LinearLayout
