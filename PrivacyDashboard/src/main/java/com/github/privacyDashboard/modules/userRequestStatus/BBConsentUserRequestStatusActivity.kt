@@ -62,7 +62,7 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
         )
         supportActionBar?.title =
             if (mIsDownloadData == true) resources.getString(R.string.bb_consent_user_request_download_data) else resources.getString(
-                R.string.bb_consent_user_request_forget_me
+                R.string.bb_consent_user_request_delete_data
             )
     }
 

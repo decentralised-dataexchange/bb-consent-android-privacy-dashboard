@@ -17,6 +17,7 @@ import com.github.privacyDashboard.models.consent.ResultResponse
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
+import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
@@ -74,7 +75,7 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
                 R.drawable.ic_back_black_pad
             )
         )
-        supportActionBar?.title = mDataAttribute?.description
+        supportActionBar?.title = toCamelCase(mDataAttribute?.description)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

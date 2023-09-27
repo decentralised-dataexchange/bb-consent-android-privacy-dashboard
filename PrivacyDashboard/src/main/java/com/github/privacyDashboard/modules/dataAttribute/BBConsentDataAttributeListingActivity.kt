@@ -21,6 +21,7 @@ import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttribut
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_CONSENTID
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_ORGID
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_PURPOSEID
+import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
 
 class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
     private lateinit var binding: BbconsentActivityDataAttributesBinding
@@ -137,7 +138,7 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                 R.drawable.ic_back_black_pad
             )
         )
-        supportActionBar?.title = mTitle
+        supportActionBar?.title = toCamelCase(mTitle)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
