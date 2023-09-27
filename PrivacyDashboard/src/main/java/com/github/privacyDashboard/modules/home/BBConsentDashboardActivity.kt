@@ -80,8 +80,12 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
             finish()
             return true
         } else if (item.itemId == R.id.menu_more) {
+            val isUserRequestAvailable = BBConsentDataUtils.getBooleanValue(
+                this,
+                BBConsentDataUtils.EXTRA_TAG_ENABLE_USER_REQUEST
+            )
             BottomSheet.Builder(this, com.cocosw.bottomsheet.R.style.BottomSheet_Dialog)
-                .sheet(R.menu.menu_more_items)
+                .sheet(if (isUserRequestAvailable == true) R.menu.menu_more_items else R.menu.menu_more_items_no_user_request)
                 .listener { dialog, which ->
                     if (which == R.id.action_webpage) {
                         val intent = Intent(
@@ -200,7 +204,11 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
     private fun initView(mOrg: Organization?) {
         try {
-            BBConsentImageUtils.setImage(binding.ivLogo, mOrg?.logoImageURL, R.drawable.bb_consent_default_logo)
+            BBConsentImageUtils.setImage(
+                binding.ivLogo,
+                mOrg?.logoImageURL,
+                R.drawable.bb_consent_default_logo
+            )
             BBConsentImageUtils.setImage(
                 binding.ivCoverUrl,
                 mOrg?.coverImageURL,

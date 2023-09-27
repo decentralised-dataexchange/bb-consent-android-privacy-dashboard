@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.github.privacyDashboard.modules.home.BBConsentDashboardActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_BASE_URL
+import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_USER_REQUEST
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ORG_ID
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_TOKEN
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_USERID
@@ -21,6 +22,7 @@ object PrivacyDashboard {
     private var mOrgId: String? = ""
     private var mBaseUrl: String? = ""
     private var mLocale: String? = ""
+    private var mEnableUserRequest: Boolean? = false
 
     private var mPrivacyDashboardIntent: Intent? = null
 
@@ -50,7 +52,7 @@ object PrivacyDashboard {
     }
 
     /**
-     * Set Api key for the iGrant Sdk.
+     * Set organization id for the iGrant Sdk.
      *
      * @param orgId
      */
@@ -60,7 +62,7 @@ object PrivacyDashboard {
     }
 
     /**
-     * Set Api key for the iGrant Sdk.
+     * Set base url for the iGrant Sdk.
      *
      * @param baseUrl
      */
@@ -70,12 +72,22 @@ object PrivacyDashboard {
     }
 
     /**
-     * Set Api key for the iGrant Sdk.
+     * Set Language code for the iGrant Sdk.
      *
-     * @param baseUrl
+     * @param languageCode
      */
     fun withLocale(languageCode: String): PrivacyDashboard {
         this.mLocale = languageCode
+        return this
+    }
+
+    /**
+     * To enable the user request for the iGrant Sdk.
+     *
+     * @param enableUserRequest
+     */
+    fun enableUserRequest(enableUserRequest: Boolean): PrivacyDashboard {
+        this.mEnableUserRequest = enableUserRequest
         return this
     }
 
@@ -109,6 +121,11 @@ object PrivacyDashboard {
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_USERID, this.mUserId)
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_TOKEN, this.mApiKey)
         BBConsentLocaleHelper.setLocale(context, mLocale ?: "en")
+        BBConsentDataUtils.saveBooleanValues(
+            context,
+            EXTRA_TAG_ENABLE_USER_REQUEST,
+            this.mEnableUserRequest
+        )
         return mPrivacyDashboardIntent
     }
 
