@@ -61,8 +61,8 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
             )
         )
         supportActionBar?.title =
-            if (mIsDownloadData == true) resources.getString(R.string.bb_consent_user_request_download_data) else resources.getString(
-                R.string.bb_consent_user_request_delete_data
+            if (mIsDownloadData == true) resources.getString(R.string.bb_consent_user_request_download_data_status) else resources.getString(
+                R.string.bb_consent_user_request_delete_data_status
             )
     }
 
@@ -158,7 +158,9 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
                 .setStepViewTexts(list0)
                 .setStepViewDates(dates)
                 .setStepViewComments(comments)
-                .setLinePaddingProportion(0.85f)
+                .setLinePaddingProportion(1f)
+                .setTextSize(15)
+                .setDateTextSize(12)
                 .setStepsViewIndicatorCompletedLineColor(
                     ContextCompat.getColor(
                         this,
@@ -180,7 +182,7 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
                 .setStepViewUnComplectedTextColor(
                     ContextCompat.getColor(
                         this,
-                        R.color.bb_consent_accent_blue
+                        R.color.bbConsentTextColorLight
                     )
                 )
                 .setStepsViewIndicatorCompleteIcon(

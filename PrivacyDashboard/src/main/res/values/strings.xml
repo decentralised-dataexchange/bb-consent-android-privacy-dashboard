@@ -32,6 +32,8 @@
     <string name="bb_consent_user_request_user_request">User Requests</string>
     <string name="bb_consent_user_request_download_data">Download Data</string>
     <string name="bb_consent_user_request_delete_data">Delete Data</string>
+    <string name="bb_consent_user_request_download_data_status">Download Data Request Status</string>
+    <string name="bb_consent_user_request_delete_data_status">Delete Data Request Status</string>
     <string name="bb_consent_user_request_forget_me">Forgot me</string>
     <string name="bb_consent_user_request_cancel_request">Cancel request</string>
     <string name="bb_consent_user_request_request_initiated">Request Initiated</string>
