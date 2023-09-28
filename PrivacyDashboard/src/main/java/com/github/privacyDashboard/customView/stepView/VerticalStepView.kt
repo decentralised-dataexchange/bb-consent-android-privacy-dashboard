@@ -240,7 +240,7 @@ class VerticalStepView @JvmOverloads constructor(
                     mDateTextView!!.text = mDates!![i]
 
 //                    mDateTextView.setText(mDates.get(i)+ (i==2?"\n"+"Comment":""));
-                    mDateTextView!!.y = mTextView!!.y + 50
+                    mDateTextView!!.y = mTextView!!.y + 60
                     mDateTextView!!.layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
@@ -258,7 +258,7 @@ class VerticalStepView @JvmOverloads constructor(
                                 context, R.color.bb_consent_accent_blue
                             ) else mComplectedTextColor
                         )
-                        mDateTextView!!.setTypeface(null, Typeface.BOLD)
+                        mDateTextView!!.setTypeface(null, Typeface.NORMAL)
                         mDateTextView!!.setTextColor(mComplectedTextColor)
                         //                        mCommentTextView.setTypeface(null, Typeface.BOLD);
 //                        mCommentTextView.setTextColor(mComplectedTextColor);
