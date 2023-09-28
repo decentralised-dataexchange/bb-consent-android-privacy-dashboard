@@ -1,3 +1,5 @@
 package com.github.privacyDashboard.events
 
-class RefreshList {  }
+import com.github.privacyDashboard.models.attributes.Status
+
+class RefreshList(var purposeId: String?,var status:Status?) {  }
