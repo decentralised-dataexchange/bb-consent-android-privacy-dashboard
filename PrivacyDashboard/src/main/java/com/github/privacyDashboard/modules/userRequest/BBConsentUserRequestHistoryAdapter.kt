@@ -33,7 +33,7 @@ class BBConsentUserRequestHistoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val purposeConsent: UserRequest = mList[position]
-        holder.bind(purposeConsent, mListener, position)
+        holder.bind(purposeConsent, mListener)
     }
 
     override fun getItemCount(): Int {
@@ -46,15 +46,7 @@ class BBConsentUserRequestHistoryAdapter(
         fun bind(
             userRequest: UserRequest,
             mListener: BBConsentUserRequestClickListener,
-            position: Int
         ) {
-            itemRowBinding.llItem.setBackgroundColor(
-                if (position % 2 == 0) Color.parseColor("#ffffff") else
-                    ContextCompat.getColor(
-                        itemRowBinding.llItem.context,
-                        R.color.bb_consent_faded_white
-                    )
-            )
             itemRowBinding.tvRequestType.text = userRequest.typeStr
             itemRowBinding.tvRequestDate.setText(
                 TimeAgo.using(
