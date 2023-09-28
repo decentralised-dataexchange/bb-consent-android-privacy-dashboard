@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributeDetailBinding
+import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.events.RefreshList
 import com.github.privacyDashboard.models.attributes.DataAttribute
 import com.github.privacyDashboard.models.attributes.Status
@@ -173,7 +174,8 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
                         } catch (e: java.lang.Exception) {
                             e.printStackTrace()
                         }
-                        EventBus.getDefault().post(RefreshList())
+                        EventBus.getDefault().post(RefreshHome())
+                        EventBus.getDefault().post(RefreshList(mDataAttribute?.iD,status))
                     }
                 }
 

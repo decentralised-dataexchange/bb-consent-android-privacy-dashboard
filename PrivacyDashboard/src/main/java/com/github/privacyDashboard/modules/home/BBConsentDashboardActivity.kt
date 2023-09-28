@@ -13,7 +13,7 @@ import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityDashboardBinding
-import com.github.privacyDashboard.events.RefreshList
+import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.models.Organization
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.PurposeConsent
@@ -54,6 +54,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.bbconsent_activity_dashboard)
+        EventBus.getDefault().register(this)
         setUpToolBar()
         getOrganizationDetail(true)
     }
@@ -370,17 +371,12 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: RefreshList?) {
+    fun onMessageEvent(event: RefreshHome?) {
         getOrganizationDetail(false)
     }
 
-    override fun onStart() {
-        super.onStart()
-        EventBus.getDefault().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         EventBus.getDefault().unregister(this)
     }
 }

@@ -11,7 +11,8 @@ import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributesBinding
-import com.github.privacyDashboard.models.PurposeConsent
+import com.github.privacyDashboard.events.RefreshHome
+import com.github.privacyDashboard.events.RefreshList
 import com.github.privacyDashboard.models.attributes.DataAttribute
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
@@ -28,6 +29,9 @@ import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttribut
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,6 +56,7 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.bbconsent_activity_data_attributes)
+        EventBus.getDefault().register(this)
         getIntentData()
         setUpToolBar()
         setUpDescription()
@@ -206,6 +211,7 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                         }
                         adapter?.notifyDataSetChanged()
                         updateDisallowAllButtonVisibility(false)
+                        EventBus.getDefault().post(RefreshHome())
                     }
 
                     override fun onFailure(
@@ -255,5 +261,20 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
         } else {
             binding.tvDisallowAll.visibility = View.GONE
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: RefreshList?) {
+        for (item in dataAttributesResponse?.consents?.consents ?: ArrayList()){
+            if(item.iD == event?.purposeId){
+                item.status = event?.status
+            }
+        }
+        adapter?.notifyDataSetChanged()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 }
