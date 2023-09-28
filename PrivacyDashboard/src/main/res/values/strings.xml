@@ -45,5 +45,6 @@
 
     <string name="bb_consent_error_internet">Network not available.</string>
     <string name="bb_consent_error_unexpected">Unexpected error, Please try again.</string>
+    <string name="bb_consent_data_attribute_disallow_all">Disallow All</string>
 
 </resources>

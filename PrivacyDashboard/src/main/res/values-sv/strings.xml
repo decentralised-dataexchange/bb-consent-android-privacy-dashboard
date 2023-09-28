@@ -45,5 +45,6 @@
 
     <string name="bb_consent_error_internet">Nätverk ej tillgängligt</string>
     <string name="bb_consent_error_unexpected">Oväntat fel, försök igen.</string>
+    <string name="bb_consent_data_attribute_disallow_all">Disallow All</string>
 
 </resources>

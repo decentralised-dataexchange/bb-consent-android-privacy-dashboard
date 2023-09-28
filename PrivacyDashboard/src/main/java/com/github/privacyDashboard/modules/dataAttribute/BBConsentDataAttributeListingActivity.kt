@@ -9,9 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
+import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributesBinding
+import com.github.privacyDashboard.models.PurposeConsent
 import com.github.privacyDashboard.models.attributes.DataAttribute
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
+import com.github.privacyDashboard.models.consent.ConsentStatusRequest
+import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_TITLE
@@ -21,9 +25,15 @@ import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttribut
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_CONSENTID
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_ORGID
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_PURPOSEID
+import com.github.privacyDashboard.utils.BBConsentDataUtils
+import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
+    private var adapter: BBConsentDataAttributesAdapter? = null
     private lateinit var binding: BbconsentActivityDataAttributesBinding
 
     companion object {
@@ -33,7 +43,6 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
             "com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.description"
         const val TAG_DATA_ATTRIBUTES =
             "com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.dataAttributes"
-
     }
 
     private var dataAttributesResponse: DataAttributesResponse? = null
@@ -48,10 +57,11 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
         setUpDescription()
         setUpDataAttributeList()
         initListener()
+        updateDisallowAllButtonVisibility(true)
     }
 
     private fun setUpDataAttributeList() {
-        val adapter = BBConsentDataAttributesAdapter(
+        adapter = BBConsentDataAttributesAdapter(
             dataAttributesResponse?.consents?.consents ?: ArrayList(),
             object : DataAttributeClickListener {
                 override fun onAttributeClick(dataAttribute: DataAttribute) {
@@ -166,6 +176,84 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                 resources.getString(R.string.bb_consent_web_view_policy)
             )
             startActivity(intent)
+        }
+
+        binding.tvDisallowAll.setOnClickListener {
+            setOverallStatus(false)
+        }
+    }
+
+    private fun setOverallStatus(isChecked: Boolean?) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
+            binding.llProgressBar.visibility = View.VISIBLE
+            val body = ConsentStatusRequest()
+            body.consented = if (isChecked == true) "Allow" else "DisAllow"
+            val callback: Callback<UpdateConsentStatusResponse?> =
+                object : Callback<UpdateConsentStatusResponse?> {
+                    override fun onResponse(
+                        call: Call<UpdateConsentStatusResponse?>,
+                        response: Response<UpdateConsentStatusResponse?>
+                    ) {
+                        binding.llProgressBar.visibility = View.GONE
+                        if (response.code() == 200) {
+                            for (item in dataAttributesResponse?.consents?.consents
+                                ?: ArrayList()) {
+                                item.status?.consented =
+                                    if (isChecked == true) "Allow" else "DisAllow"
+                                item.status?.days = 0
+                                item.status?.remaining = 0
+                            }
+                        }
+                        adapter?.notifyDataSetChanged()
+                        updateDisallowAllButtonVisibility(false)
+                    }
+
+                    override fun onFailure(
+                        call: Call<UpdateConsentStatusResponse?>,
+                        t: Throwable
+                    ) {
+                        binding.llProgressBar.visibility = View.GONE
+                    }
+                }
+            BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service?.setOverallStatus(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
+                ),
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_USERID
+                ),
+                dataAttributesResponse?.consentID,
+                dataAttributesResponse?.consents?.purpose?.iD,
+                body
+            )?.enqueue(callback)
+        }
+    }
+
+    private fun updateDisallowAllButtonVisibility(checkAndUpdate: Boolean?) {
+        if (checkAndUpdate == true) {
+            var visibility = false
+            if (dataAttributesResponse?.consents?.purpose?.lawfulUsage != true) {
+                for (item in dataAttributesResponse?.consents?.consents
+                    ?: ArrayList()) {
+                    if (item.status?.consented == "Allow") {
+                        visibility = true
+                    }
+                }
+            }
+            binding.tvDisallowAll.visibility = if (visibility) View.VISIBLE else View.GONE
+        } else {
+            binding.tvDisallowAll.visibility = View.GONE
         }
     }
 }

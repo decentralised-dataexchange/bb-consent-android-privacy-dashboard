@@ -23,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scrollbars="none"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/tvDisallowAll"
             app:layout_constraintTop_toBottomOf="@+id/toolBarCommon">
 
             <LinearLayout
@@ -47,9 +48,9 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:layout_marginTop="10dp">
+                    android:paddingEnd="20dp">
 
                     <TextView
                         android:id="@+id/tvMyDataConsents"
@@ -61,10 +62,10 @@
                         android:textAllCaps="true"
                         android:textColor="@color/bbConsentTextColorLight"
                         android:textSize="@dimen/text_size_medium"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/btnPrivacyPolicy"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
                         android:id="@+id/btnPrivacyPolicy"
@@ -88,10 +89,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:background="@color/bbConsentWhite"
+                    android:nestedScrollingEnabled="false"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:nestedScrollingEnabled="false"
-                    android:background="@color/bbConsentWhite"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <View
@@ -101,12 +102,24 @@
 
         </androidx.core.widget.NestedScrollView>
 
+        <TextView
+            android:id="@+id/tvDisallowAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/bb_consent_data_attribute_disallow_all"
+            android:textAllCaps="true"
+            android:textColor="@color/bbConsentTextColor"
+            android:textSize="@dimen/text_size_normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <LinearLayout
             android:id="@+id/llProgressBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
-            android:background="@color/bbConsentBGColor"
             android:clickable="true"
             android:gravity="center"
             android:orientation="vertical"
