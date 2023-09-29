@@ -10,6 +10,8 @@
 
 <p align="center">
   <a href="#about">About</a> •
+  <a href="#about">Download</a> •
+  <a href="#about">Installation</a> •
   <a href="#release-status">Release Status</a> •
   <a href="#contributing">Contributing</a> •
   <a href="#licensing">Licensing</a>
@@ -18,6 +20,44 @@
 ## About
 
 This repository hosts source code for the reference implementation of the GovStack Consent Building Block Privacy Dashboard towards individuals.
+
+## Download
+
+Gradle:
+```gradle
+dependencies {
+  implementation 'com.github.decentralised-dataexchange:bb-consent-android-privacy-dashboard:<latest release>'
+}
+```
+
+Maven:
+```xml
+<dependency>
+  <groupId>com.github.decentralised-dataexchange</groupId>
+  <artifactId>bb-consent-android-privacy-dashboard</artifactId>
+  <version><latest release></version>
+</dependency>
+```
+
+## Installation
+
+We can initiate the privacy dashboard by calling the below.
+```
+PrivacyDashboard.showPrivacyDashboard().withApiKey(<API key>)
+                .withUserId(<User ID>)
+                .withOrgId(<Org ID>)
+                .withBaseUrl(<Base URL>).start(this)
+```
+
+To set the language we just need to add the following before the `start(this)`
+```
+.withLocale(<language code>)
+```
+
+To enable user requests we just need to add the following before the `start(this)`
+```
+.enableUserRequest(true)
+```
 
 ## Release Status
 
