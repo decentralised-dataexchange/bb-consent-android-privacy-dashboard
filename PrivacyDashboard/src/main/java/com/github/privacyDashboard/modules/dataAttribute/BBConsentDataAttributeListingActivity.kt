@@ -62,7 +62,6 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
         setUpDescription()
         setUpDataAttributeList()
         initListener()
-        updateDisallowAllButtonVisibility(true)
     }
 
     private fun setUpDataAttributeList() {
@@ -181,85 +180,6 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                 resources.getString(R.string.bb_consent_web_view_policy)
             )
             startActivity(intent)
-        }
-
-        binding.tvDisallowAll.setOnClickListener {
-            setOverallStatus(false)
-        }
-    }
-
-    private fun setOverallStatus(isChecked: Boolean?) {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            binding.llProgressBar.visibility = View.VISIBLE
-            val body = ConsentStatusRequest()
-            body.consented = if (isChecked == true) "Allow" else "DisAllow"
-            val callback: Callback<UpdateConsentStatusResponse?> =
-                object : Callback<UpdateConsentStatusResponse?> {
-                    override fun onResponse(
-                        call: Call<UpdateConsentStatusResponse?>,
-                        response: Response<UpdateConsentStatusResponse?>
-                    ) {
-                        binding.llProgressBar.visibility = View.GONE
-                        if (response.code() == 200) {
-                            for (item in dataAttributesResponse?.consents?.consents
-                                ?: ArrayList()) {
-                                item.status?.consented =
-                                    if (isChecked == true) "Allow" else "DisAllow"
-                                item.status?.days = 0
-                                item.status?.remaining = 0
-                            }
-                        }
-                        adapter?.notifyDataSetChanged()
-                        updateDisallowAllButtonVisibility(false)
-                        EventBus.getDefault().post(RefreshHome())
-                    }
-
-                    override fun onFailure(
-                        call: Call<UpdateConsentStatusResponse?>,
-                        t: Throwable
-                    ) {
-                        binding.llProgressBar.visibility = View.GONE
-                    }
-                }
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                )
-            )?.service?.setOverallStatus(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                ),
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_USERID
-                ),
-                dataAttributesResponse?.consentID,
-                dataAttributesResponse?.consents?.purpose?.iD,
-                body
-            )?.enqueue(callback)
-        }
-    }
-
-    private fun updateDisallowAllButtonVisibility(checkAndUpdate: Boolean?) {
-        if (checkAndUpdate == true) {
-            var visibility = false
-            if (dataAttributesResponse?.consents?.purpose?.lawfulUsage != true) {
-                for (item in dataAttributesResponse?.consents?.consents
-                    ?: ArrayList()) {
-                    if (item.status?.consented == "Allow") {
-                        visibility = true
-                    }
-                }
-            }
-            binding.tvDisallowAll.visibility = if (visibility) View.VISIBLE else View.GONE
-        } else {
-            binding.tvDisallowAll.visibility = View.GONE
         }
     }
 
