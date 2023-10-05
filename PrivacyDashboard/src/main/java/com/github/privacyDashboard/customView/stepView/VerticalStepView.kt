@@ -230,7 +230,7 @@ class VerticalStepView @JvmOverloads constructor(
                     mTextView!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextSize.toFloat())
                     mTextView!!.text = mTexts!![i]
                     mTextView!!.y =
-                        complectedXPosition[i] - (mStepsViewIndicator?.circleRadius?.div(2) ?: 0f)
+                        complectedXPosition[i] - (mStepsViewIndicator?.circleRadius ?: 0f)
                     mTextView!!.layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
