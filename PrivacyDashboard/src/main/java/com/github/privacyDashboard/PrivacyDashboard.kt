@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.github.privacyDashboard.modules.home.BBConsentDashboardActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_BASE_URL
+import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_ASK_ME
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_USER_REQUEST
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ORG_ID
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_TOKEN
@@ -23,6 +24,7 @@ object PrivacyDashboard {
     private var mBaseUrl: String? = ""
     private var mLocale: String? = ""
     private var mEnableUserRequest: Boolean? = false
+    private var mEnableAskMe: Boolean? = false
 
     private var mPrivacyDashboardIntent: Intent? = null
 
@@ -83,11 +85,17 @@ object PrivacyDashboard {
 
     /**
      * To enable the user request for the iGrant Sdk.
-     *
-     * @param enableUserRequest
      */
-    fun enableUserRequest(enableUserRequest: Boolean): PrivacyDashboard {
-        this.mEnableUserRequest = enableUserRequest
+    fun enableUserRequest(): PrivacyDashboard {
+        this.mEnableUserRequest = true
+        return this
+    }
+
+    /**
+     * To enable the ask me in consent detail screen for the iGrant Sdk.
+     */
+    fun enableAskMe(): PrivacyDashboard {
+        this.mEnableAskMe = true
         return this
     }
 
@@ -125,6 +133,11 @@ object PrivacyDashboard {
             context,
             EXTRA_TAG_ENABLE_USER_REQUEST,
             this.mEnableUserRequest
+        )
+        BBConsentDataUtils.saveBooleanValues(
+            context,
+            EXTRA_TAG_ENABLE_ASK_ME,
+            this.mEnableAskMe
         )
         return mPrivacyDashboardIntent
     }
