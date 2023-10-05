@@ -91,11 +91,22 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
 
     private fun initValues() {
         setChecked()
-        binding.tvDays.text = resources.getString(
-            R.string.bb_consent_data_attribute_detail_days_with_count,
-            mDataAttribute?.status?.remaining ?: 0
+        val isAskMeEnabled = BBConsentDataUtils.getBooleanValue(
+            this,
+            BBConsentDataUtils.EXTRA_TAG_ENABLE_ASK_ME
         )
-        binding.sbDays.progress = mDataAttribute?.status?.remaining ?: 0
+        if (isAskMeEnabled==true) {
+            binding.llAskme.visibility = View.VISIBLE
+            binding.vAskMe.visibility = View.VISIBLE
+            binding.tvDays.text = resources.getString(
+                R.string.bb_consent_data_attribute_detail_days_with_count,
+                mDataAttribute?.status?.remaining ?: 0
+            )
+            binding.sbDays.progress = mDataAttribute?.status?.remaining ?: 0
+        }else{
+            binding.llAskme.visibility = View.GONE
+            binding.vAskMe.visibility = View.GONE
+        }
     }
 
     private fun setChecked() {
