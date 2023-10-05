@@ -8,6 +8,7 @@ import android.view.ContextThemeWrapper
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.cocosw.bottomsheet.BottomSheet
@@ -19,7 +20,9 @@ import com.github.privacyDashboard.models.userRequests.UserRequestGenResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestStatus
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
+import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity
 import com.github.privacyDashboard.modules.userRequestStatus.BBConsentUserRequestStatusActivity
+import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentMessageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
@@ -97,15 +100,28 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
 
     private fun initListeners() {
         binding.tvNewRequest.setOnClickListener {
-            BottomSheet.Builder(this, com.cocosw.bottomsheet.R.style.BottomSheet_Dialog)
-                .sheet(R.menu.menu_new_requests)
-                .listener { dialog, which ->
-                    if (which == R.id.action_download_data) {
+
+            val popupMenu = PopupMenu(this, binding.tvNewRequest)
+            popupMenu.menuInflater.inflate(
+                R.menu.menu_new_requests,
+                popupMenu.getMenu()
+            )
+
+            // Handle item clicks in the popup menu
+            popupMenu.setOnMenuItemClickListener { item ->
+                when (item?.itemId) {
+                    R.id.action_download_data -> {
                         downloadDataRequestStatus()
-                    } else if (which == R.id.action_forgot_me) {
-                        deleteDataRequestStatus()
+                        true
                     }
-                }.show()
+                    R.id.action_forgot_me -> {
+                        deleteDataRequestStatus()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popupMenu.show()
         }
     }
 
