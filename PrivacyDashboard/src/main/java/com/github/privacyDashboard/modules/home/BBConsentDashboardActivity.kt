@@ -1,14 +1,15 @@
 package com.github.privacyDashboard.modules.home
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.cocosw.bottomsheet.BottomSheet
 import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
@@ -81,56 +82,75 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
             finish()
             return true
         } else if (item.itemId == R.id.menu_more) {
-            val isUserRequestAvailable = BBConsentDataUtils.getBooleanValue(
-                this,
-                BBConsentDataUtils.EXTRA_TAG_ENABLE_USER_REQUEST
-            )
-            BottomSheet.Builder(this, com.cocosw.bottomsheet.R.style.BottomSheet_Dialog)
-                .sheet(if (isUserRequestAvailable == true) R.menu.menu_more_items else R.menu.menu_more_items_no_user_request)
-                .listener { dialog, which ->
-                    if (which == R.id.action_webpage) {
-                        val intent = Intent(
-                            this,
-                            BBConsentWebViewActivity::class.java
-                        )
-                        intent.putExtra(
-                            TAG_EXTRA_WEB_URL,
-                            organization?.policyURL ?: ""
-                        )
-                        intent.putExtra(
-                            TAG_EXTRA_WEB_TITLE,
-                            resources.getString(R.string.bb_consent_web_view_privacy_policy)
-                        )
-                        startActivity(intent)
-                    } else if (which == R.id.action_consent_history) {
-                        val consentHistory = Intent(
-                            this,
-                            BBConsentLoggingActivity::class.java
-                        )
-                        consentHistory.putExtra(
-                            TAG_EXTRA_ORG_ID,
-                            organization?.iD
-                        )
-                        startActivity(consentHistory)
-                    } else if (which == R.id.action_request) {
-                        val userOrgRequestIntent = Intent(
-                            this,
-                            BBConsentUserRequestActivity::class.java
-                        )
-                        userOrgRequestIntent.putExtra(
-                            BBConsentUserRequestActivity.EXTRA_TAG_USER_REQUEST_ORGID,
-                            organization?.iD
-                        )
-                        userOrgRequestIntent.putExtra(
-                            BBConsentUserRequestActivity.EXTRA_TAG_USER_REQUEST_ORG_NAME,
-                            organization?.name
-                        )
-                        startActivity(userOrgRequestIntent)
-                    }
-                }.show()
+            val view = findViewById<View>(R.id.menu_more)
+            showPopupMenu(view)
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showPopupMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        val isUserRequestAvailable = BBConsentDataUtils.getBooleanValue(
+            this,
+            BBConsentDataUtils.EXTRA_TAG_ENABLE_USER_REQUEST
+        )
+        popupMenu.menuInflater.inflate(
+            if (isUserRequestAvailable == true) R.menu.menu_more_items else R.menu.menu_more_items_no_user_request,
+            popupMenu.getMenu()
+        )
+
+        // Handle item clicks in the popup menu
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item?.itemId) {
+                R.id.action_webpage -> {
+                    val intent = Intent(
+                        this,
+                        BBConsentWebViewActivity::class.java
+                    )
+                    intent.putExtra(
+                        TAG_EXTRA_WEB_URL,
+                        organization?.policyURL ?: ""
+                    )
+                    intent.putExtra(
+                        TAG_EXTRA_WEB_TITLE,
+                        resources.getString(R.string.bb_consent_web_view_privacy_policy)
+                    )
+                    startActivity(intent)
+                    true
+                }
+                R.id.action_consent_history -> {
+                    val consentHistory = Intent(
+                        this,
+                        BBConsentLoggingActivity::class.java
+                    )
+                    consentHistory.putExtra(
+                        TAG_EXTRA_ORG_ID,
+                        organization?.iD
+                    )
+                    startActivity(consentHistory)
+                    true
+                }
+                R.id.action_request -> {
+                    val userOrgRequestIntent = Intent(
+                        this,
+                        BBConsentUserRequestActivity::class.java
+                    )
+                    userOrgRequestIntent.putExtra(
+                        BBConsentUserRequestActivity.EXTRA_TAG_USER_REQUEST_ORGID,
+                        organization?.iD
+                    )
+                    userOrgRequestIntent.putExtra(
+                        BBConsentUserRequestActivity.EXTRA_TAG_USER_REQUEST_ORG_NAME,
+                        organization?.name
+                    )
+                    startActivity(userOrgRequestIntent)
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
     }
 
     private fun getOrganizationDetail(showProgress: Boolean) {
