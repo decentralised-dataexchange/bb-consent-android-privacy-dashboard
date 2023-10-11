@@ -7,6 +7,8 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
+import com.github.privacyDashboard.communication.repositories.GetConsentHistoryApiRepository
+import com.github.privacyDashboard.communication.repositories.GetOrganizationDetailApiRepository
 import com.github.privacyDashboard.databinding.BbconsentActivityLoggingBinding
 import com.github.privacyDashboard.models.logging.ConsentHistory
 import com.github.privacyDashboard.models.logging.ConsentHistoryResponse
@@ -49,11 +51,13 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
             isCallLoading = true
             if (showProgress) binding.llProgressBar.visibility = View.VISIBLE
-            val callback: Callback<ConsentHistoryResponse> =
-                object : Callback<ConsentHistoryResponse> {
+            val consentHistoryRepository = GetConsentHistoryApiRepository(this)
+
+            val callback: Callback<ConsentHistoryResponse?> =
+                object : Callback<ConsentHistoryResponse?> {
                     override fun onResponse(
-                        call: Call<ConsentHistoryResponse>,
-                        response: Response<ConsentHistoryResponse>
+                        call: Call<ConsentHistoryResponse?>,
+                        response: Response<ConsentHistoryResponse?>
                     ) {
                         isCallLoading = false
                         binding.llProgressBar.visibility = View.GONE
@@ -86,20 +90,17 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<ConsentHistoryResponse>, t: Throwable) {
+                    override fun onFailure(call: Call<ConsentHistoryResponse?>, t: Throwable) {
                         isCallLoading = false
                         binding.llProgressBar.visibility = View.GONE
                     }
                 }
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_TOKEN) ?: "",
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
-            )?.service?.getConsentHistory(
+            consentHistoryRepository.getConsentHistory(
                 BBConsentDataUtils.getStringValue(
                     this,
                     BBConsentDataUtils.EXTRA_TAG_USERID
-                ), 8, mOrgId, startId
-            )?.enqueue(callback)
+                ), mOrgId, 8, startId, callback
+            )
         }
     }
 

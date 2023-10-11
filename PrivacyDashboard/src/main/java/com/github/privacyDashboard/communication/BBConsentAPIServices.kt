@@ -24,7 +24,7 @@ interface BBConsentAPIServices {
         @Query("limit") limit: Int,
         @Query("orgid") orgId: String?,
         @Query("startid") startid: String?
-    ): Call<ConsentHistoryResponse>
+    ): Call<ConsentHistoryResponse?>
 
     @GET("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}")
     fun getConsentList(
