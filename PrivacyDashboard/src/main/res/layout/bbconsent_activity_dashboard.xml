@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.github.privacyDashboard.modules.home.BBConsentDashboardViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -149,6 +156,7 @@
             android:animateLayoutChanges="true"
             android:clickable="true"
             android:gravity="center"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/toolBarCommon">
 
