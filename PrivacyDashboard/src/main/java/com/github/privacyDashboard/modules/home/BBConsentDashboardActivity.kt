@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
+import com.github.privacyDashboard.communication.repositories.GetOrganizationDetailApiRepository
 import com.github.privacyDashboard.databinding.BbconsentActivityDashboardBinding
 import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.models.Organization
@@ -159,7 +160,9 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
     private fun getOrganizationDetail(showProgress: Boolean) {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            viewModel?.isLoading?.value = if (showProgress) true else false
+            viewModel?.isLoading?.value = showProgress
+            val organizationDetailRepository = GetOrganizationDetailApiRepository(this)
+
             val callback: Callback<OrganizationDetailResponse?> =
                 object : Callback<OrganizationDetailResponse?> {
 
@@ -209,21 +212,10 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         ).show()
                     }
                 }
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                )
-            )?.service?.getOrganizationDetail(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                )
-            )?.enqueue(callback)
+            organizationDetailRepository.getOrganizationDetail(BBConsentDataUtils.getStringValue(
+                this,
+                BBConsentDataUtils.EXTRA_TAG_ORG_ID
+            ),callback)
         }
     }
 
