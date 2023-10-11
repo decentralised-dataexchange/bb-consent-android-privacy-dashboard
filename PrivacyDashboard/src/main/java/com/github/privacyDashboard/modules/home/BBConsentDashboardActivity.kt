@@ -1,7 +1,6 @@
 package com.github.privacyDashboard.modules.home
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
@@ -52,9 +52,13 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
     private val purposeConsents = ArrayList<PurposeConsent>()
     private var adapter: UsagePurposeAdapter? = null
 
+    private var viewModel: BBConsentDashboardViewModel? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.bbconsent_activity_dashboard)
+        viewModel = ViewModelProvider(this)[BBConsentDashboardViewModel::class.java]
+        binding.viewModel = viewModel;
+        binding.lifecycleOwner = this;
         EventBus.getDefault().register(this)
         setUpToolBar()
         getOrganizationDetail(true)
@@ -155,7 +159,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
     private fun getOrganizationDetail(showProgress: Boolean) {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            binding.llProgressBar.visibility = if (showProgress) View.VISIBLE else View.GONE
+            viewModel?.isLoading?.value = if (showProgress) true else false
             val callback: Callback<OrganizationDetailResponse?> =
                 object : Callback<OrganizationDetailResponse?> {
 
@@ -163,7 +167,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         call: Call<OrganizationDetailResponse?>,
                         response: Response<OrganizationDetailResponse?>
                     ) {
-                        binding.llProgressBar.visibility = View.GONE
+                        viewModel?.isLoading?.value = false
                         if (response.code() == 200) {
                             try {
                                 purposeConsents.clear()
@@ -197,7 +201,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     }
 
                     override fun onFailure(call: Call<OrganizationDetailResponse?>, t: Throwable) {
-                        binding.llProgressBar.visibility = View.GONE
+                        viewModel?.isLoading?.value = false
                         Toast.makeText(
                             this@BBConsentDashboardActivity,
                             resources.getString(R.string.bb_consent_error_unexpected),
@@ -276,7 +280,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
     }
 
     private fun getConsentList(consent: PurposeConsent?) {
-        binding.llProgressBar.visibility = View.VISIBLE
+        viewModel?.isLoading?.value = true
         if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
             val callback: Callback<DataAttributesResponse?> =
                 object : Callback<DataAttributesResponse?> {
@@ -284,7 +288,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         call: Call<DataAttributesResponse?>,
                         response: Response<DataAttributesResponse?>
                     ) {
-                        binding.llProgressBar.visibility = View.GONE
+                        viewModel?.isLoading?.value = false
                         if (response.code() == 200) {
                             val intent = Intent(
                                 this@BBConsentDashboardActivity,
@@ -302,7 +306,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     }
 
                     override fun onFailure(call: Call<DataAttributesResponse?>, t: Throwable) {
-                        binding.llProgressBar.visibility = View.GONE
+                        viewModel?.isLoading?.value = false
                         Toast.makeText(
                             this@BBConsentDashboardActivity,
                             resources.getString(R.string.bb_consent_error_unexpected),
@@ -333,7 +337,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     consent?.purpose?.iD
                 )?.enqueue(callback)
             } catch (e: java.lang.Exception) {
-                binding.llProgressBar.visibility = View.GONE
+                viewModel?.isLoading?.value = false
                 e.printStackTrace()
             }
         }
@@ -341,7 +345,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
     private fun setOverallStatus(consent: PurposeConsent?, isChecked: Boolean?) {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            binding.llProgressBar.visibility = View.VISIBLE
+            viewModel?.isLoading?.value = true
             val body = ConsentStatusRequest()
             body.consented = if (isChecked == true) "Allow" else "DisAllow"
             val callback: Callback<UpdateConsentStatusResponse?> =
@@ -350,7 +354,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         call: Call<UpdateConsentStatusResponse?>,
                         response: Response<UpdateConsentStatusResponse?>
                     ) {
-                        binding.llProgressBar.visibility = View.GONE
+                        viewModel?.isLoading?.value = false
                         if (response.code() == 200) {
                             getOrganizationDetail(false)
                         }
@@ -360,7 +364,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         call: Call<UpdateConsentStatusResponse?>,
                         t: Throwable
                     ) {
-                        binding.llProgressBar.visibility = View.GONE
+                        viewModel?.isLoading?.value = false
                     }
                 }
             BBConsentAPIManager.getApi(
