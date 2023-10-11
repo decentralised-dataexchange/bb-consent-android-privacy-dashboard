@@ -10,8 +10,8 @@
 
 <p align="center">
   <a href="#about">About</a> •
-  <a href="#about">Download</a> •
-  <a href="#about">Installation</a> •
+  <a href="#about">Configuration</a> •
+  <a href="#about">Integration</a> •
   <a href="#release-status">Release Status</a> •
   <a href="#contributing">Contributing</a> •
   <a href="#licensing">Licensing</a>
@@ -21,7 +21,7 @@
 
 This repository hosts source code for the reference implementation of the GovStack Consent Building Block Privacy Dashboard towards individuals.
 
-## Download
+## Configuration
 
 Gradle:
 ```gradle
@@ -39,7 +39,7 @@ Maven:
 </dependency>
 ```
 
-## Installation
+## Integration
 
 We can initiate the privacy dashboard by calling the below.
 ```
@@ -56,7 +56,12 @@ To set the language we just need to add the following before the `start(this)`
 
 To enable user requests we just need to add the following before the `start(this)`
 ```
-.enableUserRequest(true)
+.enableUserRequest()
+```
+
+To enable Ask me we just need to add the following before the `start(this)`
+```
+.enableAskMe()
 ```
 
 ## Release Status
