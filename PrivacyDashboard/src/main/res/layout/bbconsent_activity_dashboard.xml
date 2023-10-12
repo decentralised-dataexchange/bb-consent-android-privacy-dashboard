@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:layout_marginTop="10dp"
-                        android:text="----------"
+                        android:text="@{viewModel.orgName}"
                         android:textColor="@color/bbConsentPrimaryTitleTextColor"
                         android:textSize="@dimen/text_size_large"
                         android:textStyle="normal" />
@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:layout_marginTop="5dp"
-                        android:text="----------"
+                        android:text="@{viewModel.orgLocation}"
                         android:textColor="@color/bbConsentTextColor"
                         android:textSize="@dimen/text_size_medium" />
 

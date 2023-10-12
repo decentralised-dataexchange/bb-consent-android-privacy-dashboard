@@ -2,6 +2,7 @@ package com.github.privacyDashboard.modules.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
@@ -17,7 +19,6 @@ import com.github.privacyDashboard.communication.repositories.GetOrganizationDet
 import com.github.privacyDashboard.databinding.BbconsentActivityDashboardBinding
 import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.models.Organization
-import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.PurposeConsent
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
@@ -36,6 +37,10 @@ import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Comp
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentImageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -48,12 +53,10 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
     private lateinit var binding: BbconsentActivityDashboardBinding
 
-    var organization: Organization? = null
-    private var consentId: String? = null
-    private val purposeConsents = ArrayList<PurposeConsent>()
     private var adapter: UsagePurposeAdapter? = null
 
     private var viewModel: BBConsentDashboardViewModel? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.bbconsent_activity_dashboard)
@@ -62,7 +65,8 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
         binding.lifecycleOwner = this;
         EventBus.getDefault().register(this)
         setUpToolBar()
-        getOrganizationDetail(true)
+        initView()
+        viewModel?.getOrganizationDetail(true, this)
     }
 
     private fun setUpToolBar() {
@@ -115,7 +119,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     )
                     intent.putExtra(
                         TAG_EXTRA_WEB_URL,
-                        organization?.policyURL ?: ""
+                        viewModel?.organization?.value?.policyURL ?: ""
                     )
                     intent.putExtra(
                         TAG_EXTRA_WEB_TITLE,
@@ -131,7 +135,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     )
                     consentHistory.putExtra(
                         TAG_EXTRA_ORG_ID,
-                        organization?.iD
+                        viewModel?.organization?.value?.iD
                     )
                     startActivity(consentHistory)
                     true
@@ -143,11 +147,11 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     )
                     userOrgRequestIntent.putExtra(
                         BBConsentUserRequestActivity.EXTRA_TAG_USER_REQUEST_ORGID,
-                        organization?.iD
+                        viewModel?.organization?.value?.iD
                     )
                     userOrgRequestIntent.putExtra(
                         BBConsentUserRequestActivity.EXTRA_TAG_USER_REQUEST_ORG_NAME,
-                        organization?.name
+                        viewModel?.organization?.value?.name
                     )
                     startActivity(userOrgRequestIntent)
                     true
@@ -158,117 +162,85 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
         popupMenu.show()
     }
 
-    private fun getOrganizationDetail(showProgress: Boolean) {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            viewModel?.isLoading?.value = showProgress
-            val organizationDetailRepository = GetOrganizationDetailApiRepository(this)
-
-            val callback: Callback<OrganizationDetailResponse?> =
-                object : Callback<OrganizationDetailResponse?> {
-
-                    override fun onResponse(
-                        call: Call<OrganizationDetailResponse?>,
-                        response: Response<OrganizationDetailResponse?>
-                    ) {
-                        viewModel?.isLoading?.value = false
-                        if (response.code() == 200) {
-                            try {
-                                purposeConsents.clear()
-                                purposeConsents.addAll(
-                                    response.body()?.purposeConsents ?: ArrayList()
-                                )
-                                adapter = UsagePurposeAdapter(
-                                    purposeConsents,
-                                    object : UsagePurposeClickListener {
-                                        override fun onItemClick(consent: PurposeConsent?) {
-                                            getConsentList(consent)
-                                        }
-
-                                        override fun onSetStatus(
-                                            consent: PurposeConsent?,
-                                            isChecked: Boolean?
-                                        ) {
-                                            setOverallStatus(consent, isChecked)
-                                        }
-                                    })
-                                binding.rvDataAgreements.adapter = adapter
-                                consentId = response.body()?.consentID
-                                organization =
-                                    response.body()?.organization
-                                if (showProgress)
-                                    initView(response.body()?.organization)
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<OrganizationDetailResponse?>, t: Throwable) {
-                        viewModel?.isLoading?.value = false
-                        Toast.makeText(
-                            this@BBConsentDashboardActivity,
-                            resources.getString(R.string.bb_consent_error_unexpected),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            organizationDetailRepository.getOrganizationDetail(BBConsentDataUtils.getStringValue(
-                this,
-                BBConsentDataUtils.EXTRA_TAG_ORG_ID
-            ),callback)
-        }
-    }
-
-    private fun initView(mOrg: Organization?) {
-        try {
-            BBConsentImageUtils.setImage(
-                binding.ivLogo,
-                mOrg?.logoImageURL,
-                R.drawable.bb_consent_default_logo
-            )
-            BBConsentImageUtils.setImage(
-                binding.ivCoverUrl,
-                mOrg?.coverImageURL,
-                R.drawable.bb_consent_default_cover
-            )
-            binding.tvName.text = mOrg?.name
-            binding.tvLocation.text = mOrg?.location
-            if (mOrg?.description != null || !mOrg?.description.equals("")) {
-                if ((mOrg?.description?.length ?: 0) > 120) {
-                    val readMoreOption: ReadMoreOption = ReadMoreOption.Builder(this)
-                        .textLength(3) // OR
-                        .textLengthType(ReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
-                        .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
-                        .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
-                        .moreLabelColor(
-                            ContextCompat.getColor(
-                                this,
-                                R.color.bb_consent_read_more_color
-                            )
-                        )
-                        .lessLabelColor(
-                            ContextCompat.getColor(
-                                this,
-                                R.color.bb_consent_read_more_color
-                            )
-                        )
-                        .labelUnderLine(false)
-                        .expandAnimation(true)
-                        .build()
-
-                    readMoreOption.addReadMoreTo(
-                        binding.tvDescription,
-                        mOrg?.description ?: ""
+    private fun initView() {
+        viewModel?.organization?.observe(this, Observer { newData ->
+            try {
+                BBConsentImageUtils.setImage(
+                    binding.ivLogo,
+                    viewModel?.organization?.value?.logoImageURL,
+                    R.drawable.bb_consent_default_logo
+                )
+                BBConsentImageUtils.setImage(
+                    binding.ivCoverUrl,
+                    viewModel?.organization?.value?.coverImageURL,
+                    R.drawable.bb_consent_default_cover
+                )
+                if (viewModel?.organization?.value?.description != null || !viewModel?.organization?.value?.description.equals(
+                        ""
                     )
+                ) {
+                    if ((viewModel?.organization?.value?.description?.length ?: 0) > 120) {
+                        val readMoreOption: ReadMoreOption = ReadMoreOption.Builder(this)
+                            .textLength(3) // OR
+                            .textLengthType(ReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
+                            .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
+                            .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
+                            .moreLabelColor(
+                                ContextCompat.getColor(
+                                    this,
+                                    R.color.bb_consent_read_more_color
+                                )
+                            )
+                            .lessLabelColor(
+                                ContextCompat.getColor(
+                                    this,
+                                    R.color.bb_consent_read_more_color
+                                )
+                            )
+                            .labelUnderLine(false)
+                            .expandAnimation(true)
+                            .build()
+
+                        readMoreOption.addReadMoreTo(
+                            binding.tvDescription,
+                            viewModel?.organization?.value?.description ?: ""
+                        )
+                    } else {
+                        binding.tvDescription.text =
+                            viewModel?.organization?.value?.description ?: ""
+                    }
                 } else {
-                    binding.tvDescription.text = mOrg?.description ?: ""
+                    binding.tvDescription.visibility = View.GONE
                 }
-            } else {
-                binding.tvDescription.visibility = View.GONE
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
             }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
+        })
+
+        viewModel?.purposeConsents?.observe(this, Observer { newData ->
+            try {
+                if (newData != null && newData.isNotEmpty()) {
+                    adapter = UsagePurposeAdapter(
+                        viewModel?.purposeConsents?.value ?: ArrayList(),
+                        object : UsagePurposeClickListener {
+                            override fun onItemClick(consent: PurposeConsent?) {
+                                getConsentList(consent)
+                            }
+
+                            override fun onSetStatus(
+                                consent: PurposeConsent?,
+                                isChecked: Boolean?
+                            ) {
+                                setOverallStatus(consent, isChecked)
+                            }
+                        })
+                    binding.rvDataAgreements.adapter = adapter
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
+
     }
 
     private fun getConsentList(consent: PurposeConsent?) {
@@ -325,7 +297,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         this,
                         BBConsentDataUtils.EXTRA_TAG_USERID
                     ),
-                    consentId,
+                    viewModel?.consentId,
                     consent?.purpose?.iD
                 )?.enqueue(callback)
             } catch (e: java.lang.Exception) {
@@ -348,7 +320,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     ) {
                         viewModel?.isLoading?.value = false
                         if (response.code() == 200) {
-                            getOrganizationDetail(false)
+                            viewModel?.getOrganizationDetail(false, this@BBConsentDashboardActivity)
                         }
                     }
 
@@ -377,7 +349,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     this,
                     BBConsentDataUtils.EXTRA_TAG_USERID
                 ),
-                consentId,
+                viewModel?.consentId,
                 consent?.purpose?.iD,
                 body
             )?.enqueue(callback)
@@ -388,7 +360,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: RefreshHome?) {
-        getOrganizationDetail(false)
+        viewModel?.getOrganizationDetail(false, this)
     }
 
     override fun onDestroy() {

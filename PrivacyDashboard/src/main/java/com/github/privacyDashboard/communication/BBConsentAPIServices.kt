@@ -10,13 +10,14 @@ import com.github.privacyDashboard.models.userRequests.UserRequestGenResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestStatus
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface BBConsentAPIServices {
     @GET("v1/GetUserOrgsAndConsents")
-    fun getOrganizationDetail(
+    suspend fun getOrganizationDetail(
         @Query("orgID") orgID: String?
-    ): Call<OrganizationDetailResponse?>?
+    ): Response<OrganizationDetailResponse?>?
 
     @GET("v1/users/{userID}/consenthistory")
     fun getConsentHistory(
