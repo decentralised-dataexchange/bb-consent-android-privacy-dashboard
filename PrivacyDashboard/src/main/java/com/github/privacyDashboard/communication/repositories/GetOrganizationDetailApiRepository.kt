@@ -9,31 +9,25 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GetOrganizationDetailApiRepository(var context: Context) {
-    private val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-        BBConsentDataUtils.getStringValue(
-            context,
-            BBConsentDataUtils.EXTRA_TAG_TOKEN
-        ) ?: "",
-        BBConsentDataUtils.getStringValue(
-            context,
-            BBConsentDataUtils.EXTRA_TAG_BASE_URL
-        )
-    )?.service!!
+class GetOrganizationDetailApiRepository(private val apiService: BBConsentAPIServices) {
 
-    fun getOrganizationDetail(orgId: String?, callback: Callback<OrganizationDetailResponse?>) {
-        val call: Call<OrganizationDetailResponse?>? = apiService.getOrganizationDetail(orgId)
-        call?.enqueue(object : Callback<OrganizationDetailResponse?> {
-            override fun onResponse(
-                call: Call<OrganizationDetailResponse?>,
-                response: Response<OrganizationDetailResponse?>
-            ) {
-                callback.onResponse(call, response)
+    suspend fun getOrganizationDetail(
+        orgId: String?,
+    ): Result<OrganizationDetailResponse?> {
+        return try {
+            val response = apiService.getOrganizationDetail(orgId)
+            if (response?.isSuccessful == true) {
+                val data = response.body()
+                if (data != null) {
+                    Result.success(data)
+                } else {
+                    Result.failure(Exception("Response body is null"))
+                }
+            } else {
+                Result.failure(Exception("Request failed with code: ${response?.code()}"))
             }
-
-            override fun onFailure(call: Call<OrganizationDetailResponse?>, t: Throwable) {
-                callback.onFailure(call, t)
-            }
-        })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }
