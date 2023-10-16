@@ -1,9 +1,10 @@
 package com.github.privacyDashboard.models.attributes
 
+import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAgreement
+import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttributes
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
-data class DataAttributesResponse (
+class DataAttributesResponse(
     @SerializedName("ID")
     var iD: String? = null,
     @SerializedName("ConsentID")
@@ -13,5 +14,15 @@ data class DataAttributesResponse (
     @SerializedName("UserID")
     var userID: String? = null,
     @SerializedName("Consents")
-    var consents: DataAttributes? = null
-):Serializable{}
+    var consents: DataAttributesV1? = null
+) : DataAgreement {
+    override val mId: String?
+        get() = iD
+    override val mConsentId: String?
+        get() = consentID
+    override val mOrgId: String?
+        get() = orgID
+    override val mConsents: DataAttributes?
+        get() = consents
+
+}

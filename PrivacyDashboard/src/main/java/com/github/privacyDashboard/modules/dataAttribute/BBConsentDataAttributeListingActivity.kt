@@ -3,20 +3,17 @@ package com.github.privacyDashboard.modules.dataAttribute
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
-import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributesBinding
-import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.events.RefreshList
-import com.github.privacyDashboard.models.attributes.DataAttribute
+import com.github.privacyDashboard.models.attributes.DataAttributeV1
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
-import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
+import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAgreement
+import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttribute
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_TITLE
@@ -26,15 +23,11 @@ import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttribut
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_CONSENTID
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_ORGID
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_PURPOSEID
-import com.github.privacyDashboard.utils.BBConsentDataUtils
-import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
+import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
     private var adapter: BBConsentDataAttributesAdapter? = null
@@ -47,9 +40,9 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
             "com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.description"
         const val TAG_DATA_ATTRIBUTES =
             "com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.dataAttributes"
+        var dataAttributesResponse: DataAgreement? = null
     }
 
-    private var dataAttributesResponse: DataAttributesResponse? = null
     private var mTitle = ""
     private var mDescription = ""
 
@@ -66,10 +59,10 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
 
     private fun setUpDataAttributeList() {
         adapter = BBConsentDataAttributesAdapter(
-            dataAttributesResponse?.consents?.consents ?: ArrayList(),
+            dataAttributesResponse?.mConsents?.mConsents ?: ArrayList(),
             object : DataAttributeClickListener {
-                override fun onAttributeClick(dataAttribute: DataAttribute) {
-                    if (dataAttributesResponse?.consents?.purpose?.lawfulUsage == false
+                override fun onAttributeClick(dataAttribute: DataAttribute?) {
+                    if (dataAttributesResponse?.mConsents?.mPurpose?.mLawfulUsage == false
                     ) {
                         val intent: Intent = Intent(
                             this@BBConsentDataAttributeListingActivity,
@@ -77,19 +70,19 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                         )
                         intent.putExtra(
                             EXTRA_TAG_ORGID,
-                            dataAttributesResponse?.orgID
+                            dataAttributesResponse?.mOrgId
                         )
                         intent.putExtra(
                             EXTRA_TAG_CONSENTID,
-                            dataAttributesResponse?.consentID
+                            dataAttributesResponse?.mConsentId
                         )
                         intent.putExtra(
                             EXTRA_TAG_PURPOSEID,
-                            dataAttributesResponse?.iD
+                            dataAttributesResponse?.mId
                         )
                         intent.putExtra(
                             EXTRA_TAG_CONSENT,
-                            dataAttribute
+                            Gson().toJson(dataAttribute)
                         )
                         startActivity(intent)
                     }
@@ -137,8 +130,6 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                 intent.getStringExtra(TAG_EXTRA_NAME) ?: ""
             mDescription =
                 intent.getStringExtra(TAG_EXTRA_DESCRIPTION) ?: ""
-            dataAttributesResponse =
-                intent.getSerializableExtra(TAG_DATA_ATTRIBUTES) as DataAttributesResponse
         }
     }
 
@@ -173,7 +164,7 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
             )
             intent.putExtra(
                 TAG_EXTRA_WEB_URL,
-                dataAttributesResponse?.consents?.purpose?.policyURL
+                dataAttributesResponse?.mConsents?.mPurpose?.mPolicyUrl
             )
             intent.putExtra(
                 TAG_EXTRA_WEB_TITLE,
@@ -185,9 +176,9 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: RefreshList?) {
-        for (item in dataAttributesResponse?.consents?.consents ?: ArrayList()){
-            if(item.iD == event?.purposeId){
-                item.status = event?.status
+        for (item in dataAttributesResponse?.mConsents?.mConsents ?: ArrayList()) {
+            if (item?.mId == event?.purposeId) {
+                item?.mStatus = event?.status
             }
         }
         adapter?.notifyDataSetChanged()
@@ -196,5 +187,6 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+        dataAttributesResponse = null
     }
 }

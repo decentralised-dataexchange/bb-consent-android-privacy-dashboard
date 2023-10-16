@@ -224,7 +224,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                         viewModel?.purposeConsents?.value ?: ArrayList(),
                         object : UsagePurposeClickListener {
                             override fun onItemClick(consent: PurposeConsent?) {
-                                getConsentList(consent)
+                                viewModel?.getConsentList(consent, this@BBConsentDashboardActivity)
                             }
 
                             override fun onSetStatus(
@@ -241,70 +241,6 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
             }
         })
 
-    }
-
-    private fun getConsentList(consent: PurposeConsent?) {
-        viewModel?.isLoading?.value = true
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            val callback: Callback<DataAttributesResponse?> =
-                object : Callback<DataAttributesResponse?> {
-                    override fun onResponse(
-                        call: Call<DataAttributesResponse?>,
-                        response: Response<DataAttributesResponse?>
-                    ) {
-                        viewModel?.isLoading?.value = false
-                        if (response.code() == 200) {
-                            val intent = Intent(
-                                this@BBConsentDashboardActivity,
-                                BBConsentDataAttributeListingActivity::class.java
-                            )
-                            intent.putExtra(TAG_DATA_ATTRIBUTES, response.body())
-                            intent.putExtra(TAG_EXTRA_NAME, consent?.purpose?.name)
-                            intent.putExtra(
-                                TAG_EXTRA_DESCRIPTION,
-                                consent?.purpose?.description
-                            )
-                            startActivity(intent)
-//                            overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-                        }
-                    }
-
-                    override fun onFailure(call: Call<DataAttributesResponse?>, t: Throwable) {
-                        viewModel?.isLoading?.value = false
-                        Toast.makeText(
-                            this@BBConsentDashboardActivity,
-                            resources.getString(R.string.bb_consent_error_unexpected),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            try {
-                BBConsentAPIManager.getApi(
-                    BBConsentDataUtils.getStringValue(
-                        this,
-                        BBConsentDataUtils.EXTRA_TAG_TOKEN
-                    ) ?: "",
-                    BBConsentDataUtils.getStringValue(
-                        this,
-                        BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                    )
-                )?.service?.getConsentList(
-                    BBConsentDataUtils.getStringValue(
-                        this,
-                        BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                    ),
-                    BBConsentDataUtils.getStringValue(
-                        this,
-                        BBConsentDataUtils.EXTRA_TAG_USERID
-                    ),
-                    viewModel?.consentId,
-                    consent?.purpose?.iD
-                )?.enqueue(callback)
-            } catch (e: java.lang.Exception) {
-                viewModel?.isLoading?.value = false
-                e.printStackTrace()
-            }
-        }
     }
 
     private fun setOverallStatus(consent: PurposeConsent?, isChecked: Boolean?) {

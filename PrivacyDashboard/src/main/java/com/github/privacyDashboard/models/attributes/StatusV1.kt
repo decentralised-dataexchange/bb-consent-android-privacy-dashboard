@@ -1,9 +1,10 @@
 package com.github.privacyDashboard.models.attributes
 
+import com.github.privacyDashboard.models.uiModels.dataAttributesList.Status
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class Status(
+class StatusV1(
     @SerializedName("Consented")
     var consented: String? = null,
     @SerializedName("TimeStamp")
@@ -12,4 +13,10 @@ data class Status(
     var days: Int? = null,
     @SerializedName("Remaining")
     var remaining: Int? = 0
-) : Serializable {}
+) : Status {
+    override val mConsented: String?
+        get() = consented
+    override val mRemaining: Int?
+        get() = remaining
+
+}
