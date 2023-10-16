@@ -11,8 +11,8 @@ import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributeDetailBinding
 import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.events.RefreshList
-import com.github.privacyDashboard.models.attributes.DataAttribute
-import com.github.privacyDashboard.models.attributes.Status
+import com.github.privacyDashboard.models.attributes.DataAttributeV1
+import com.github.privacyDashboard.models.attributes.StatusV1
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
 import com.github.privacyDashboard.models.consent.ResultResponse
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
@@ -43,7 +43,7 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
     private var mPurposeId: String? = ""
     private var mConsentId: String? = ""
     private var mOrgId: String? = ""
-    private var mDataAttribute: DataAttribute? = null
+    private var mDataAttribute: DataAttributeV1? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =
@@ -62,7 +62,7 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
                 intent.getStringExtra(EXTRA_TAG_CONSENTID)
             mPurposeId =
                 intent.getStringExtra(EXTRA_TAG_PURPOSEID)
-            mDataAttribute = intent.getSerializableExtra(EXTRA_TAG_CONSENT) as DataAttribute
+            mDataAttribute = intent.getSerializableExtra(EXTRA_TAG_CONSENT) as DataAttributeV1
         }
     }
 
@@ -176,7 +176,7 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
                 ) {
                     binding.llProgressBar.visibility = View.GONE
                     if (response.code() == 200) {
-                        val status: Status? = mDataAttribute?.status
+                        val status: StatusV1? = mDataAttribute?.status
                         status?.consented = (body.consented)
                         status?.remaining = (body.days)
                         mDataAttribute?.status = status

@@ -28,12 +28,12 @@ interface BBConsentAPIServices {
     ): Call<ConsentHistoryResponse?>
 
     @GET("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}")
-    fun getConsentList(
+    suspend fun getConsentList(
         @Path("orgID") orgID: String?,
         @Path("userId") userId: String?,
         @Path("consentId") consentId: String?,
         @Path("purposeId") purposeId: String?
-    ): Call<DataAttributesResponse?>?
+    ): Response<DataAttributesResponse?>?
 
     @PATCH("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}/attributes/{attributeId}")
     fun setAttributeStatus(

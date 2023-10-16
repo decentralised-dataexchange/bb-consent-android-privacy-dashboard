@@ -7,15 +7,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentItemDataAttributeBinding
-import com.github.privacyDashboard.models.attributes.DataAttribute
+import com.github.privacyDashboard.models.attributes.DataAttributeV1
+import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttribute
 import com.github.privacyDashboard.utils.BBConsentStringUtils
 
 class BBConsentDataAttributesAdapter(
-    dataAttributes: ArrayList<DataAttribute>,
+    dataAttributes: ArrayList<DataAttribute?>,
     mListener: DataAttributeClickListener
 ) :
     RecyclerView.Adapter<BBConsentDataAttributesAdapter.ViewHolder?>() {
-    private val mList: ArrayList<DataAttribute>
+    private val mList: ArrayList<DataAttribute?>
     private val mListener: DataAttributeClickListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding: BbconsentItemDataAttributeBinding = DataBindingUtil.inflate(
@@ -27,7 +28,7 @@ class BBConsentDataAttributesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val purposeConsent: DataAttribute = mList[position]
+        val purposeConsent: DataAttribute? = mList[position]
         holder.bind(purposeConsent, mListener, position == mList.size - 1)
     }
 
@@ -38,12 +39,12 @@ class BBConsentDataAttributesAdapter(
     class ViewHolder(itemRowBinding: BbconsentItemDataAttributeBinding) :
         RecyclerView.ViewHolder(itemRowBinding.root) {
         var itemRowBinding: BbconsentItemDataAttributeBinding
-        fun bind(attribute: DataAttribute, mListener: DataAttributeClickListener, isLast: Boolean) {
-            itemRowBinding.ctvItemName.text = attribute.description
-            if (attribute.status?.consented != null && !attribute.status?.consented.equals("")
+        fun bind(attribute: DataAttribute?, mListener: DataAttributeClickListener, isLast: Boolean) {
+            itemRowBinding.ctvItemName.text = attribute?.mDescription
+            if (attribute?.mStatus?.mConsented != null && !attribute.mStatus?.mConsented.equals("")
             ) {
                 itemRowBinding.ctvStatus.text = BBConsentStringUtils.toCamelCase(
-                    attribute.status?.consented
+                    attribute.mStatus?.mConsented
                 )
             } else {
                 itemRowBinding.ctvStatus.text =

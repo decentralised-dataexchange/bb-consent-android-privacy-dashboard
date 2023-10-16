@@ -1,9 +1,10 @@
 package com.github.privacyDashboard.models
 
+import com.github.privacyDashboard.models.uiModels.dataAttributesList.Purpose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class Purpose (
+class PurposeV1 (
     @SerializedName("ID")
     var iD: String? = null,
     @SerializedName("Name")
@@ -14,4 +15,15 @@ data class Purpose (
     var lawfulUsage: Boolean? = null,
     @SerializedName("PolicyURL")
     var policyURL: String? = null
-): Serializable {}
+): Purpose {
+    override val mId: String?
+        get() = iD
+    override val mName: String?
+        get() = name
+    override val mDescription: String?
+        get() = description
+    override val mLawfulUsage: Boolean?
+        get() = lawfulUsage
+    override val mPolicyUrl: String?
+        get() = policyURL
+}
