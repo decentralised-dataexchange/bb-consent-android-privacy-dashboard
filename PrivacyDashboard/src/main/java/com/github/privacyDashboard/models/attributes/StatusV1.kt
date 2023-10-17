@@ -14,9 +14,15 @@ class StatusV1(
     @SerializedName("Remaining")
     var remaining: Int? = 0
 ) : Status {
-    override val mConsented: String?
+    override var mConsented: String?
         get() = consented
-    override val mRemaining: Int?
+        set(value) {
+            mConsented = value
+        }
+    override var mRemaining: Int?
         get() = remaining
+        set(value) {
+            mRemaining = value
+        }
 
 }

@@ -85,6 +85,7 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                             Gson().toJson(dataAttribute)
                         )
                         startActivity(intent)
+                        BBConsentDataAttributeDetailActivity.mDataAttribute=dataAttribute
                     }
                 }
             })
