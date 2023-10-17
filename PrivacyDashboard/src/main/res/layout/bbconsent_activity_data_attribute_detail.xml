@@ -2,6 +2,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -62,9 +71,9 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:text="@string/bb_consent_data_attribute_allow"
-                        android:textStyle="bold"
                         android:textColor="@color/bbConsentTextColor"
-                        android:textSize="@dimen/text_size_medium" />
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/ivAllow"
@@ -72,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_checked"
-                        android:visibility="gone" />
+                        android:visibility="@{viewModel.ivAllow ? View.VISIBLE : View.GONE}"/>
                 </LinearLayout>
 
                 <View
@@ -101,17 +110,17 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:text="@string/bb_consent_dashboard_disallow"
-                        android:textStyle="bold"
                         android:textColor="@color/bbConsentTextColor"
-                        android:textSize="@dimen/text_size_medium" />
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/ivDisallow"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_checked"
-                        android:visibility="gone" />
+                        android:visibility="@{viewModel.ivDisAllow ? View.VISIBLE : View.GONE}"
+                        android:src="@drawable/ic_checked" />
                 </LinearLayout>
 
                 <View
@@ -120,10 +129,11 @@
                     android:layout_height="0.2dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:visibility="gone"
-                    android:background="@color/bb_consent_divider_color" />
+                    android:background="@color/bb_consent_divider_color"
+                    android:visibility="gone" />
 
                 <LinearLayout
+                    android:id="@+id/llAskme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/bbConsentWhite"
@@ -132,7 +142,6 @@
                     android:paddingTop="5dp"
                     android:paddingEnd="20dp"
                     android:paddingBottom="10dp"
-                    android:id="@+id/llAskme"
                     android:visibility="gone">
 
                     <LinearLayout
@@ -147,9 +156,9 @@
                             android:paddingTop="10dp"
                             android:paddingBottom="10dp"
                             android:text="@string/bb_consent_data_attribute_detail_ask_me"
-                            android:textStyle="bold"
                             android:textColor="@color/bbConsentTextColor"
-                            android:textSize="@dimen/text_size_medium" />
+                            android:textSize="@dimen/text_size_medium"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvDays"
@@ -183,9 +192,9 @@
                             android:max="90"
                             android:min="30"
                             android:progress="30"
-                            android:thumbTint="@color/bb_consent_accent_blue"
                             android:progressBackgroundTint="@color/bb_consent_accent_blue"
-                            android:progressTint="@color/bb_consent_accent_blue" />
+                            android:progressTint="@color/bb_consent_accent_blue"
+                            android:thumbTint="@color/bb_consent_accent_blue" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -204,7 +213,7 @@
                     android:layout_margin="10dp"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:text="@string/bb_consent_data_attribute_detail_allow_consent_rule"
+                    android:text="@{viewModel.statusMessage}"
                     android:textColor="@color/bbConsentTextColorLight"
                     android:textSize="@dimen/text_size_medium" />
 
@@ -220,7 +229,7 @@
             android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolBarCommon">
 

@@ -1,24 +1,35 @@
 package com.github.privacyDashboard.modules.attributeDetail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
+import com.github.privacyDashboard.communication.BBConsentAPIServices
+import com.github.privacyDashboard.communication.repositories.GetConsentsByIdApiRepository
+import com.github.privacyDashboard.communication.repositories.UpdateDataAttributeStatusApiRepository
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributeDetailBinding
 import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.events.RefreshList
-import com.github.privacyDashboard.models.attributes.DataAttributeV1
-import com.github.privacyDashboard.models.attributes.StatusV1
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.consent.ResultResponse
+import com.github.privacyDashboard.models.consent.ResultResponseV1
+import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttribute
+import com.github.privacyDashboard.models.uiModels.dataAttributesList.Status
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
+import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
+import com.github.privacyDashboard.modules.home.BBConsentDashboardViewModel
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,16 +49,18 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
             "com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.purposeId"
         const val EXTRA_TAG_CONSENT =
             "com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.consent"
+        var mDataAttribute: DataAttribute? = null
     }
 
-    private var mPurposeId: String? = ""
-    private var mConsentId: String? = ""
-    private var mOrgId: String? = ""
-    private var mDataAttribute: DataAttributeV1? = null
+    private var viewModel: BBConsentDataAttributeDetailViewModel? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =
             DataBindingUtil.setContentView(this, R.layout.bbconsent_activity_data_attribute_detail)
+        viewModel = ViewModelProvider(this)[BBConsentDataAttributeDetailViewModel::class.java]
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this;
         getIntentData()
         setUpToolBar()
         initValues()
@@ -56,14 +69,14 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
 
     private fun getIntentData() {
         if (intent.extras != null) {
-            mOrgId =
+            viewModel?.mOrgId =
                 intent.getStringExtra(EXTRA_TAG_ORGID)
-            mConsentId =
+            viewModel?.mConsentId =
                 intent.getStringExtra(EXTRA_TAG_CONSENTID)
-            mPurposeId =
+            viewModel?.mPurposeId =
                 intent.getStringExtra(EXTRA_TAG_PURPOSEID)
-            mDataAttribute = intent.getSerializableExtra(EXTRA_TAG_CONSENT) as DataAttributeV1
         }
+        viewModel?.mDataAttribute = mDataAttribute
     }
 
     private fun setUpToolBar() {
@@ -76,7 +89,7 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
                 R.drawable.ic_back_black_pad
             )
         )
-        supportActionBar?.title = toCamelCase(mDataAttribute?.description)
+        supportActionBar?.title = toCamelCase(viewModel?.mDataAttribute?.mDescription)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -90,62 +103,37 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
     }
 
     private fun initValues() {
-        setChecked()
+        viewModel?.setChecked(this)
         val isAskMeEnabled = BBConsentDataUtils.getBooleanValue(
             this,
             BBConsentDataUtils.EXTRA_TAG_ENABLE_ASK_ME
         )
-        if (isAskMeEnabled==true) {
+        if (isAskMeEnabled == true) {
             binding.llAskme.visibility = View.VISIBLE
             binding.vAskMe.visibility = View.VISIBLE
             binding.tvDays.text = resources.getString(
                 R.string.bb_consent_data_attribute_detail_days_with_count,
-                mDataAttribute?.status?.remaining ?: 0
+                viewModel?.mDataAttribute?.mStatus?.mRemaining ?: 0
             )
-            binding.sbDays.progress = mDataAttribute?.status?.remaining ?: 0
-        }else{
+            binding.sbDays.progress = viewModel?.mDataAttribute?.mStatus?.mRemaining ?: 0
+        } else {
             binding.llAskme.visibility = View.GONE
             binding.vAskMe.visibility = View.GONE
         }
     }
 
-    private fun setChecked() {
-        try {
-            if (mDataAttribute?.status?.consented.equals("Allow", ignoreCase = true)
-            ) {
-                binding.ivAllow.visibility = View.VISIBLE
-                binding.ivDisallow.visibility = View.GONE
-                binding.ctvStatusMessage.text =
-                    resources.getString(R.string.bb_consent_data_attribute_detail_allow_consent_rule)
-            } else if (mDataAttribute?.status?.consented.equals("Disallow", ignoreCase = true)
-            ) {
-                binding.ivDisallow.visibility = View.VISIBLE
-                binding.ivAllow.visibility = View.GONE
-                binding.ctvStatusMessage.text =
-                    resources.getString(R.string.bb_consent_data_attribute_detail_disallow_consent_rule)
-            } else {
-                binding.ivDisallow.visibility = View.GONE
-                binding.ivAllow.visibility = View.GONE
-                binding.ctvStatusMessage.text =
-                    resources.getString(R.string.bb_consent_data_attribute_detail_askme_consent_rule)
-            }
-        } catch (e: Exception) {
-            binding.ivDisallow.visibility = View.GONE
-            binding.ivAllow.visibility = View.GONE
-        }
-    }
 
     private fun initListeners() {
         binding.llAllow.setOnClickListener {
             val body = ConsentStatusRequest()
             body.consented = "Allow"
-            updateConsentStatus(body)
+            viewModel?.updateConsentStatus(body, this)
         }
 
         binding.llDisallow.setOnClickListener {
             val body = ConsentStatusRequest()
             body.consented = "Disallow"
-            updateConsentStatus(body)
+            viewModel?.updateConsentStatus(body, this)
         }
 
         binding.sbDays.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -157,69 +145,17 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
                     R.string.bb_consent_data_attribute_detail_days_with_count,
                     seekBar.progress
                 )
-                binding.ctvStatusMessage.text =
+                viewModel?.statusMessage?.value =
                     resources.getString(R.string.bb_consent_data_attribute_detail_askme_consent_rule)
                 body.days = seekBar.progress
                 body.consented = "Askme"
-                updateConsentStatus(body)
+                viewModel?.updateConsentStatus(body, this@BBConsentDataAttributeDetailActivity)
             }
         })
     }
 
-    private fun updateConsentStatus(body: ConsentStatusRequest) {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            binding.llProgressBar.visibility = View.VISIBLE
-            val callback: Callback<ResultResponse?> = object : Callback<ResultResponse?> {
-                override fun onResponse(
-                    call: Call<ResultResponse?>,
-                    response: Response<ResultResponse?>
-                ) {
-                    binding.llProgressBar.visibility = View.GONE
-                    if (response.code() == 200) {
-                        val status: StatusV1? = mDataAttribute?.status
-                        status?.consented = (body.consented)
-                        status?.remaining = (body.days)
-                        mDataAttribute?.status = status
-                        try {
-                            setChecked()
-                        } catch (e: java.lang.Exception) {
-                            e.printStackTrace()
-                        }
-                        EventBus.getDefault().post(RefreshHome())
-                        EventBus.getDefault().post(RefreshList(mDataAttribute?.iD,status))
-                    }
-                }
-
-                override fun onFailure(call: Call<ResultResponse?>, t: Throwable) {
-                    binding.llProgressBar.visibility = View.GONE
-                }
-            }
-
-            //todo user id
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                )?:"",
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                )
-            )?.service?.setAttributeStatus(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                ),
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_USERID
-                ),
-                mConsentId,
-                mPurposeId,
-                mDataAttribute?.iD,
-                body
-            )?.enqueue(callback)
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        mDataAttribute = null
     }
-
 }
