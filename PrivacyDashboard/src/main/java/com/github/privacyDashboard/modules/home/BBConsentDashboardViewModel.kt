@@ -9,10 +9,13 @@ import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.GetConsentsByIdApiRepository
 import com.github.privacyDashboard.communication.repositories.GetOrganizationDetailApiRepository
+import com.github.privacyDashboard.communication.repositories.UpdateDataAgreementStatusApiRepository
 import com.github.privacyDashboard.models.Organization
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.PurposeConsent
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
+import com.github.privacyDashboard.models.consent.ConsentStatusRequest
+import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponseV1
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
@@ -87,6 +90,57 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                     }
                 }
             }
+        }
+    }
+
+    fun setOverallStatus(consent: PurposeConsent?, isChecked: Boolean?, context: Context) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(context)) {
+            isLoading.value = true
+            val body = ConsentStatusRequest()
+            body.consented = if (isChecked == true) "Allow" else "DisAllow"
+
+            val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service!!
+
+            val updateDataAgreementStatusApiRepository =
+                UpdateDataAgreementStatusApiRepository(apiService)
+
+            GlobalScope.launch {
+                val result = updateDataAgreementStatusApiRepository.updateDataAgreementStatus(
+                    orgID = BBConsentDataUtils.getStringValue(
+                        context,
+                        BBConsentDataUtils.EXTRA_TAG_ORG_ID
+                    ),
+                    userId = BBConsentDataUtils.getStringValue(
+                        context,
+                        BBConsentDataUtils.EXTRA_TAG_USERID
+                    ),
+                    consentId = consentId,
+                    purposeId = consent?.purpose?.iD,
+                    body = body
+                )
+
+                if (result.isSuccess) {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                        getOrganizationDetail(false, context)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                    }
+                }
+            }
+        } else {
+//            adapter!!.notifyDataSetChanged()
         }
     }
 
