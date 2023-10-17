@@ -5,7 +5,7 @@ import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
 import com.github.privacyDashboard.models.consent.ResultResponseV1
 import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
-import com.github.privacyDashboard.models.logging.ConsentHistoryResponse
+import com.github.privacyDashboard.models.consentHistory.ConsentHistoryResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestGenResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestStatus
@@ -25,7 +25,7 @@ interface BBConsentAPIServices {
         @Query("limit") limit: Int,
         @Query("orgid") orgId: String?,
         @Query("startid") startid: String?
-    ): Call<ConsentHistoryResponse?>
+    ): Response<ConsentHistoryResponseV1?>
 
     @GET("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}")
     suspend fun getConsentList(

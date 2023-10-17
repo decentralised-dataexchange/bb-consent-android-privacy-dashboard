@@ -7,15 +7,21 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
+import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.GetConsentHistoryApiRepository
 import com.github.privacyDashboard.communication.repositories.GetOrganizationDetailApiRepository
 import com.github.privacyDashboard.databinding.BbconsentActivityLoggingBinding
-import com.github.privacyDashboard.models.logging.ConsentHistory
-import com.github.privacyDashboard.models.logging.ConsentHistoryResponse
+import com.github.privacyDashboard.models.consentHistory.ConsentHistoryV1
+import com.github.privacyDashboard.models.consentHistory.ConsentHistoryResponseV1
+import com.github.privacyDashboard.models.uiModels.consentHistory.ConsentHistory
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import com.paginate.Paginate
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,7 +42,7 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
     private var isCallLoading = false
     private var hasLoadedAllItems = false
 
-    private var consentHistories: ArrayList<ConsentHistory>? = ArrayList()
+    private var consentHistories: ArrayList<ConsentHistory?>? = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,56 +57,65 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
             isCallLoading = true
             if (showProgress) binding.llProgressBar.visibility = View.VISIBLE
-            val consentHistoryRepository = GetConsentHistoryApiRepository(this)
 
-            val callback: Callback<ConsentHistoryResponse?> =
-                object : Callback<ConsentHistoryResponse?> {
-                    override fun onResponse(
-                        call: Call<ConsentHistoryResponse?>,
-                        response: Response<ConsentHistoryResponse?>
-                    ) {
+            val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service!!
+
+            val consentHistoryRepository = GetConsentHistoryApiRepository(apiService)
+
+            GlobalScope.launch {
+                val result = consentHistoryRepository.getConsentHistory(
+                    userID = BBConsentDataUtils.getStringValue(
+                        this@BBConsentLoggingActivity,
+                        BBConsentDataUtils.EXTRA_TAG_USERID
+                    ), orgId = mOrgId, limit = 8, startid = startId
+                )
+
+                if (result?.isSuccess == true) {
+                    withContext(Dispatchers.Main) {
                         isCallLoading = false
                         binding.llProgressBar.visibility = View.GONE
-                        if (response.code() == 200) {
-                            if (response.body()?.consentHistory != null) {
-                                if (startId == "") consentHistories!!.clear()
+                        if (result.getOrNull()?.mConsentHistory != null) {
+                            if (startId == "") consentHistories!!.clear()
 
-                                consentHistories!!.addAll(
-                                    response.body()?.consentHistory ?: ArrayList()
-                                )
+                            consentHistories!!.addAll(
+                                result.getOrNull()?.mConsentHistory ?: ArrayList()
+                            )
+                            binding.rvConsentHistory.visibility =
+                                if (consentHistories!!.size > 0) View.VISIBLE else View.GONE
+                            if (consentHistories!!.size > 0) {
+                                startId =
+                                    consentHistories!![consentHistories!!.size - 1]?.mId ?: ""
+                            }
+
+                        } else {
+                            if (startId == "") {
+                                consentHistories!!.clear()
                                 binding.rvConsentHistory.visibility =
                                     if (consentHistories!!.size > 0) View.VISIBLE else View.GONE
-                                if (consentHistories!!.size > 0) {
-                                    startId =
-                                        consentHistories!![consentHistories!!.size - 1].iD ?: ""
-                                }
-
-                            } else {
-                                if (startId == "") {
-                                    consentHistories!!.clear()
-                                    binding.rvConsentHistory.visibility =
-                                        if (consentHistories!!.size > 0) View.VISIBLE else View.GONE
-                                }
                             }
-
-                            if (response.body()?.consentHistory == null) {
-                                hasLoadedAllItems = true
-                            }
-                            adapter!!.notifyDataSetChanged()
                         }
-                    }
 
-                    override fun onFailure(call: Call<ConsentHistoryResponse?>, t: Throwable) {
+                        if (result.getOrNull()?.mConsentHistory == null) {
+                            hasLoadedAllItems = true
+                        }
+                        adapter!!.notifyDataSetChanged()
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
                         isCallLoading = false
                         binding.llProgressBar.visibility = View.GONE
                     }
                 }
-            consentHistoryRepository.getConsentHistory(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_USERID
-                ), mOrgId, 8, startId, callback
-            )
+            }
         }
     }
 

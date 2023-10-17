@@ -1,16 +1,7 @@
 package com.github.privacyDashboard.communication.repositories
 
-import android.content.Context
-import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
-import com.github.privacyDashboard.models.OrganizationDetailResponse
-import com.github.privacyDashboard.models.attributes.DataAttributesResponse
-import com.github.privacyDashboard.models.logging.ConsentHistoryResponse
 import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAgreement
-import com.github.privacyDashboard.utils.BBConsentDataUtils
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class GetConsentsByIdApiRepository(private val apiService: BBConsentAPIServices) {
 
