@@ -2,11 +2,9 @@ package com.github.privacyDashboard.modules.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -15,19 +13,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
-import com.github.privacyDashboard.communication.repositories.GetOrganizationDetailApiRepository
 import com.github.privacyDashboard.databinding.BbconsentActivityDashboardBinding
 import com.github.privacyDashboard.events.RefreshHome
-import com.github.privacyDashboard.models.Organization
 import com.github.privacyDashboard.models.PurposeConsent
-import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
+import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponseV1
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
-import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
-import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_DATA_ATTRIBUTES
-import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_EXTRA_DESCRIPTION
-import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.Companion.TAG_EXTRA_NAME
 import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity
 import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity.Companion.TAG_EXTRA_ORG_ID
 import com.github.privacyDashboard.modules.userRequest.BBConsentUserRequestActivity
@@ -37,10 +28,6 @@ import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Comp
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentImageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -231,7 +218,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                                 consent: PurposeConsent?,
                                 isChecked: Boolean?
                             ) {
-                                setOverallStatus(consent, isChecked)
+                                viewModel?.setOverallStatus(consent, isChecked,this@BBConsentDashboardActivity)
                             }
                         })
                     binding.rvDataAgreements.adapter = adapter
@@ -241,57 +228,6 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
             }
         })
 
-    }
-
-    private fun setOverallStatus(consent: PurposeConsent?, isChecked: Boolean?) {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            viewModel?.isLoading?.value = true
-            val body = ConsentStatusRequest()
-            body.consented = if (isChecked == true) "Allow" else "DisAllow"
-            val callback: Callback<UpdateConsentStatusResponse?> =
-                object : Callback<UpdateConsentStatusResponse?> {
-                    override fun onResponse(
-                        call: Call<UpdateConsentStatusResponse?>,
-                        response: Response<UpdateConsentStatusResponse?>
-                    ) {
-                        viewModel?.isLoading?.value = false
-                        if (response.code() == 200) {
-                            viewModel?.getOrganizationDetail(false, this@BBConsentDashboardActivity)
-                        }
-                    }
-
-                    override fun onFailure(
-                        call: Call<UpdateConsentStatusResponse?>,
-                        t: Throwable
-                    ) {
-                        viewModel?.isLoading?.value = false
-                    }
-                }
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                )
-            )?.service?.setOverallStatus(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                ),
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_USERID
-                ),
-                viewModel?.consentId,
-                consent?.purpose?.iD,
-                body
-            )?.enqueue(callback)
-        } else {
-            adapter!!.notifyDataSetChanged()
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

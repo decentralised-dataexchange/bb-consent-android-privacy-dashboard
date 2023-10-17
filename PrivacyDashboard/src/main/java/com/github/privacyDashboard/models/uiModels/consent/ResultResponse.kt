@@ -1,4 +1,4 @@
-package com.github.privacyDashboard.models.uiModels
+package com.github.privacyDashboard.models.uiModels.consent
 
 interface ResultResponse {
     val mResult: Boolean?

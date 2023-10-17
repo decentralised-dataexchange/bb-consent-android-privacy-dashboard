@@ -4,7 +4,7 @@ import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
 import com.github.privacyDashboard.models.consent.ResultResponseV1
-import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponse
+import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponseV1
 import com.github.privacyDashboard.models.consentHistory.ConsentHistoryResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestGenResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
@@ -46,13 +46,13 @@ interface BBConsentAPIServices {
     ): Response<ResultResponseV1?>?
 
     @POST("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}/status")
-    fun setOverallStatus(
+    suspend fun setOverallStatus(
         @Path("orgID") orgID: String?,
         @Path("userId") userId: String?,
         @Path("consentId") consentId: String?,
         @Path("purposeId") purposeId: String?,
         @Body body: ConsentStatusRequest?
-    ): Call<UpdateConsentStatusResponse?>?
+    ): Response<UpdateConsentStatusResponseV1?>?
 
     @GET("v1/user/organizations/{orgId}/data-status")
     fun getOrgRequestStatus(

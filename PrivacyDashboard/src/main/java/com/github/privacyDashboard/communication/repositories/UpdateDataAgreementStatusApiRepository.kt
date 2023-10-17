@@ -1,26 +1,27 @@
- package com.github.privacyDashboard.communication.repositories
+package com.github.privacyDashboard.communication.repositories
 
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
 import com.github.privacyDashboard.models.uiModels.consent.ResultResponse
+import com.github.privacyDashboard.models.uiModels.consent.UpdateConsentStatusResponse
+import retrofit2.http.Body
+import retrofit2.http.Path
 
-class UpdateDataAttributeStatusApiRepository(private val apiService: BBConsentAPIServices) {
+class UpdateDataAgreementStatusApiRepository(private val apiService: BBConsentAPIServices) {
 
-    suspend fun updateAttributeStatus(
+    suspend fun updateDataAgreementStatus(
         orgID: String?,
         userId: String?,
         consentId: String?,
         purposeId: String?,
-        attributeId: String?,
         body: ConsentStatusRequest?
-    ): Result<ResultResponse?> {
+    ): Result<UpdateConsentStatusResponse?> {
         return try {
-            val response = apiService.setAttributeStatus(
+            val response = apiService.setOverallStatus(
                 orgID = orgID,
                 userId = userId,
                 consentId = consentId,
                 purposeId = purposeId,
-                attributeId = attributeId,
                 body = body
             )
             if (response?.isSuccessful == true) {
