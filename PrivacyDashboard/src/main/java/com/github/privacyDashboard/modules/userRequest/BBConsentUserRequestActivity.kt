@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.MenuItem
 import android.view.View
@@ -11,18 +12,18 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.cocosw.bottomsheet.BottomSheet
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityUserRequestBinding
 import com.github.privacyDashboard.models.userRequests.UserRequest
-import com.github.privacyDashboard.models.userRequests.UserRequestGenResponse
+import com.github.privacyDashboard.models.userRequests.UserRequestGenResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
 import com.github.privacyDashboard.models.userRequests.UserRequestStatus
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
-import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity
+import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailViewModel
 import com.github.privacyDashboard.modules.userRequestStatus.BBConsentUserRequestStatusActivity
-import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentMessageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
@@ -34,19 +35,10 @@ import retrofit2.Response
 class BBConsentUserRequestActivity : BBConsentBaseActivity() {
 
     private var adapter: BBConsentUserRequestHistoryAdapter? = null
-    private var mOrgName: String? = ""
-    private var mOrgId: String? = ""
+
     private lateinit var binding: BbconsentActivityUserRequestBinding
 
-    private var isLoadingData = false
-    private var hasLoadedAllItems = false
-
-    private var startId = ""
-
-    private val requestHistories: ArrayList<UserRequest> = ArrayList<UserRequest>()
-
-    private var isDownloadRequestOngoing: Boolean? = false
-    private var isDeleteRequestOngoing: Boolean? = false
+    private var viewModel: BBConsentUserRequestViewModel? = null
 
     companion object {
         const val EXTRA_TAG_USER_REQUEST_ORGID =
@@ -59,18 +51,21 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
         super.onCreate(savedInstanceState)
         binding =
             DataBindingUtil.setContentView(this, R.layout.bbconsent_activity_user_request)
+        viewModel = ViewModelProvider(this)[BBConsentUserRequestViewModel::class.java]
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
         getIntentData()
         setUpToolBar()
         initListeners()
         setUpList()
-        getRequestHistory(true)
+        viewModel?.getRequestHistory(true, this)
     }
 
     private fun getIntentData() {
         if (intent.extras != null) {
-            mOrgId =
+            viewModel?.mOrgId =
                 intent.getStringExtra(EXTRA_TAG_USER_REQUEST_ORGID)
-            mOrgName =
+            viewModel?.mOrgName =
                 intent.getStringExtra(EXTRA_TAG_USER_REQUEST_ORG_NAME)
         }
     }
@@ -99,6 +94,11 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
     }
 
     private fun initListeners() {
+
+        viewModel?.requestHistories?.observe(this, Observer { newData ->
+            adapter?.updateList(newData)
+        })
+
         binding.tvNewRequest.setOnClickListener {
 
             val popupMenu = PopupMenu(this, binding.tvNewRequest)
@@ -130,13 +130,13 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
      */
     private fun deleteDataRequestStatus() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
-            binding.llProgressBar.visibility = View.VISIBLE
+            viewModel?.isLoading?.value = true
             val callback: Callback<UserRequestStatus?> = object : Callback<UserRequestStatus?> {
                 override fun onResponse(
                     call: Call<UserRequestStatus?>,
                     response: Response<UserRequestStatus?>
                 ) {
-                    binding.llProgressBar.visibility = View.GONE
+                    viewModel?.isLoading?.value = false
                     if (response.code() == 200) {
                         if (response.body()?.requestOngoing == true) {
                             gotToStatusPage(false)
@@ -152,7 +152,7 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
                 }
 
                 override fun onFailure(call: Call<UserRequestStatus?>, t: Throwable) {
-                    binding.llProgressBar.visibility = View.GONE
+                    viewModel?.isLoading?.value = false
                     BBConsentMessageUtils.showSnackbar(
                         binding.root,
                         resources.getString(R.string.bb_consent_error_unexpected)
@@ -179,13 +179,13 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
      */
     private fun downloadDataRequestStatus() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
-            binding.llProgressBar.visibility = View.VISIBLE
+            viewModel?.isLoading?.value = true
             val callback: Callback<UserRequestStatus?> = object : Callback<UserRequestStatus?> {
                 override fun onResponse(
                     call: Call<UserRequestStatus?>,
                     response: Response<UserRequestStatus?>
                 ) {
-                    binding.llProgressBar.visibility = View.GONE
+                    viewModel?.isLoading?.value = false
                     if (response.code() == 200) {
                         if (response.body()?.requestOngoing == true) {
                             gotToStatusPage(true)
@@ -201,7 +201,7 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
                 }
 
                 override fun onFailure(call: Call<UserRequestStatus?>, t: Throwable) {
-                    binding.llProgressBar.visibility = View.GONE
+                    viewModel?.isLoading?.value = false
                     BBConsentMessageUtils.showSnackbar(
                         binding.root,
                         resources.getString(R.string.bb_consent_error_unexpected)
@@ -232,7 +232,7 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
                     if (isDelete) resources.getString(R.string.bb_consent_user_request_data_delete) else resources.getString(
                         R.string.bb_consent_user_request_download_data
                     ),
-                    mOrgName
+                    viewModel?.mOrgName
                 )
             ).setPositiveButton(R.string.bb_consent_user_request_confirm,
                 DialogInterface.OnClickListener { dialog, which ->
@@ -246,12 +246,12 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
 
     private fun dataDeleteRequest() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
-            binding.llProgressBar.visibility = View.VISIBLE
+            viewModel?.isLoading?.value = true
             val callback: Callback<Void> = object : Callback<Void> {
                 override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
-                    binding.llProgressBar.visibility = View.GONE
+                    viewModel?.isLoading?.value = false
                     if (response.code() == 200) {
-                        refreshData()
+                        viewModel?.refreshData(this@BBConsentUserRequestActivity)
                     } else {
                         BBConsentMessageUtils.showSnackbar(
                             binding.root,
@@ -261,7 +261,7 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
                 }
 
                 override fun onFailure(call: Call<Void?>, t: Throwable) {
-                    binding.llProgressBar.visibility = View.GONE
+                    viewModel?.isLoading?.value = false
                     BBConsentMessageUtils.showSnackbar(
                         binding.root,
                         resources.getString(R.string.bb_consent_error_unexpected)
@@ -285,12 +285,12 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
 
     private fun dataDownloadRequest() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
-            binding.llProgressBar.visibility = View.VISIBLE
+            viewModel?.isLoading?.value = true
             val callback: Callback<Void> = object : Callback<Void> {
                 override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
-                    binding.llProgressBar.visibility = View.GONE
+                    viewModel?.isLoading?.value = false
                     if (response.code() == 200) {
-                        refreshData()
+                        viewModel?.refreshData(this@BBConsentUserRequestActivity)
                     } else {
                         BBConsentMessageUtils.showSnackbar(
                             binding.root,
@@ -300,7 +300,7 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
                 }
 
                 override fun onFailure(call: Call<Void?>, t: Throwable) {
-                    binding.llProgressBar.visibility = View.GONE
+                    viewModel?.isLoading?.value = false
                     BBConsentMessageUtils.showSnackbar(
                         binding.root,
                         resources.getString(R.string.bb_consent_error_unexpected)
@@ -324,7 +324,7 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
 
     private fun setUpList() {
         adapter = BBConsentUserRequestHistoryAdapter(
-            requestHistories,
+            viewModel?.requestHistories?.value ?: ArrayList(),
             object : BBConsentUserRequestClickListener {
 
                 override fun onRequestClick(request: UserRequest?) {
@@ -332,93 +332,35 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
                 }
 
                 override fun onRequestCancel(request: UserRequest?) {
-                    request?.let { cancelDataRequest(request.type == 2, it) }
+                    request?.let {
+                        viewModel?.cancelDataRequest(
+                            request.type == 2,
+                            it,
+                            this@BBConsentUserRequestActivity
+                        )
+                    }
                 }
 
             })
         binding.rvRequestHistory.adapter = adapter
         Paginate.with(binding.rvRequestHistory, object : Paginate.Callbacks {
             override fun onLoadMore() {
-                getRequestHistory(false)
+                viewModel?.getRequestHistory(false, this@BBConsentUserRequestActivity)
             }
 
             override fun isLoading(): Boolean {
-                return isLoadingData
+                Log.d("milan", "isLoading: ${viewModel?.isLoadingData}")
+                return viewModel?.isLoadingData == true
             }
 
             override fun hasLoadedAllItems(): Boolean {
-                return hasLoadedAllItems
+                Log.d("milan", "hasLoadedAllItems: ${viewModel?.hasLoadedAllItems}")
+
+                return viewModel?.hasLoadedAllItems == true
             }
         }).setLoadingTriggerThreshold(1)
             .addLoadingListItem(true)
             .build()
-    }
-
-    private fun getRequestHistory(showProgress: Boolean) {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            isLoadingData = true
-            if (showProgress) binding.llProgressBar.visibility = View.VISIBLE
-            val callback: Callback<UserRequestHistoryResponse> =
-                object : Callback<UserRequestHistoryResponse> {
-                    override fun onResponse(
-                        call: Call<UserRequestHistoryResponse>,
-                        response: Response<UserRequestHistoryResponse>
-                    ) {
-                        isLoadingData = false
-                        binding.llProgressBar.visibility = View.GONE
-                        if (response.code() == 200) {
-                            if (response.body()?.dataRequests != null) {
-                                if (startId.equals("", ignoreCase = true)) {
-                                    requestHistories.clear()
-                                    isDownloadRequestOngoing =
-                                        response.body()?.dataDownloadRequestOngoing
-                                    isDeleteRequestOngoing =
-                                        response.body()?.dataDeleteRequestOngoing
-                                    requestHistories.addAll(
-                                        setOngoingRequests(
-                                            response.body()?.dataRequests ?: ArrayList()
-                                        )
-                                    )
-                                } else {
-                                    requestHistories.addAll(
-                                        response.body()?.dataRequests ?: ArrayList()
-                                    )
-                                }
-                                if (requestHistories.size > 0) {
-                                    startId =
-                                        requestHistories[requestHistories.size - 1].iD ?: ""
-                                }
-                                binding.rvRequestHistory.visibility =
-                                    if (requestHistories.size > 0) View.VISIBLE else View.GONE
-                            } else {
-                                if (startId.equals("", ignoreCase = true)) {
-                                    requestHistories.clear()
-                                    binding.rvRequestHistory.visibility =
-                                        if (requestHistories.size > 0) View.VISIBLE else View.GONE
-                                }
-                            }
-                            if (response.body()?.dataRequests == null) {
-                                hasLoadedAllItems = true
-                            }
-                            adapter?.notifyDataSetChanged()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<UserRequestHistoryResponse>, t: Throwable) {
-                        isLoadingData = false
-                        binding.llProgressBar.visibility = View.GONE
-                    }
-                }
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
-            )?.service?.getOrgRequestStatus(
-                mOrgId, startId
-            )?.enqueue(callback)
-        }
     }
 
     private fun gotToStatusPage(isDownloadRequest: Boolean) {
@@ -428,85 +370,5 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
             isDownloadRequest
         )
         startActivity(intent)
-    }
-
-    private fun cancelDataRequest(isDownloadData: Boolean, request: UserRequest) {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this)) {
-            binding.llProgressBar.visibility = View.VISIBLE
-            val callback: Callback<UserRequestGenResponse?> =
-                object : Callback<UserRequestGenResponse?> {
-                    override fun onResponse(
-                        call: Call<UserRequestGenResponse?>,
-                        response: Response<UserRequestGenResponse?>
-                    ) {
-                        binding.llProgressBar.visibility = View.GONE
-                        if (response.code() == 200) {
-                            Toast.makeText(
-                                this@BBConsentUserRequestActivity,
-                                resources.getString(R.string.bb_consent_user_request_request_cancelled),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            refreshData()
-                        } else {
-                            Toast.makeText(
-                                this@BBConsentUserRequestActivity,
-                                resources.getString(R.string.bb_consent_error_unexpected),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<UserRequestGenResponse?>, t: Throwable) {
-                        binding.llProgressBar.visibility = View.GONE
-                        Toast.makeText(
-                            this@BBConsentUserRequestActivity,
-                            resources.getString(R.string.bb_consent_error_unexpected),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            if (isDownloadData) BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
-            )?.service?.dataDownloadCancelRequest(
-                mOrgId, request.iD
-            )?.enqueue(callback) else BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
-            )?.service?.dataDeleteCancelRequest(
-                mOrgId, request.iD
-            )?.enqueue(callback)
-        }
-    }
-
-    private fun setOngoingRequests(dataRequests: ArrayList<UserRequest>?): Collection<UserRequest> {
-        if (dataRequests != null) {
-            for (data in dataRequests) {
-                if (data.type == 1 && isDeleteRequestOngoing!!) {
-                    data.isOnGoing = (true)
-                    isDeleteRequestOngoing = false
-                }
-                if (data.type == 2 && isDownloadRequestOngoing!!) {
-                    data.isOnGoing = (true)
-                    isDownloadRequestOngoing = false
-                }
-                if (!isDownloadRequestOngoing!! && !isDeleteRequestOngoing!!) {
-                    return dataRequests
-                }
-            }
-        }
-        return dataRequests ?: ArrayList()
-    }
-
-    private fun refreshData() {
-        requestHistories.clear()
-        startId = ""
-        getRequestHistory(true)
     }
 }

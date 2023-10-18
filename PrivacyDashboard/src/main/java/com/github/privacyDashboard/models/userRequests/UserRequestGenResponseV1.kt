@@ -1,8 +1,9 @@
 package com.github.privacyDashboard.models.userRequests
 
+import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestGenResponse
 import com.google.gson.annotations.SerializedName
 
-data class UserRequestGenResponse(
+class UserRequestGenResponseV1(
     @SerializedName("iD")
     var iD: String? = null,
     @SerializedName("userID")
@@ -25,4 +26,6 @@ data class UserRequestGenResponse(
     var stateStr: String? = null,
     @SerializedName("comment")
     var comment: String? = null
-)
+): UserRequestGenResponse{
+
+}
