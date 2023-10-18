@@ -11,6 +11,7 @@ import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.CancelDataRequestApiRepository
 import com.github.privacyDashboard.communication.repositories.GetConsentsByIdApiRepository
 import com.github.privacyDashboard.communication.repositories.GetOrganizationDetailApiRepository
+import com.github.privacyDashboard.communication.repositories.UserRequestApiRepository
 import com.github.privacyDashboard.models.Organization
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.PurposeConsent
@@ -21,6 +22,7 @@ import com.github.privacyDashboard.models.userRequests.UserRequestHistoryRespons
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
+import com.github.privacyDashboard.utils.BBConsentMessageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -119,9 +121,11 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
                                     isDeleteRequestOngoing =
                                         response.body()?.dataDeleteRequestOngoing
                                     val tempList = requestHistories.value
-                                    tempList?.addAll(setOngoingRequests(
-                                        response.body()?.dataRequests ?: ArrayList()
-                                    ))
+                                    tempList?.addAll(
+                                        setOngoingRequests(
+                                            response.body()?.dataRequests ?: ArrayList()
+                                        )
+                                    )
                                     requestHistories.value = tempList
                                 } else {
                                     val tempList = requestHistories.value
@@ -189,5 +193,81 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
         requestHistories.value?.clear()
         startId = ""
         getRequestHistory(true, context)
+    }
+
+    fun dataDeleteRequest(context: Context) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(context, true)) {
+            isLoading.value = true
+            val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service!!
+
+            val userRequestApiRepository = UserRequestApiRepository(apiService)
+
+            GlobalScope.launch {
+                val result = userRequestApiRepository.deleteDataRequest(mOrgId)
+
+                if (result?.isSuccess == true) {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                        refreshData(context)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.bb_consent_error_unexpected),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+    fun dataDownloadRequest(context: Context) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(context, true)) {
+            isLoading.value = true
+            val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service!!
+
+            val userRequestApiRepository = UserRequestApiRepository(apiService)
+
+            GlobalScope.launch {
+                val result = userRequestApiRepository.dataDownloadRequest(mOrgId)
+
+                if (result?.isSuccess == true) {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                        refreshData(context)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.bb_consent_error_unexpected),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
     }
 }
