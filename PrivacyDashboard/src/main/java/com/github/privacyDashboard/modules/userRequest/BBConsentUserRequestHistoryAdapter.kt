@@ -20,7 +20,7 @@ class BBConsentUserRequestHistoryAdapter(
     mClickListener: BBConsentUserRequestClickListener
 ) :
     RecyclerView.Adapter<BBConsentUserRequestHistoryAdapter.ViewHolder?>() {
-    private val mList: ArrayList<UserRequest>
+    private var mList: ArrayList<UserRequest>
     private val mListener: BBConsentUserRequestClickListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding: BbconsentItemUserRequestBinding = DataBindingUtil.inflate(
@@ -79,6 +79,10 @@ class BBConsentUserRequestHistoryAdapter(
         }
     }
 
+    fun updateList(userRequests: ArrayList<UserRequest>){
+        mList = userRequests
+        notifyDataSetChanged()
+    }
 
     init {
         mList = userRequests
