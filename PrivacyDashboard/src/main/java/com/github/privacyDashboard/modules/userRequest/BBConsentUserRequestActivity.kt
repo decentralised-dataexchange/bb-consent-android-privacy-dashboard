@@ -237,89 +237,11 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
             ).setPositiveButton(R.string.bb_consent_user_request_confirm,
                 DialogInterface.OnClickListener { dialog, which ->
                     if (isDelete) {
-                        dataDeleteRequest()
+                        viewModel?.dataDeleteRequest(this)
                     } else {
-                        dataDownloadRequest()
+                        viewModel?.dataDownloadRequest(this)
                     }
                 }).setNegativeButton(R.string.bb_consent_general_cancel, null).show()
-    }
-
-    private fun dataDeleteRequest() {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
-            viewModel?.isLoading?.value = true
-            val callback: Callback<Void> = object : Callback<Void> {
-                override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
-                    viewModel?.isLoading?.value = false
-                    if (response.code() == 200) {
-                        viewModel?.refreshData(this@BBConsentUserRequestActivity)
-                    } else {
-                        BBConsentMessageUtils.showSnackbar(
-                            binding.root,
-                            resources.getString(R.string.bb_consent_error_unexpected)
-                        )
-                    }
-                }
-
-                override fun onFailure(call: Call<Void?>, t: Throwable) {
-                    viewModel?.isLoading?.value = false
-                    BBConsentMessageUtils.showSnackbar(
-                        binding.root,
-                        resources.getString(R.string.bb_consent_error_unexpected)
-                    )
-                }
-            }
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
-            )?.service?.dataDeleteRequest(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                )
-            )?.enqueue(callback)
-        }
-    }
-
-    private fun dataDownloadRequest() {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
-            viewModel?.isLoading?.value = true
-            val callback: Callback<Void> = object : Callback<Void> {
-                override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
-                    viewModel?.isLoading?.value = false
-                    if (response.code() == 200) {
-                        viewModel?.refreshData(this@BBConsentUserRequestActivity)
-                    } else {
-                        BBConsentMessageUtils.showSnackbar(
-                            binding.root,
-                            resources.getString(R.string.bb_consent_error_unexpected)
-                        )
-                    }
-                }
-
-                override fun onFailure(call: Call<Void?>, t: Throwable) {
-                    viewModel?.isLoading?.value = false
-                    BBConsentMessageUtils.showSnackbar(
-                        binding.root,
-                        resources.getString(R.string.bb_consent_error_unexpected)
-                    )
-                }
-            }
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
-            )?.service?.dataDownloadRequest(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                )
-            )?.enqueue(callback)
-        }
     }
 
     private fun setUpList() {

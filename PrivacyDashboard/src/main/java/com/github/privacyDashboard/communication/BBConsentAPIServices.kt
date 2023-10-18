@@ -72,14 +72,14 @@ interface BBConsentAPIServices {
     ): Call<UserRequestStatus?>
 
     @POST("v1/user/organizations/{orgId}/data-delete")
-    fun dataDeleteRequest(
+    suspend fun dataDeleteRequest(
         @Path("orgId") orgId: String?
-    ): Call<Void>
+    ): Response<Void>
 
     @POST("v1/user/organizations/{orgId}/data-download")
-    fun dataDownloadRequest(
+    suspend fun dataDownloadRequest(
         @Path("orgId") orgId: String?
-    ): Call<Void>
+    ): Response<Void>
 
     @POST("v1/user/organizations/{orgId}/data-delete/{requestId}/cancel")
     suspend fun dataDeleteCancelRequest(

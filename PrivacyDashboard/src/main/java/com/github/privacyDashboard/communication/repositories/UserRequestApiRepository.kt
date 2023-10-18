@@ -3,20 +3,18 @@ package com.github.privacyDashboard.communication.repositories
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestGenResponse
 
-class CancelDataRequestApiRepository(private val apiService: BBConsentAPIServices) {
+class UserRequestApiRepository(private val apiService: BBConsentAPIServices) {
 
-    suspend fun cancelDataRequest(
-        orgId: String?,
-        requestId: String?
-    ): Result<UserRequestGenResponse?>? {
+    suspend fun dataDownloadRequest(
+        orgId: String?
+    ): Result<Void?>? {
         return try {
-            val response = apiService.dataDownloadCancelRequest(
-                orgId = orgId,
-                requestId = requestId
+            val response = apiService.dataDownloadRequest(
+                orgId = orgId
             )
-            if (response?.isSuccessful == true) {
+            if (response.isSuccessful) {
                 val data = response.body()
-                if (data != null) {
+                if (response.code() == 200) {
                     Result.success(data)
                 } else {
                     Result.failure(Exception("Response body is null"))
@@ -29,18 +27,16 @@ class CancelDataRequestApiRepository(private val apiService: BBConsentAPIService
         }
     }
 
-    suspend fun cancelDeleteDataRequest(
-        orgId: String?,
-        requestId: String?
-    ): Result<UserRequestGenResponse?>? {
+    suspend fun deleteDataRequest(
+        orgId: String?
+    ): Result<Void?>? {
         return try {
-            val response = apiService.dataDeleteCancelRequest(
-                orgId = orgId,
-                requestId = requestId
+            val response = apiService.dataDeleteRequest(
+                orgId = orgId
             )
-            if (response?.isSuccessful == true) {
+            if (response.isSuccessful) {
                 val data = response.body()
-                if (data != null) {
+                if (response.code() == 200) {
                     Result.success(data)
                 } else {
                     Result.failure(Exception("Response body is null"))
