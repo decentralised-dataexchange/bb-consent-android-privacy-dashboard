@@ -119,7 +119,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginTop="10dp"
-                            android:text="@string/bb_consent_dashboard_usage_purpose"
+                            android:text="@string/bb_consent_dashboard_data_agreements"
                             android:textAllCaps="true"
                             android:textColor="@color/bbConsentTextColorLight"
                             android:textSize="@dimen/text_size_normal" />
