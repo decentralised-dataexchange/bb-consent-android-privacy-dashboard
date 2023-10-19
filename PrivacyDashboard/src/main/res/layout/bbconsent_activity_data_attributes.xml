@@ -56,7 +56,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:text="@string/bb_consent_data_attribute_my_data_consents"
+                        android:text="@string/bb_consent_data_attribute_data_attributes"
                         android:textAlignment="viewStart"
                         android:textAllCaps="true"
                         android:textColor="@color/bbConsentTextColorLight"
