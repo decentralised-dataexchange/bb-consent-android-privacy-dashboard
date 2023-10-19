@@ -1,6 +1,5 @@
 package com.github.privacyDashboard.modules.attributeDetail
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -9,31 +8,12 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.github.privacyDashboard.R
-import com.github.privacyDashboard.communication.BBConsentAPIManager
-import com.github.privacyDashboard.communication.BBConsentAPIServices
-import com.github.privacyDashboard.communication.repositories.GetConsentsByIdApiRepository
-import com.github.privacyDashboard.communication.repositories.UpdateDataAttributeStatusApiRepository
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributeDetailBinding
-import com.github.privacyDashboard.events.RefreshHome
-import com.github.privacyDashboard.events.RefreshList
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.consent.ResultResponseV1
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttribute
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.Status
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
-import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
-import com.github.privacyDashboard.modules.home.BBConsentDashboardViewModel
 import com.github.privacyDashboard.utils.BBConsentDataUtils
-import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.EventBus
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {

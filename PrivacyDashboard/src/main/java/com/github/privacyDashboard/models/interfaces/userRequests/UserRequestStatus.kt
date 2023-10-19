@@ -1,4 +1,4 @@
-package com.github.privacyDashboard.models.uiModels.userRequests
+package com.github.privacyDashboard.models.interfaces.userRequests
 
 interface UserRequestStatus {
     val mRequestOngoing: Boolean?

@@ -1,6 +1,6 @@
 package com.github.privacyDashboard.models.consentHistory
 
-import com.github.privacyDashboard.models.uiModels.consentHistory.ConsentHistory
+import com.github.privacyDashboard.models.interfaces.consentHistory.ConsentHistory
 import com.google.gson.annotations.SerializedName
 
 class ConsentHistoryV1(

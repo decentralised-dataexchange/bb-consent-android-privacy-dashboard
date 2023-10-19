@@ -1,9 +1,8 @@
 package com.github.privacyDashboard.models.attributes
 
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttribute
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.Status
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.Status
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
 class DataAttributeV1(
     @SerializedName("ID")

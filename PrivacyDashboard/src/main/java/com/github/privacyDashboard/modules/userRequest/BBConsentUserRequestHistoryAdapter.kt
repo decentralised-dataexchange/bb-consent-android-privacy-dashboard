@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentItemUserRequestBinding
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequest
-import com.github.privacyDashboard.models.userRequests.UserRequestV1
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequest
 import com.github.privacyDashboard.utils.BBConsentDateUtils.YYYYMMDDHHMMSS
 import com.github.privacyDashboard.utils.BBConsentDateUtils.getApiFormatDate
 

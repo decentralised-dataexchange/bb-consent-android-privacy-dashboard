@@ -1,8 +1,7 @@
 package com.github.privacyDashboard.models.attributes
 
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.Status
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.Status
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
 class StatusV1(
     @SerializedName("Consented")

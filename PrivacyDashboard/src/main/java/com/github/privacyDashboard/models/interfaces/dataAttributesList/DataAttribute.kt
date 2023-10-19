@@ -1,4 +1,4 @@
-package com.github.privacyDashboard.models.uiModels.dataAttributesList
+package com.github.privacyDashboard.models.interfaces.dataAttributesList
 
 interface DataAttribute {
     val mId: String?

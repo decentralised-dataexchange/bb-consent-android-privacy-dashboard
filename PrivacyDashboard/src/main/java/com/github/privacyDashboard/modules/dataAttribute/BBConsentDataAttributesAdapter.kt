@@ -7,8 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentItemDataAttributeBinding
-import com.github.privacyDashboard.models.attributes.DataAttributeV1
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttribute
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
 import com.github.privacyDashboard.utils.BBConsentStringUtils
 
 class BBConsentDataAttributesAdapter(

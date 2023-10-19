@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentActivityUserRequestStatusBinding
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestStatus
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequestStatus
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.utils.BBConsentDateUtils
 

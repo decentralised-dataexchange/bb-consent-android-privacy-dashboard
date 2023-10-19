@@ -1,9 +1,7 @@
 package com.github.privacyDashboard.models.userRequests
 
-import com.github.privacyDashboard.models.consentHistory.ConsentHistoryV1
-import com.github.privacyDashboard.models.uiModels.consentHistory.ConsentHistory
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequest
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestHistoryResponse
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequest
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequestHistoryResponse
 import com.google.gson.annotations.SerializedName
 
 class UserRequestHistoryResponseV1(

@@ -11,9 +11,7 @@ import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.*
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequest
-import com.github.privacyDashboard.models.userRequests.UserRequestV1
-import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponseV1
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequest
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
 import com.github.privacyDashboard.modules.userRequestStatus.BBConsentUserRequestStatusActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
@@ -22,9 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
 

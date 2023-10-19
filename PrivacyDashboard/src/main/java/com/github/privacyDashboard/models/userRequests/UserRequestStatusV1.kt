@@ -1,6 +1,6 @@
 package com.github.privacyDashboard.models.userRequests
 
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestStatus
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequestStatus
 import com.google.gson.annotations.SerializedName
 
 data class UserRequestStatusV1(

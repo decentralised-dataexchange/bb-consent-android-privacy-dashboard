@@ -1,7 +1,7 @@
 package com.github.privacyDashboard.communication.repositories
 
 import com.github.privacyDashboard.communication.BBConsentAPIServices
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestGenResponse
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequestGenResponse
 
 class CancelDataRequestApiRepository(private val apiService: BBConsentAPIServices) {
 

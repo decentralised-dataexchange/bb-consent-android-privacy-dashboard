@@ -1,7 +1,7 @@
 package com.github.privacyDashboard.communication.repositories
 
 import com.github.privacyDashboard.communication.BBConsentAPIServices
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAgreement
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAgreement
 
 class GetConsentsByIdApiRepository(private val apiService: BBConsentAPIServices) {
 

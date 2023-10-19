@@ -10,10 +10,8 @@ import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributesBinding
 import com.github.privacyDashboard.events.RefreshList
-import com.github.privacyDashboard.models.attributes.DataAttributeV1
-import com.github.privacyDashboard.models.attributes.DataAttributesResponse
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAgreement
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttribute
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAgreement
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_TITLE
