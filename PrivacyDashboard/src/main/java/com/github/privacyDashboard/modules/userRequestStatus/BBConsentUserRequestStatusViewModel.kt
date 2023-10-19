@@ -8,19 +8,14 @@ import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.CancelDataRequestApiRepository
 import com.github.privacyDashboard.communication.repositories.UserRequestStatusApiRepository
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestStatus
-import com.github.privacyDashboard.models.userRequests.UserRequestStatusV1
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequestStatus
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
 import com.github.privacyDashboard.utils.BBConsentDataUtils
-import com.github.privacyDashboard.utils.BBConsentMessageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class BBConsentUserRequestStatusViewModel() : BBConsentBaseViewModel() {
 

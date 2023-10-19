@@ -1,4 +1,4 @@
-package com.github.privacyDashboard.models.uiModels.consentHistory
+package com.github.privacyDashboard.models.interfaces.consentHistory
 
 interface ConsentHistory {
     val mId: String?

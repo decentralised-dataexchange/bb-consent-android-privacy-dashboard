@@ -1,7 +1,7 @@
 package com.github.privacyDashboard.models.consent
 
 import com.github.privacyDashboard.models.PurposeConsent
-import com.github.privacyDashboard.models.uiModels.consent.UpdateConsentStatusResponse
+import com.github.privacyDashboard.models.interfaces.consent.UpdateConsentStatusResponse
 import com.google.gson.annotations.SerializedName
 
 class UpdateConsentStatusResponseV1(

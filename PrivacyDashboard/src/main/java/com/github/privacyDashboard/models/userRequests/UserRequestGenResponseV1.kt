@@ -1,6 +1,6 @@
 package com.github.privacyDashboard.models.userRequests
 
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestGenResponse
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequestGenResponse
 import com.google.gson.annotations.SerializedName
 
 class UserRequestGenResponseV1(

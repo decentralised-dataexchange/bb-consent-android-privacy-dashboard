@@ -1,7 +1,7 @@
 package com.github.privacyDashboard.models.attributes
 
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAgreement
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttributes
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAgreement
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttributes
 import com.google.gson.annotations.SerializedName
 
 class DataAttributesResponse(

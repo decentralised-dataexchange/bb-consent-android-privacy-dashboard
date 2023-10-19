@@ -1,7 +1,6 @@
 package com.github.privacyDashboard.modules.attributeDetail
 
 import android.content.Context
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
@@ -10,8 +9,8 @@ import com.github.privacyDashboard.communication.repositories.UpdateDataAttribut
 import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.events.RefreshList
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttribute
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.Status
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.Status
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil

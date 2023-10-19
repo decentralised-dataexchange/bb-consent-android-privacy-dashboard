@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentItemConsentHistoryBinding
-import com.github.privacyDashboard.models.consentHistory.ConsentHistoryV1
-import com.github.privacyDashboard.models.uiModels.consentHistory.ConsentHistory
+import com.github.privacyDashboard.models.interfaces.consentHistory.ConsentHistory
 import com.github.privacyDashboard.utils.BBConsentDateUtils.getApiFormatDate
 
 class BBConsentHistoryAdapter(

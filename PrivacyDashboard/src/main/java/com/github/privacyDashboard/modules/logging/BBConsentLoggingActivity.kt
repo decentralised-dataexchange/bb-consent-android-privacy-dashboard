@@ -9,11 +9,8 @@ import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.GetConsentHistoryApiRepository
-import com.github.privacyDashboard.communication.repositories.GetOrganizationDetailApiRepository
 import com.github.privacyDashboard.databinding.BbconsentActivityLoggingBinding
-import com.github.privacyDashboard.models.consentHistory.ConsentHistoryV1
-import com.github.privacyDashboard.models.consentHistory.ConsentHistoryResponseV1
-import com.github.privacyDashboard.models.uiModels.consentHistory.ConsentHistory
+import com.github.privacyDashboard.models.interfaces.consentHistory.ConsentHistory
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
@@ -22,9 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class BBConsentLoggingActivity : BBConsentBaseActivity() {
 

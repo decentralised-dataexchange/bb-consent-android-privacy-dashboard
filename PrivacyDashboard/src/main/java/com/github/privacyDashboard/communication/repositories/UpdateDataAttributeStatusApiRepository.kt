@@ -2,7 +2,7 @@
 
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.uiModels.consent.ResultResponse
+import com.github.privacyDashboard.models.interfaces.consent.ResultResponse
 
 class UpdateDataAttributeStatusApiRepository(private val apiService: BBConsentAPIServices) {
 

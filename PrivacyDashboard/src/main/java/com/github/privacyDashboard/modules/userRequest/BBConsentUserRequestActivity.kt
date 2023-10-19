@@ -10,8 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentActivityUserRequestBinding
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequest
-import com.github.privacyDashboard.models.userRequests.UserRequestV1
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequest
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.paginate.Paginate
 

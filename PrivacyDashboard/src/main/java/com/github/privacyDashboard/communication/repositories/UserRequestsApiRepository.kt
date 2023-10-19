@@ -1,14 +1,7 @@
 package com.github.privacyDashboard.communication.repositories
 
 import com.github.privacyDashboard.communication.BBConsentAPIServices
-import com.github.privacyDashboard.models.consentHistory.ConsentHistoryResponseV1
-import com.github.privacyDashboard.models.uiModels.consentHistory.ConsentHistoryResponse
-import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestHistoryResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.http.Path
-import retrofit2.http.Query
+import com.github.privacyDashboard.models.interfaces.userRequests.UserRequestHistoryResponse
 
 class UserRequestsApiRepository(private var apiService: BBConsentAPIServices) {
 

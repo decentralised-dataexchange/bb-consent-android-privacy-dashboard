@@ -2,9 +2,9 @@ package com.github.privacyDashboard.models.attributes
 
 import com.github.privacyDashboard.models.Count
 import com.github.privacyDashboard.models.PurposeV1
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttribute
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.DataAttributes
-import com.github.privacyDashboard.models.uiModels.dataAttributesList.Purpose
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttributes
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.Purpose
 import com.google.gson.annotations.SerializedName
 
 class DataAttributesV1(

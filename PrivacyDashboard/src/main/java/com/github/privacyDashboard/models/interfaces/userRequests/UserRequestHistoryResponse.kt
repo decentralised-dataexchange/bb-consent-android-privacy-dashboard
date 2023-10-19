@@ -1,6 +1,4 @@
-package com.github.privacyDashboard.models.uiModels.userRequests
-
-import com.github.privacyDashboard.models.uiModels.consentHistory.ConsentHistory
+package com.github.privacyDashboard.models.interfaces.userRequests
 
 interface UserRequestHistoryResponse {
     val mDataRequests: ArrayList<UserRequest?>?
