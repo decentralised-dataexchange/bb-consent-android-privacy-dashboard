@@ -1,30 +1,23 @@
 package com.github.privacyDashboard.modules.userRequest
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
-import android.view.View
+import android.view.ContextThemeWrapper
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
-import com.github.privacyDashboard.communication.repositories.CancelDataRequestApiRepository
-import com.github.privacyDashboard.communication.repositories.GetConsentsByIdApiRepository
-import com.github.privacyDashboard.communication.repositories.GetOrganizationDetailApiRepository
-import com.github.privacyDashboard.communication.repositories.UserRequestApiRepository
-import com.github.privacyDashboard.models.Organization
-import com.github.privacyDashboard.models.OrganizationDetailResponse
-import com.github.privacyDashboard.models.PurposeConsent
-import com.github.privacyDashboard.models.attributes.DataAttributesResponse
-import com.github.privacyDashboard.models.userRequests.UserRequest
-import com.github.privacyDashboard.models.userRequests.UserRequestGenResponseV1
-import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
+import com.github.privacyDashboard.communication.repositories.*
+import com.github.privacyDashboard.models.uiModels.userRequests.UserRequest
+import com.github.privacyDashboard.models.userRequests.UserRequestV1
+import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponseV1
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
-import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
+import com.github.privacyDashboard.modules.userRequestStatus.BBConsentUserRequestStatusActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
-import com.github.privacyDashboard.utils.BBConsentMessageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -46,7 +39,7 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
     private var isDownloadRequestOngoing: Boolean? = false
     private var isDeleteRequestOngoing: Boolean? = false
 
-    var requestHistories = MutableLiveData<ArrayList<UserRequest>>(ArrayList())
+    var requestHistories = MutableLiveData<ArrayList<UserRequest?>>(ArrayList())
     var listVisibility = MutableLiveData<Boolean>(false)
 
     init {
@@ -72,9 +65,9 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
 
             GlobalScope.launch {
                 val result = if (isDownloadData)
-                    cancelDataRequestApiRepository.cancelDataRequest(mOrgId, request.iD)
+                    cancelDataRequestApiRepository.cancelDataRequest(mOrgId, request.mId)
                 else
-                    cancelDataRequestApiRepository.cancelDeleteDataRequest(mOrgId, request.iD)
+                    cancelDataRequestApiRepository.cancelDeleteDataRequest(mOrgId, request.mId)
 
                 if (result?.isSuccess == true) {
                     withContext(Dispatchers.Main) {
@@ -104,81 +97,85 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(context)) {
             isLoadingData = true
             if (showProgress) isLoading.value = true
-            val callback: Callback<UserRequestHistoryResponse> =
-                object : Callback<UserRequestHistoryResponse> {
-                    override fun onResponse(
-                        call: Call<UserRequestHistoryResponse>,
-                        response: Response<UserRequestHistoryResponse>
-                    ) {
-                        isLoadingData = false
-                        isLoading.value = false
-                        if (response.code() == 200) {
-                            if (response.body()?.dataRequests != null) {
-                                if (startId.equals("", ignoreCase = true)) {
-                                    requestHistories.value = ArrayList()
-                                    isDownloadRequestOngoing =
-                                        response.body()?.dataDownloadRequestOngoing
-                                    isDeleteRequestOngoing =
-                                        response.body()?.dataDeleteRequestOngoing
-                                    val tempList = requestHistories.value
-                                    tempList?.addAll(
-                                        setOngoingRequests(
-                                            response.body()?.dataRequests ?: ArrayList()
-                                        )
-                                    )
-                                    requestHistories.value = tempList
-                                } else {
-                                    val tempList = requestHistories.value
-                                    tempList?.addAll(response.body()?.dataRequests ?: ArrayList())
-                                    requestHistories.value = tempList
-                                }
-                                if ((requestHistories.value?.size ?: 0) > 0) {
-                                    startId =
-                                        requestHistories.value?.get(
-                                            (requestHistories.value?.size ?: 1) - 1
-                                        )?.iD ?: ""
-                                }
-                                listVisibility.value = (requestHistories.value?.size ?: 0) > 0
 
-                            } else {
-                                if (startId.equals("", ignoreCase = true)) {
-                                    requestHistories.value = ArrayList()
-                                    listVisibility.value = (requestHistories.value?.size ?: 0) > 0
-
-                                }
-                            }
-                            if (response.body()?.dataRequests == null) {
-                                hasLoadedAllItems = true
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<UserRequestHistoryResponse>, t: Throwable) {
-                        isLoadingData = false
-                        isLoading.value = false
-                    }
-                }
-            BBConsentAPIManager.getApi(
+            val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
                 BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_TOKEN
                 ) ?: "",
-                BBConsentDataUtils.getStringValue(context, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
-            )?.service?.getOrgRequestStatus(
-                mOrgId, startId
-            )?.enqueue(callback)
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service!!
+
+            val userRequestApiRepository = UserRequestsApiRepository(apiService)
+
+            GlobalScope.launch {
+                val result = userRequestApiRepository.getUserRequests(mOrgId, startId)
+
+                if (result?.isSuccess == true) {
+                    withContext(Dispatchers.Main) {
+                        isLoadingData = false
+                        isLoading.value = false
+                        if (result.getOrNull()?.mDataRequests != null) {
+                            if (startId.equals("", ignoreCase = true)) {
+                                requestHistories.value = ArrayList()
+                                isDownloadRequestOngoing =
+                                    result.getOrNull()?.mDataDownloadRequestOngoing
+                                isDeleteRequestOngoing =
+                                    result.getOrNull()?.mDataDeleteRequestOngoing
+                                val tempList = requestHistories.value
+                                tempList?.addAll(
+                                    setOngoingRequests(
+                                        result.getOrNull()?.mDataRequests ?: ArrayList()
+                                    )
+                                )
+                                requestHistories.value = tempList
+                            } else {
+                                val tempList = requestHistories.value
+                                tempList?.addAll(result.getOrNull()?.mDataRequests ?: ArrayList())
+                                requestHistories.value = tempList
+                            }
+                            if ((requestHistories.value?.size ?: 0) > 0) {
+                                startId =
+                                    requestHistories.value?.get(
+                                        (requestHistories.value?.size ?: 1) - 1
+                                    )?.mId ?: ""
+                            }
+                            listVisibility.value = (requestHistories.value?.size ?: 0) > 0
+
+                        } else {
+                            if (startId.equals("", ignoreCase = true)) {
+                                requestHistories.value = ArrayList()
+                                listVisibility.value = (requestHistories.value?.size ?: 0) > 0
+
+                            }
+                        }
+                        if (result.getOrNull()?.mDataRequests == null) {
+                            hasLoadedAllItems = true
+                        }
+
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        isLoadingData = false
+                        isLoading.value = false
+                    }
+                }
+            }
         }
     }
 
-    private fun setOngoingRequests(dataRequests: ArrayList<UserRequest>?): Collection<UserRequest> {
+    private fun setOngoingRequests(dataRequests: ArrayList<UserRequest?>?): Collection<UserRequest?> {
         if (dataRequests != null) {
             for (data in dataRequests) {
-                if (data.type == 1 && isDeleteRequestOngoing!!) {
-                    data.isOnGoing = (true)
+                if (data?.mType == 1 && isDeleteRequestOngoing!!) {
+                    data.mIsOngoing = (true)
                     isDeleteRequestOngoing = false
                 }
-                if (data.type == 2 && isDownloadRequestOngoing!!) {
-                    data.isOnGoing = (true)
+                if (data?.mType == 2 && isDownloadRequestOngoing!!) {
+                    data.mIsOngoing = (true)
                     isDownloadRequestOngoing = false
                 }
                 if (!isDownloadRequestOngoing!! && !isDeleteRequestOngoing!!) {
@@ -270,4 +267,122 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
             }
         }
     }
+
+    fun deleteDataRequestStatus(context: Context) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(context, true)) {
+            isLoading.value = true
+
+            val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service!!
+
+            val userRequestStatusApiRepository = UserRequestStatusApiRepository(apiService)
+
+            GlobalScope.launch {
+                val result = userRequestStatusApiRepository.deleteDataStatusRequest(mOrgId)
+
+                if (result?.isSuccess == true) {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                        if (result.getOrNull()?.mRequestOngoing == true) {
+                            gotToStatusPage(false, context)
+                        } else {
+                            confirmationAlert(true, context)
+                        }
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.bb_consent_error_unexpected),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+    fun downloadDataRequestStatus(context: Context) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(context, true)) {
+            isLoading.value = true
+
+            val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service!!
+
+            val userRequestStatusApiRepository = UserRequestStatusApiRepository(apiService)
+
+            GlobalScope.launch {
+                val result = userRequestStatusApiRepository.dataDownloadStatusRequest(mOrgId)
+
+                if (result?.isSuccess == true) {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                        if (result.getOrNull()?.mRequestOngoing == true) {
+                            gotToStatusPage(false, context)
+                        } else {
+                            confirmationAlert(false, context)
+                        }
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        isLoading.value = false
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.bb_consent_error_unexpected),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun confirmationAlert(isDelete: Boolean, context: Context) {
+        AlertDialog.Builder(ContextThemeWrapper(context, R.style.AlertDialogCustom))
+            .setTitle(context.resources.getString(R.string.bb_consent_user_request_confirmation))
+            .setMessage(
+                context.resources.getString(
+                    R.string.bb_consent_user_request_confirmation_message,
+                    if (isDelete) context.resources.getString(R.string.bb_consent_user_request_data_delete) else context.resources.getString(
+                        R.string.bb_consent_user_request_download_data
+                    ),
+                    mOrgName
+                )
+            ).setPositiveButton(R.string.bb_consent_user_request_confirm,
+                DialogInterface.OnClickListener { dialog, which ->
+                    if (isDelete) {
+                        dataDeleteRequest(context)
+                    } else {
+                        dataDownloadRequest(context)
+                    }
+                }).setNegativeButton(R.string.bb_consent_general_cancel, null).show()
+
+    }
+
+    fun gotToStatusPage(isDownloadRequest: Boolean, context: Context) {
+        val intent = Intent(context, BBConsentUserRequestStatusActivity::class.java)
+        intent.putExtra(
+            BBConsentUserRequestStatusActivity.EXTRA_DATA_REQUEST_TYPE,
+            isDownloadRequest
+        )
+        context.startActivity(intent)
+    }
+
 }

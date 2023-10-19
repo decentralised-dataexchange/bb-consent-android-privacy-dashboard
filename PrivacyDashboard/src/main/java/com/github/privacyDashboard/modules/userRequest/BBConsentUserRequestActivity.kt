@@ -1,36 +1,19 @@
 package com.github.privacyDashboard.modules.userRequest
 
-import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.ContextThemeWrapper
 import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.privacyDashboard.R
-import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityUserRequestBinding
-import com.github.privacyDashboard.models.userRequests.UserRequest
-import com.github.privacyDashboard.models.userRequests.UserRequestGenResponseV1
-import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
-import com.github.privacyDashboard.models.userRequests.UserRequestStatus
+import com.github.privacyDashboard.models.uiModels.userRequests.UserRequest
+import com.github.privacyDashboard.models.userRequests.UserRequestV1
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
-import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailViewModel
-import com.github.privacyDashboard.modules.userRequestStatus.BBConsentUserRequestStatusActivity
-import com.github.privacyDashboard.utils.BBConsentDataUtils
-import com.github.privacyDashboard.utils.BBConsentMessageUtils
-import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import com.paginate.Paginate
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class BBConsentUserRequestActivity : BBConsentBaseActivity() {
 
@@ -111,11 +94,11 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item?.itemId) {
                     R.id.action_download_data -> {
-                        downloadDataRequestStatus()
+                        viewModel?.downloadDataRequestStatus(this)
                         true
                     }
                     R.id.action_forgot_me -> {
-                        deleteDataRequestStatus()
+                        viewModel?.deleteDataRequestStatus(this)
                         true
                     }
                     else -> false
@@ -125,138 +108,22 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
         }
     }
 
-    /**
-     * To delete the user data and forget me
-     */
-    private fun deleteDataRequestStatus() {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
-            viewModel?.isLoading?.value = true
-            val callback: Callback<UserRequestStatus?> = object : Callback<UserRequestStatus?> {
-                override fun onResponse(
-                    call: Call<UserRequestStatus?>,
-                    response: Response<UserRequestStatus?>
-                ) {
-                    viewModel?.isLoading?.value = false
-                    if (response.code() == 200) {
-                        if (response.body()?.requestOngoing == true) {
-                            gotToStatusPage(false)
-                        } else {
-                            confirmationAlert(true)
-                        }
-                    } else {
-                        BBConsentMessageUtils.showSnackbar(
-                            binding.root,
-                            resources.getString(R.string.bb_consent_error_unexpected)
-                        )
-                    }
-                }
-
-                override fun onFailure(call: Call<UserRequestStatus?>, t: Throwable) {
-                    viewModel?.isLoading?.value = false
-                    BBConsentMessageUtils.showSnackbar(
-                        binding.root,
-                        resources.getString(R.string.bb_consent_error_unexpected)
-                    )
-                }
-            }
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
-            )?.service?.getDataDeleteStatus(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                )
-            )?.enqueue(callback)
-        }
-    }
-
-    /**
-     * Request to download the data
-     */
-    private fun downloadDataRequestStatus() {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
-            viewModel?.isLoading?.value = true
-            val callback: Callback<UserRequestStatus?> = object : Callback<UserRequestStatus?> {
-                override fun onResponse(
-                    call: Call<UserRequestStatus?>,
-                    response: Response<UserRequestStatus?>
-                ) {
-                    viewModel?.isLoading?.value = false
-                    if (response.code() == 200) {
-                        if (response.body()?.requestOngoing == true) {
-                            gotToStatusPage(true)
-                        } else {
-                            confirmationAlert(false)
-                        }
-                    } else {
-                        BBConsentMessageUtils.showSnackbar(
-                            binding.root,
-                            resources.getString(R.string.bb_consent_error_unexpected)
-                        )
-                    }
-                }
-
-                override fun onFailure(call: Call<UserRequestStatus?>, t: Throwable) {
-                    viewModel?.isLoading?.value = false
-                    BBConsentMessageUtils.showSnackbar(
-                        binding.root,
-                        resources.getString(R.string.bb_consent_error_unexpected)
-                    )
-                }
-            }
-            BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_BASE_URL)
-            )?.service?.getDataDownloadStatus(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                )
-            )?.enqueue(callback)
-        }
-    }
-
-    private fun confirmationAlert(isDelete: Boolean) {
-        AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
-            .setTitle(resources.getString(R.string.bb_consent_user_request_confirmation))
-            .setMessage(
-                resources.getString(
-                    R.string.bb_consent_user_request_confirmation_message,
-                    if (isDelete) resources.getString(R.string.bb_consent_user_request_data_delete) else resources.getString(
-                        R.string.bb_consent_user_request_download_data
-                    ),
-                    viewModel?.mOrgName
-                )
-            ).setPositiveButton(R.string.bb_consent_user_request_confirm,
-                DialogInterface.OnClickListener { dialog, which ->
-                    if (isDelete) {
-                        viewModel?.dataDeleteRequest(this)
-                    } else {
-                        viewModel?.dataDownloadRequest(this)
-                    }
-                }).setNegativeButton(R.string.bb_consent_general_cancel, null).show()
-    }
-
     private fun setUpList() {
         adapter = BBConsentUserRequestHistoryAdapter(
             viewModel?.requestHistories?.value ?: ArrayList(),
             object : BBConsentUserRequestClickListener {
 
                 override fun onRequestClick(request: UserRequest?) {
-                    gotToStatusPage(request?.type != 1)
+                    viewModel?.gotToStatusPage(
+                        request?.mType != 1,
+                        this@BBConsentUserRequestActivity
+                    )
                 }
 
                 override fun onRequestCancel(request: UserRequest?) {
                     request?.let {
                         viewModel?.cancelDataRequest(
-                            request.type == 2,
+                            request.mType == 2,
                             it,
                             this@BBConsentUserRequestActivity
                         )
@@ -283,14 +150,5 @@ class BBConsentUserRequestActivity : BBConsentBaseActivity() {
         }).setLoadingTriggerThreshold(1)
             .addLoadingListItem(true)
             .build()
-    }
-
-    private fun gotToStatusPage(isDownloadRequest: Boolean) {
-        val intent = Intent(this, BBConsentUserRequestStatusActivity::class.java)
-        intent.putExtra(
-            BBConsentUserRequestStatusActivity.EXTRA_DATA_REQUEST_TYPE,
-            isDownloadRequest
-        )
-        startActivity(intent)
     }
 }

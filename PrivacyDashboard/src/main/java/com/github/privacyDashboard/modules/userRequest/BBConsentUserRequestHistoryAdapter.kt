@@ -1,26 +1,24 @@
 package com.github.privacyDashboard.modules.userRequest
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentItemUserRequestBinding
-import com.github.privacyDashboard.models.userRequests.UserRequest
-import com.github.privacyDashboard.utils.BBConsentDateUtils
+import com.github.privacyDashboard.models.uiModels.userRequests.UserRequest
+import com.github.privacyDashboard.models.userRequests.UserRequestV1
 import com.github.privacyDashboard.utils.BBConsentDateUtils.YYYYMMDDHHMMSS
 import com.github.privacyDashboard.utils.BBConsentDateUtils.getApiFormatDate
 
 class BBConsentUserRequestHistoryAdapter(
-    userRequests: ArrayList<UserRequest>,
+    userRequests: ArrayList<UserRequest?>,
     mClickListener: BBConsentUserRequestClickListener
 ) :
     RecyclerView.Adapter<BBConsentUserRequestHistoryAdapter.ViewHolder?>() {
-    private var mList: ArrayList<UserRequest>
+    private var mList: ArrayList<UserRequest?>
     private val mListener: BBConsentUserRequestClickListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding: BbconsentItemUserRequestBinding = DataBindingUtil.inflate(
@@ -32,7 +30,7 @@ class BBConsentUserRequestHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val purposeConsent: UserRequest = mList[position]
+        val purposeConsent: UserRequest? = mList[position]
         holder.bind(purposeConsent, mListener)
     }
 
@@ -44,22 +42,22 @@ class BBConsentUserRequestHistoryAdapter(
         RecyclerView.ViewHolder(itemRowBinding.root) {
         var itemRowBinding: BbconsentItemUserRequestBinding
         fun bind(
-            userRequest: UserRequest,
+            userRequest: UserRequest?,
             mListener: BBConsentUserRequestClickListener,
         ) {
-            itemRowBinding.tvRequestType.text = userRequest.typeStr
+            itemRowBinding.tvRequestType.text = userRequest?.mTypeStr
             itemRowBinding.tvRequestDate.setText(
                 TimeAgo.using(
                     getApiFormatDate(
-                        userRequest.requestedDate?.replace(" +0000 UTC", ""),
+                        userRequest?.mRequestedDate?.replace(" +0000 UTC", ""),
                         YYYYMMDDHHMMSS
                     ).time
                 )
             )
-            itemRowBinding.tvRequestStatus.text = userRequest.stateStr
+            itemRowBinding.tvRequestStatus.text = userRequest?.mStateStr
 
             itemRowBinding.tvCancel.visibility =
-                if (userRequest.isOnGoing == true) View.VISIBLE else View.GONE
+                if (userRequest?.mIsOngoing == true) View.VISIBLE else View.GONE
 
             itemRowBinding.tvCancel.setOnClickListener {
                 mListener.onRequestCancel(
@@ -68,7 +66,7 @@ class BBConsentUserRequestHistoryAdapter(
             }
 
             itemRowBinding.llItem.setOnClickListener {
-                if (userRequest.isOnGoing == true) mListener.onRequestClick(
+                if (userRequest?.mIsOngoing == true) mListener.onRequestClick(
                     userRequest
                 )
             }
@@ -79,7 +77,7 @@ class BBConsentUserRequestHistoryAdapter(
         }
     }
 
-    fun updateList(userRequests: ArrayList<UserRequest>){
+    fun updateList(userRequests: ArrayList<UserRequest?>){
         mList = userRequests
         notifyDataSetChanged()
     }

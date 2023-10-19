@@ -3,33 +3,21 @@ package com.github.privacyDashboard.modules.userRequestStatus
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.privacyDashboard.R
-import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityUserRequestStatusBinding
-import com.github.privacyDashboard.models.userRequests.UserRequestGenResponseV1
-import com.github.privacyDashboard.models.userRequests.UserRequestStatus
+import com.github.privacyDashboard.models.uiModels.userRequests.UserRequestStatus
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
-import com.github.privacyDashboard.modules.userRequest.BBConsentUserRequestViewModel
-import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentDateUtils
-import com.github.privacyDashboard.utils.BBConsentMessageUtils
-import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
 
     private lateinit var binding: BbconsentActivityUserRequestStatusBinding
 
     private var mIsDownloadData: Boolean? = false
-
-    private var status: UserRequestStatus? = null
 
     private var viewModel: BBConsentUserRequestStatusViewModel? = null
 
@@ -47,7 +35,7 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
         binding.lifecycleOwner = this
         getIntentData()
         setUpToolBar()
-        getDataRequestStatus()
+        viewModel?.getDataRequestStatus(mIsDownloadData, this)
         initListener()
     }
 
@@ -84,62 +72,8 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
         }
     }
 
-    private fun getDataRequestStatus() {
-        if (BBConsentNetWorkUtil.isConnectedToInternet(this, true)) {
-            viewModel?.isLoading?.value = true
-            val callback: Callback<UserRequestStatus?> = object : Callback<UserRequestStatus?> {
-                override fun onResponse(
-                    call: Call<UserRequestStatus?>,
-                    response: Response<UserRequestStatus?>
-                ) {
-                    viewModel?.isLoading?.value = false
-                    if (response.code() == 200) {
-                        status = response.body()
-                        setUpStepView()
-                    } else {
-                        BBConsentMessageUtils.showSnackbar(
-                            window.decorView.findViewById(android.R.id.content),
-                            resources.getString(R.string.bb_consent_error_unexpected)
-                        )
-                    }
-                }
-
-                override fun onFailure(call: Call<UserRequestStatus?>, t: Throwable) {
-                    viewModel?.isLoading?.value = false
-                    BBConsentMessageUtils.showSnackbar(
-                        window.decorView.findViewById(android.R.id.content),
-                        resources.getString(R.string.bb_consent_error_unexpected)
-                    )
-                }
-            }
-            if (mIsDownloadData == true) BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_TOKEN) ?: "",
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                )
-            )?.service?.getDataDownloadStatus(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                )
-            )?.enqueue(callback) else BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(this, BBConsentDataUtils.EXTRA_TAG_TOKEN) ?: "",
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                )
-            )?.service?.getDataDeleteStatus(
-                BBConsentDataUtils.getStringValue(
-                    this,
-                    BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                )
-            )?.enqueue(callback)
-        }
-    }
-
-    private fun setUpStepView() {
-        if (status != null && (status?.state ?: 0) > 0) {
+    private fun setUpStepView(status: UserRequestStatus?) {
+        if (status != null && (status.mState ?: 0) > 0) {
             binding.btnCancel.visibility = View.VISIBLE
             val list0: MutableList<String> = ArrayList()
             list0.add(resources.getString(R.string.bb_consent_user_request_request_initiated))
@@ -147,11 +81,11 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
             list0.add(resources.getString(R.string.bb_consent_user_request_request_processed))
             val dates: MutableList<String> = ArrayList()
             dates.add(
-                if (status?.requestedDate != null && !status?.requestedDate.equals("")
+                if (status.mRequestedDate != null && !status.mRequestedDate.equals("")
                 ) BBConsentDateUtils.getApiFormatTime(
                     BBConsentDateUtils.YYYYMMDDHHMMSS,
                     BBConsentDateUtils.DDMMYYYYHHMMA,
-                    status?.requestedDate?.replace(" +0000 UTC", "")
+                    status.mRequestedDate?.replace(" +0000 UTC", "")
                 ) else ""
             )
             dates.add("")
@@ -215,7 +149,7 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
     }
 
     private fun getSelectedStatusPosition(): Int {
-        return when (status?.state) {
+        return when (viewModel?.status?.value?.mState) {
             1 -> 0
             2 -> 1
             6, 7 -> 0
@@ -227,7 +161,7 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
         binding.btnCancel.setOnClickListener {
             viewModel?.cancelDataRequest(
                 mIsDownloadData,
-                status?.iD,
+                viewModel?.status?.value?.mId,
                 this
             )
         }
@@ -235,6 +169,10 @@ class BBConsentUserRequestStatusActivity : BBConsentBaseActivity() {
         viewModel?.shouldFinish?.observe(this, Observer { newData ->
             if (newData)
                 finish()
+        })
+
+        viewModel?.status?.observe(this, Observer { newData ->
+            setUpStepView(newData)
         })
     }
 }

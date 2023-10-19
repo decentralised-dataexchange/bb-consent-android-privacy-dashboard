@@ -7,9 +7,8 @@ import com.github.privacyDashboard.models.consent.ResultResponseV1
 import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponseV1
 import com.github.privacyDashboard.models.consentHistory.ConsentHistoryResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestGenResponseV1
-import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponse
-import com.github.privacyDashboard.models.userRequests.UserRequestStatus
-import retrofit2.Call
+import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponseV1
+import com.github.privacyDashboard.models.userRequests.UserRequestStatusV1
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -55,21 +54,21 @@ interface BBConsentAPIServices {
     ): Response<UpdateConsentStatusResponseV1?>?
 
     @GET("v1/user/organizations/{orgId}/data-status")
-    fun getOrgRequestStatus(
+    suspend fun getOrgRequestStatus(
         @Path("orgId") orgId: String?,
         @Query("startid") startid: String?
-    ): Call<UserRequestHistoryResponse>
+    ): Response<UserRequestHistoryResponseV1>
 
     //data download and delete
     @GET("v1/user/organizations/{orgId}/data-download/status")
-    fun getDataDownloadStatus(
+    suspend fun getDataDownloadStatus(
         @Path("orgId") orgId: String?
-    ): Call<UserRequestStatus?>
+    ): Response<UserRequestStatusV1?>
 
     @GET("v1/user/organizations/{orgId}/data-delete/status")
-    fun getDataDeleteStatus(
+    suspend fun getDataDeleteStatus(
         @Path("orgId") orgId: String?
-    ): Call<UserRequestStatus?>
+    ): Response<UserRequestStatusV1?>
 
     @POST("v1/user/organizations/{orgId}/data-delete")
     suspend fun dataDeleteRequest(
