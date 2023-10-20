@@ -4,7 +4,7 @@ import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAgre
 import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttributes
 import com.google.gson.annotations.SerializedName
 
-class DataAttributesResponse(
+class DataAttributesResponseV1(
     @SerializedName("ID")
     var iD: String? = null,
     @SerializedName("ConsentID")

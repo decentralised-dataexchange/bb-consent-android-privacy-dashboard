@@ -1,22 +1,16 @@
-package com.github.privacyDashboard.models.attributes
+package com.github.privacyDashboard.models.base.attribute
 
 import com.github.privacyDashboard.models.interfaces.dataAttributesList.Status
 import com.google.gson.annotations.SerializedName
 
-class StatusV1(
+class Status(
     @SerializedName("Consented")
     var consented: String? = null,
-    @SerializedName("TimeStamp")
-    var timeStamp: String? = null,
-    @SerializedName("Days")
-    var days: Int? = null,
     @SerializedName("Remaining")
     var remaining: Int? = 0
 ) : Status {
     override val mConsented: String?
         get() = consented
-
     override val mRemaining: Int?
         get() = remaining
-
 }

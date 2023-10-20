@@ -17,8 +17,6 @@ class DataAttributesV1(
 ) : DataAttributes {
     override val mPurpose: Purpose?
         get() = purpose
-    override val mConsents: ArrayList<DataAttribute?>?
-        get() = convertToList(consents)
 
     private fun convertToList(consents: ArrayList<DataAttributeV1?>?): ArrayList<DataAttribute?>? {
         return consents?.filterNotNull()?.toCollection(ArrayList())

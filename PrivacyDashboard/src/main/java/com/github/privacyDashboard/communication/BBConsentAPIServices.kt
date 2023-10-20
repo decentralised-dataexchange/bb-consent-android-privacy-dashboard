@@ -1,7 +1,7 @@
 package com.github.privacyDashboard.communication
 
 import com.github.privacyDashboard.models.OrganizationDetailResponse
-import com.github.privacyDashboard.models.attributes.DataAttributesResponse
+import com.github.privacyDashboard.models.attributes.DataAttributesResponseV1
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
 import com.github.privacyDashboard.models.consent.ResultResponseV1
 import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponseV1
@@ -32,7 +32,7 @@ interface BBConsentAPIServices {
         @Path("userId") userId: String?,
         @Path("consentId") consentId: String?,
         @Path("purposeId") purposeId: String?
-    ): Response<DataAttributesResponse?>?
+    ): Response<DataAttributesResponseV1?>?
 
     @PATCH("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}/attributes/{attributeId}")
     suspend fun setAttributeStatus(

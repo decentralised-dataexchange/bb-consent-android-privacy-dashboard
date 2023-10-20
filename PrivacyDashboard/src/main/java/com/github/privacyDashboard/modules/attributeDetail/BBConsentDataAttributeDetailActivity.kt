@@ -9,8 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributeDetailBinding
+import com.github.privacyDashboard.models.base.attribute.DataAttribute
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
@@ -93,9 +93,9 @@ class BBConsentDataAttributeDetailActivity : BBConsentBaseActivity() {
             binding.vAskMe.visibility = View.VISIBLE
             binding.tvDays.text = resources.getString(
                 R.string.bb_consent_data_attribute_detail_days_with_count,
-                viewModel?.mDataAttribute?.mStatus?.mRemaining ?: 0
+                viewModel?.mDataAttribute?.status?.remaining ?: 0
             )
-            binding.sbDays.progress = viewModel?.mDataAttribute?.mStatus?.mRemaining ?: 0
+            binding.sbDays.progress = viewModel?.mDataAttribute?.status?.remaining ?: 0
         } else {
             binding.llAskme.visibility = View.GONE
             binding.vAskMe.visibility = View.GONE
