@@ -19,7 +19,7 @@ interface BBConsentAPIServices {
     ): Response<OrganizationDetailResponse?>?
 
     @GET("v1/users/{userID}/consenthistory")
-    fun getConsentHistory(
+    suspend fun getConsentHistory(
         @Path("userID") userID: String?,
         @Query("limit") limit: Int,
         @Query("orgid") orgId: String?,
