@@ -1,18 +1,15 @@
-package com.github.privacyDashboard.models.attributes
+package com.github.privacyDashboard.models.base.attribute
 
 import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
-import com.github.privacyDashboard.models.interfaces.dataAttributesList.Status
 import com.google.gson.annotations.SerializedName
 
-class DataAttributeV1(
+class DataAttribute(
     @SerializedName("ID")
     var iD: String? = null,
     @SerializedName("Description")
     var description: String? = null,
-    @SerializedName("Value")
-    var value: String? = null,
     @SerializedName("Status")
-    var status: StatusV1? = null
+    var status: Status? = null
 ) : DataAttribute {
     override val mId: String?
         get() = iD

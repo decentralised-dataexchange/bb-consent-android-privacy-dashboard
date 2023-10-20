@@ -8,9 +8,9 @@ import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.UpdateDataAttributeStatusApiRepository
 import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.events.RefreshList
+import com.github.privacyDashboard.models.base.attribute.DataAttribute
+import com.github.privacyDashboard.models.base.attribute.Status
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
-import com.github.privacyDashboard.models.interfaces.dataAttributesList.Status
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
@@ -65,17 +65,17 @@ class BBConsentDataAttributeDetailViewModel() : BBConsentBaseViewModel() {
                     ),
                     mConsentId,
                     mPurposeId,
-                    mDataAttribute?.mId,
+                    mDataAttribute?.iD,
                     body
                 )
 
                 if (result.isSuccess) {
                     withContext(Dispatchers.Main) {
                         isLoading.value = false
-                        val status: Status? = mDataAttribute?.mStatus
-                        status?.mConsented = (body.consented)
-                        status?.mRemaining = (body.days)
-                        mDataAttribute?.mStatus = status
+                        val status: Status? = mDataAttribute?.status
+                        status?.consented = (body.consented)
+                        status?.remaining = (body.days)
+                        mDataAttribute?.status = status
                         try {
                             setChecked(context)
                         } catch (e: java.lang.Exception) {
@@ -83,7 +83,7 @@ class BBConsentDataAttributeDetailViewModel() : BBConsentBaseViewModel() {
                         }
                         EventBus.getDefault().post(RefreshHome())
                         EventBus.getDefault()
-                            .post(RefreshList(mDataAttribute?.mId, status))
+                            .post(RefreshList(mDataAttribute?.iD, status))
                     }
                 } else {
                     withContext(Dispatchers.Main) {
@@ -96,13 +96,13 @@ class BBConsentDataAttributeDetailViewModel() : BBConsentBaseViewModel() {
 
     fun setChecked(context: Context) {
         try {
-            if (mDataAttribute?.mStatus?.mConsented.equals("Allow", ignoreCase = true)
+            if (mDataAttribute?.status?.consented.equals("Allow", ignoreCase = true)
             ) {
                 ivAllow.value = true
                 ivDisAllow.value = false
                 statusMessage.value =
                     context.resources.getString(R.string.bb_consent_data_attribute_detail_allow_consent_rule)
-            } else if (mDataAttribute?.mStatus?.mConsented.equals(
+            } else if (mDataAttribute?.status?.consented.equals(
                     "Disallow",
                     ignoreCase = true
                 )

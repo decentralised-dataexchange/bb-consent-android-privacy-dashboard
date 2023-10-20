@@ -7,7 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentItemDataAttributeBinding
-import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
+import com.github.privacyDashboard.models.base.attribute.DataAttribute
 import com.github.privacyDashboard.utils.BBConsentStringUtils
 
 class BBConsentDataAttributesAdapter(
@@ -39,11 +39,11 @@ class BBConsentDataAttributesAdapter(
         RecyclerView.ViewHolder(itemRowBinding.root) {
         var itemRowBinding: BbconsentItemDataAttributeBinding
         fun bind(attribute: DataAttribute?, mListener: DataAttributeClickListener, isLast: Boolean) {
-            itemRowBinding.ctvItemName.text = attribute?.mDescription
-            if (attribute?.mStatus?.mConsented != null && !attribute.mStatus?.mConsented.equals("")
+            itemRowBinding.ctvItemName.text = attribute?.description
+            if (attribute?.status?.consented != null && !attribute.status?.consented.equals("")
             ) {
                 itemRowBinding.ctvStatus.text = BBConsentStringUtils.toCamelCase(
-                    attribute.mStatus?.mConsented
+                    attribute.status?.consented
                 )
             } else {
                 itemRowBinding.ctvStatus.text =

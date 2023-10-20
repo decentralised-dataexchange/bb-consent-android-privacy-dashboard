@@ -2,9 +2,7 @@ package com.github.privacyDashboard.modules.home
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.GetConsentsByIdApiRepository
@@ -13,21 +11,15 @@ import com.github.privacyDashboard.communication.repositories.UpdateDataAgreemen
 import com.github.privacyDashboard.models.Organization
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.PurposeConsent
-import com.github.privacyDashboard.models.attributes.DataAttributesResponse
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponseV1
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
 

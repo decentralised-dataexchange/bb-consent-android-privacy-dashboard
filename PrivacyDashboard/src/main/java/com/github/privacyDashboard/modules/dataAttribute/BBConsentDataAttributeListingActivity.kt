@@ -10,8 +10,8 @@ import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributesBinding
 import com.github.privacyDashboard.events.RefreshList
-import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAgreement
-import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAttribute
+import com.github.privacyDashboard.models.base.attribute.DataAttribute
+import com.github.privacyDashboard.models.base.attribute.DataAttributesResponse
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_TITLE
@@ -38,7 +38,7 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
             "com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.description"
         const val TAG_DATA_ATTRIBUTES =
             "com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity.dataAttributes"
-        var dataAttributesResponse: DataAgreement? = null
+        var dataAttributesResponse: DataAttributesResponse? = null
     }
 
     private var mTitle = ""
@@ -57,10 +57,10 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
 
     private fun setUpDataAttributeList() {
         adapter = BBConsentDataAttributesAdapter(
-            dataAttributesResponse?.mConsents?.mConsents ?: ArrayList(),
+            dataAttributesResponse?.consents?.consents ?: ArrayList(),
             object : DataAttributeClickListener {
                 override fun onAttributeClick(dataAttribute: DataAttribute?) {
-                    if (dataAttributesResponse?.mConsents?.mPurpose?.mLawfulUsage == false
+                    if (dataAttributesResponse?.consents?.purpose?.lawfulUsage == false
                     ) {
                         val intent: Intent = Intent(
                             this@BBConsentDataAttributeListingActivity,
@@ -68,15 +68,15 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
                         )
                         intent.putExtra(
                             EXTRA_TAG_ORGID,
-                            dataAttributesResponse?.mOrgId
+                            dataAttributesResponse?.orgID
                         )
                         intent.putExtra(
                             EXTRA_TAG_CONSENTID,
-                            dataAttributesResponse?.mConsentId
+                            dataAttributesResponse?.consentID
                         )
                         intent.putExtra(
                             EXTRA_TAG_PURPOSEID,
-                            dataAttributesResponse?.mId
+                            dataAttributesResponse?.iD
                         )
                         intent.putExtra(
                             EXTRA_TAG_CONSENT,
@@ -163,7 +163,7 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
             )
             intent.putExtra(
                 TAG_EXTRA_WEB_URL,
-                dataAttributesResponse?.mConsents?.mPurpose?.mPolicyUrl
+                dataAttributesResponse?.consents?.purpose?.policyURL
             )
             intent.putExtra(
                 TAG_EXTRA_WEB_TITLE,
@@ -175,9 +175,9 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: RefreshList?) {
-        for (item in dataAttributesResponse?.mConsents?.mConsents ?: ArrayList()) {
+        for (item in dataAttributesResponse?.consents?.consents ?: ArrayList()) {
             if (item?.mId == event?.purposeId) {
-                item?.mStatus = event?.status
+                item?.status = event?.status
             }
         }
         adapter?.notifyDataSetChanged()
