@@ -31,7 +31,7 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
     }
 
     private var mOrgId = ""
-    private var startId = ""
+    private var startId = 0
 
     private var isCallLoading = false
     private var hasLoadedAllItems = false
@@ -70,7 +70,7 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
                     userID = BBConsentDataUtils.getStringValue(
                         this@BBConsentLoggingActivity,
                         BBConsentDataUtils.EXTRA_TAG_USERID
-                    ), orgId = mOrgId, limit = 8, startid = startId
+                    ), offset = startId, limit = 10
                 )
 
                 if (result?.isSuccess == true) {
@@ -78,7 +78,7 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
                         isCallLoading = false
                         binding.llProgressBar.visibility = View.GONE
                         if (result.getOrNull()?.mConsentHistory != null) {
-                            if (startId == "") consentHistories!!.clear()
+                            if (startId == 0) consentHistories!!.clear()
 
                             consentHistories!!.addAll(
                                 result.getOrNull()?.mConsentHistory ?: ArrayList()
@@ -86,12 +86,12 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
                             binding.rvConsentHistory.visibility =
                                 if (consentHistories!!.size > 0) View.VISIBLE else View.GONE
                             if (consentHistories!!.size > 0) {
-                                startId =
-                                    consentHistories!![consentHistories!!.size - 1]?.mId ?: ""
+                                startId += 10
+//                                    consentHistories!![consentHistories!!.size - 1]?.mId ?: ""
                             }
 
                         } else {
-                            if (startId == "") {
+                            if (startId == 0) {
                                 consentHistories!!.clear()
                                 binding.rvConsentHistory.visibility =
                                     if (consentHistories!!.size > 0) View.VISIBLE else View.GONE
