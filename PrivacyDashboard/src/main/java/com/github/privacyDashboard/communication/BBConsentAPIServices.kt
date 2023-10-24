@@ -9,6 +9,7 @@ import com.github.privacyDashboard.models.consentHistory.ConsentHistoryResponseV
 import com.github.privacyDashboard.models.userRequests.UserRequestGenResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestStatusV1
+import com.github.privacyDashboard.models.v2.consentHistory.ConsentHistoryResponseV2
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -25,6 +26,13 @@ interface BBConsentAPIServices {
         @Query("orgid") orgId: String?,
         @Query("startid") startid: String?
     ): Response<ConsentHistoryResponseV1?>
+
+    @GET("v2/service/individual/record/data-agreement-record/history")
+    suspend fun getConsentHistoryV2(
+        @Header("X-ConsentBB-IndividualId") userID: String?,
+        @Query("offset") offset: Int?,
+        @Query("limit") limit: Int?,
+    ): Response<ConsentHistoryResponseV2?>
 
     @GET("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}")
     suspend fun getConsentList(

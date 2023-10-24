@@ -2,22 +2,21 @@ package com.github.privacyDashboard.communication.repositories
 
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.models.interfaces.consentHistory.ConsentHistoryResponse
+import com.github.privacyDashboard.models.v2.consentHistory.ConsentHistoryResponseV2
 
 class GetConsentHistoryApiRepository(private var apiService: BBConsentAPIServices) {
 
     suspend fun getConsentHistory(
         userID: String?,
-        limit: Int,
-        orgId: String?,
-        startid: String?
+        offset: Int,
+        limit: Int?
     ): Result<ConsentHistoryResponse?>? {
 
         return try {
-            val response = apiService.getConsentHistory(
+            val response = apiService.getConsentHistoryV2(
                 userID = userID,
-                limit = limit ?: 10,
-                orgId = orgId,
-                startid = startid
+                offset = offset,
+                limit = limit ?: 10
             )
             if (response.isSuccessful) {
                 val data = response.body()
@@ -27,7 +26,7 @@ class GetConsentHistoryApiRepository(private var apiService: BBConsentAPIService
                     Result.failure(Exception("Response body is null"))
                 }
             } else {
-                Result.failure(Exception("Request failed with code: ${response?.code()}"))
+                Result.success(ConsentHistoryResponseV2(null))
             }
         } catch (e: Exception) {
             Result.failure(e)
