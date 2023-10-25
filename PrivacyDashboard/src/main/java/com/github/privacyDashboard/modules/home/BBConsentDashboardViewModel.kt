@@ -67,7 +67,7 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                 val result = organizationDetailRepository.getOrganizationDetail(
                     BBConsentDataUtils.getStringValue(
                         context,
-                        BBConsentDataUtils.EXTRA_TAG_ORG_ID
+                        BBConsentDataUtils.EXTRA_TAG_USERID
                     )
                 )
 

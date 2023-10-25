@@ -10,6 +10,11 @@ import com.github.privacyDashboard.models.userRequests.UserRequestGenResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestStatusV1
 import com.github.privacyDashboard.models.v2.consentHistory.ConsentHistoryResponseV2
+import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementResponseV2
+import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.CreateDataAgreementRecordResponseV2
+import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordResponseV2
+import com.github.privacyDashboard.models.v2.dataAgreement.dataAttributes.DataAttributesListResponseV2
+import com.github.privacyDashboard.models.v2.dataAgreement.organization.OrganizationResponseV2
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -18,6 +23,27 @@ interface BBConsentAPIServices {
     suspend fun getOrganizationDetail(
         @Query("orgID") orgID: String?
     ): Response<OrganizationDetailResponse?>?
+
+    @GET("v2/service/organisation")
+    suspend fun getOrganizationDetailV2(
+        @Header("X-ConsentBB-IndividualId") userID: String?,
+    ): Response<OrganizationResponseV2>
+
+    @GET("v2/service/data-agreements")
+    suspend fun getDataAgreementsV2(
+        @Header("X-ConsentBB-IndividualId") userID: String?,
+    ): Response<DataAgreementResponseV2>
+
+    @GET("v2/service/individual/record/data-agreement-record")
+    suspend fun getDataAgreementRecordsV2(
+        @Header("X-ConsentBB-IndividualId") userID: String?
+    ): Response<DataAgreementRecordResponseV2>
+
+    @POST("v2/service/individual/record/data-agreement/{dataAgreementId}")
+    suspend fun createDataAgreementRecordV2(
+        @Header("X-ConsentBB-IndividualId") userID: String?,
+        @Path("dataAgreementId") dataAgreementId: String?
+    ): Response<CreateDataAgreementRecordResponseV2>
 
     @GET("v1/users/{userID}/consenthistory")
     suspend fun getConsentHistory(
@@ -41,6 +67,12 @@ interface BBConsentAPIServices {
         @Path("consentId") consentId: String?,
         @Path("purposeId") purposeId: String?
     ): Response<DataAttributesResponseV1?>?
+
+    @GET("v2/service/data-agreement/{dataAgreementId}/data-attributes")
+    suspend fun getAttributeListV2(
+        @Header("X-ConsentBB-IndividualId") userID: String?,
+        @Path("dataAgreementId") dataAgreementId: String?
+    ): Response<DataAttributesListResponseV2?>?
 
     @PATCH("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}/attributes/{attributeId}")
     suspend fun setAttributeStatus(
