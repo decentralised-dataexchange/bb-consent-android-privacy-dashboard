@@ -155,16 +155,12 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
 
             GlobalScope.launch {
                 val result = consentListRepository.getConsentsById(
-                    BBConsentDataUtils.getStringValue(
-                        context,
-                        BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                    ),
-                    BBConsentDataUtils.getStringValue(
+                    userId = BBConsentDataUtils.getStringValue(
                         context,
                         BBConsentDataUtils.EXTRA_TAG_USERID
                     ),
-                    consentId,
-                    consent?.purpose?.iD
+                    dataAgreementId = consent?.purpose?.iD,
+                    isAllAllowed = consent?.count?.consented == consent?.count?.total
                 )
 
                 if (result.isSuccess) {

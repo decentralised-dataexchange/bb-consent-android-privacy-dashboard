@@ -7,25 +7,24 @@ import com.github.privacyDashboard.models.base.attribute.DataAttribute
 import com.github.privacyDashboard.models.base.attribute.DataAttributes
 import com.github.privacyDashboard.models.base.attribute.DataAttributesResponse
 import com.github.privacyDashboard.models.base.attribute.Status
+import com.github.privacyDashboard.models.v2.dataAgreement.dataAttributes.DataAttributesListResponseV2
 
 class GetConsentsByIdApiRepository(private val apiService: BBConsentAPIServices) {
 
     suspend fun getConsentsById(
-        orgId: String?,
         userId: String?,
-        consentId: String?,
-        purposeId: String?,
+        dataAgreementId: String?,
+        isAllAllowed:Boolean
     ): Result<DataAttributesResponse?> {
 
         return try {
-            val response = apiService.getConsentList(
-                orgID = orgId, userId = userId,
-                consentId = consentId, purposeId = purposeId
+            val response = apiService.getAttributeListV2(
+                userID = userId, dataAgreementId = dataAgreementId
             )
             if (response?.isSuccessful == true) {
                 val data = response.body()
                 if (data != null) {
-                    val processedData = v1ToModel(data)
+                    val processedData = migrateV2ToBaseModel(data,isAllAllowed)
                     Result.success(processedData)
                 } else {
                     Result.failure(Exception("Response body is null"))
@@ -55,6 +54,29 @@ class GetConsentsByIdApiRepository(private val apiService: BBConsentAPIServices)
                     description = data.consents?.purpose?.description,
                     lawfulUsage = data.consents?.purpose?.lawfulUsage,
                     policyURL = data.consents?.purpose?.policyURL
+                ),
+                consents = ArrayList(newList)
+            )
+        )
+    }
+
+    private fun migrateV2ToBaseModel(data: DataAttributesListResponseV2, isAllAllowed: Boolean): DataAttributesResponse {
+        val newList: List<DataAttribute?>? = data.dataAttributes?.map { original ->
+            DataAttribute(
+                original.id,
+                original.name,
+                Status(consented = if (isAllAllowed) "Allow" else "Disallow")
+            )
+        }
+        return DataAttributesResponse(
+            "", data.dataAgreement?.id, "",
+            DataAttributes(
+                purpose = Purpose(
+                    iD = data.dataAgreement?.id,
+                    name = data.dataAgreement?.purpose,
+                    description = data.dataAgreement?.purposeDescription,
+                    lawfulUsage = !(data.dataAgreement?.lawfulBasis == "consent" || data.dataAgreement?.lawfulBasis == "legitimate_interest"),
+                    policyURL = data.dataAgreement?.policy?.url
                 ),
                 consents = ArrayList(newList)
             )
