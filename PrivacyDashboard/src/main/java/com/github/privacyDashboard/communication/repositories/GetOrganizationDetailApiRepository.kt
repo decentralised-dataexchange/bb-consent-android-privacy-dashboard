@@ -80,7 +80,11 @@ class GetOrganizationDetailApiRepository(private val apiService: BBConsentAPISer
                 dataAgreementRecordsV2 =
                     dataAgreementRecords?.last { dataAgreementRecordsV2 -> dataAgreementRecordsV2.dataAgreementId == it.id }
             } catch (e: Exception) {
-                apiService.createDataAgreementRecordV2(userId, it.id)
+                if (!(it.lawfulBasis == "consent" || it.lawfulBasis == "legitimate_interest")) {
+                    val createDataAgreementResponse =
+                        apiService.createDataAgreementRecordV2(userId, it.id)
+                    dataAgreementRecordsV2 = createDataAgreementResponse.body()?.dataAgreementRecord
+                }
             }
             val dataAgreementRecordResponseV2 = apiService.getAttributeListV2(userId, it.id)
 
