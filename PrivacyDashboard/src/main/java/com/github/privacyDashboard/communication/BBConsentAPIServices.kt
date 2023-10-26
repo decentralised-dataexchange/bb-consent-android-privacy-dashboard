@@ -9,10 +9,12 @@ import com.github.privacyDashboard.models.consentHistory.ConsentHistoryResponseV
 import com.github.privacyDashboard.models.userRequests.UserRequestGenResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestHistoryResponseV1
 import com.github.privacyDashboard.models.userRequests.UserRequestStatusV1
+import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
 import com.github.privacyDashboard.models.v2.consentHistory.ConsentHistoryResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.CreateDataAgreementRecordResponseV2
-import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordResponseV2
+import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementLatestRecordResponseV2
+import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordsResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAttributes.DataAttributesListResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.organization.OrganizationResponseV2
 import retrofit2.Response
@@ -37,7 +39,7 @@ interface BBConsentAPIServices {
     @GET("v2/service/individual/record/data-agreement-record")
     suspend fun getDataAgreementRecordsV2(
         @Header("X-ConsentBB-IndividualId") userID: String?
-    ): Response<DataAgreementRecordResponseV2>
+    ): Response<DataAgreementRecordsResponseV2>
 
     @POST("v2/service/individual/record/data-agreement/{dataAgreementId}")
     suspend fun createDataAgreementRecordV2(
@@ -92,6 +94,20 @@ interface BBConsentAPIServices {
         @Path("purposeId") purposeId: String?,
         @Body body: ConsentStatusRequest?
     ): Response<UpdateConsentStatusResponseV1?>?
+
+    @GET("v2/service/verification/data-agreement/{dataAgreementId}")
+    suspend fun getDataAgreementRecordV2(
+        @Header("X-ConsentBB-IndividualId") userID: String?,
+        @Path("dataAgreementId") dataAgreementId: String?,
+    ): Response<DataAgreementLatestRecordResponseV2?>?
+
+    @PUT("v2/service/individual/record/data-agreement-record/{dataAgreementRecordId}")
+    suspend fun setOverallStatusV2(
+        @Header("X-ConsentBB-IndividualId") userID: String?,
+        @Path("dataAgreementRecordId") dataAgreementRecordId: String?,
+        @Query("dataAgreementId") dataAgreementId: String?,
+        @Body body: ConsentStatusRequestV2?
+    ): Response<DataAgreementLatestRecordResponseV2?>?
 
     @GET("v1/user/organizations/{orgId}/data-status")
     suspend fun getOrgRequestStatus(

@@ -3,22 +3,22 @@ package com.github.privacyDashboard.communication.repositories
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.models.consent.ConsentStatusRequest
 import com.github.privacyDashboard.models.interfaces.consent.UpdateConsentStatusResponse
+import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
+import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementLatestRecordResponseV2
 
 class UpdateDataAgreementStatusApiRepository(private val apiService: BBConsentAPIServices) {
 
     suspend fun updateDataAgreementStatus(
-        orgID: String?,
         userId: String?,
-        consentId: String?,
-        purposeId: String?,
-        body: ConsentStatusRequest?
-    ): Result<UpdateConsentStatusResponse?> {
+        dataAgreementId: String?,
+        body: ConsentStatusRequestV2?
+    ): Result<DataAgreementLatestRecordResponseV2?> {
         return try {
-            val response = apiService.setOverallStatus(
-                orgID = orgID,
-                userId = userId,
-                consentId = consentId,
-                purposeId = purposeId,
+            val dataAgreementRecord = apiService.getDataAgreementRecordV2(userId, dataAgreementId)
+            val response = apiService.setOverallStatusV2(
+                userID = userId,
+                dataAgreementRecordId = dataAgreementRecord?.body()?.dataAgreementRecord?.id,
+                dataAgreementId = dataAgreementId,
                 body = body
             )
             if (response?.isSuccessful == true) {
