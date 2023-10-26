@@ -21,6 +21,7 @@ import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttribut
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_CONSENTID
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_ORGID
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_PURPOSEID
+import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
@@ -60,30 +61,36 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
             dataAttributesResponse?.consents?.consents ?: ArrayList(),
             object : DataAttributeClickListener {
                 override fun onAttributeClick(dataAttribute: DataAttribute?) {
-                    if (dataAttributesResponse?.consents?.purpose?.lawfulUsage == false
-                    ) {
-                        val intent: Intent = Intent(
-                            this@BBConsentDataAttributeListingActivity,
-                            BBConsentDataAttributeDetailActivity::class.java
-                        )
-                        intent.putExtra(
-                            EXTRA_TAG_ORGID,
-                            dataAttributesResponse?.orgID
-                        )
-                        intent.putExtra(
-                            EXTRA_TAG_CONSENTID,
-                            dataAttributesResponse?.consentID
-                        )
-                        intent.putExtra(
-                            EXTRA_TAG_PURPOSEID,
-                            dataAttributesResponse?.iD
-                        )
-                        intent.putExtra(
-                            EXTRA_TAG_CONSENT,
-                            Gson().toJson(dataAttribute)
-                        )
-                        startActivity(intent)
-                        BBConsentDataAttributeDetailActivity.mDataAttribute=dataAttribute
+                    val isAttributeLevelConsentEnabled = BBConsentDataUtils.getBooleanValue(
+                        this@BBConsentDataAttributeListingActivity,
+                        BBConsentDataUtils.EXTRA_TAG_ENABLE_ATTRIBUTE_LEVEL_CONSENT
+                    )
+                    if (isAttributeLevelConsentEnabled == true) {
+                        if (dataAttributesResponse?.consents?.purpose?.lawfulUsage == false
+                        ) {
+                            val intent: Intent = Intent(
+                                this@BBConsentDataAttributeListingActivity,
+                                BBConsentDataAttributeDetailActivity::class.java
+                            )
+                            intent.putExtra(
+                                EXTRA_TAG_ORGID,
+                                dataAttributesResponse?.orgID
+                            )
+                            intent.putExtra(
+                                EXTRA_TAG_CONSENTID,
+                                dataAttributesResponse?.consentID
+                            )
+                            intent.putExtra(
+                                EXTRA_TAG_PURPOSEID,
+                                dataAttributesResponse?.iD
+                            )
+                            intent.putExtra(
+                                EXTRA_TAG_CONSENT,
+                                Gson().toJson(dataAttribute)
+                            )
+                            startActivity(intent)
+                            BBConsentDataAttributeDetailActivity.mDataAttribute = dataAttribute
+                        }
                     }
                 }
             })

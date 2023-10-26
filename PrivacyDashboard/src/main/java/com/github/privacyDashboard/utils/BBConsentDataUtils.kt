@@ -11,6 +11,7 @@ object BBConsentDataUtils {
     const val EXTRA_TAG_BASE_URL = "com.github.privacyDashboard.utils.BBConsentDataUtils.baseUrl"
     const val EXTRA_TAG_ENABLE_USER_REQUEST = "com.github.privacyDashboard.utils.BBConsentDataUtils.enableUserRequest"
     const val EXTRA_TAG_ENABLE_ASK_ME = "com.github.privacyDashboard.utils.BBConsentDataUtils.enableAskMe"
+    const val EXTRA_TAG_ENABLE_ATTRIBUTE_LEVEL_CONSENT = "com.github.privacyDashboard.utils.BBConsentDataUtils.enableAttributeLevelConsent"
 
     //todo update the deprecated preference manager
     fun saveStringValues(context: Context?, tag: String?, value: String?) {

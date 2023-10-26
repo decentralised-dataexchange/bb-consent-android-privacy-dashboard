@@ -10,6 +10,7 @@ import com.github.privacyDashboard.modules.home.BBConsentDashboardActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_BASE_URL
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_ASK_ME
+import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_ATTRIBUTE_LEVEL_CONSENT
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_USER_REQUEST
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ORG_ID
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_TOKEN
@@ -25,6 +26,7 @@ object PrivacyDashboard {
     private var mLocale: String? = ""
     private var mEnableUserRequest: Boolean? = false
     private var mEnableAskMe: Boolean? = false
+    private var mEnableAttributeLevelConsent: Boolean? = false
 
     private var mPrivacyDashboardIntent: Intent? = null
 
@@ -100,6 +102,14 @@ object PrivacyDashboard {
     }
 
     /**
+     * To enable updating attribute level consent in iGrant Sdk.
+     */
+    fun enableAttributeLevelConsent(): PrivacyDashboard {
+        this.mEnableAttributeLevelConsent = true
+        return this
+    }
+
+    /**
      * Send the Intent from an Activity
      *
      * @param activity Activity to start activity
@@ -138,6 +148,11 @@ object PrivacyDashboard {
             context,
             EXTRA_TAG_ENABLE_ASK_ME,
             this.mEnableAskMe
+        )
+        BBConsentDataUtils.saveBooleanValues(
+            context,
+            EXTRA_TAG_ENABLE_ATTRIBUTE_LEVEL_CONSENT,
+            this.mEnableAttributeLevelConsent
         )
         return mPrivacyDashboardIntent
     }
