@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityDashboardBinding
@@ -28,6 +27,7 @@ import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Comp
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentImageUtils
 import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
+import com.github.privacyDashboard.utils.BBConsentReadMoreOption
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -173,9 +173,9 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     )
                 ) {
                     if ((viewModel?.organization?.value?.description?.length ?: 0) > 120) {
-                        val readMoreOption: ReadMoreOption = ReadMoreOption.Builder(this)
+                        val readMoreOption: BBConsentReadMoreOption = BBConsentReadMoreOption.Builder(this)
                             .textLength(3) // OR
-                            .textLengthType(ReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
+                            .textLengthType(BBConsentReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
                             .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
                             .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
                             .moreLabelColor(

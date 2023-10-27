@@ -6,7 +6,6 @@ import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.devs.readmoreoption.ReadMoreOption
 import com.github.privacyDashboard.R
 import com.github.privacyDashboard.databinding.BbconsentActivityDataAttributesBinding
 import com.github.privacyDashboard.events.RefreshList
@@ -22,6 +21,7 @@ import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttribut
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_ORGID
 import com.github.privacyDashboard.modules.attributeDetail.BBConsentDataAttributeDetailActivity.Companion.EXTRA_TAG_PURPOSEID
 import com.github.privacyDashboard.utils.BBConsentDataUtils
+import com.github.privacyDashboard.utils.BBConsentReadMoreOption
 import com.github.privacyDashboard.utils.BBConsentStringUtils.toCamelCase
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
@@ -100,9 +100,9 @@ class BBConsentDataAttributeListingActivity : BBConsentBaseActivity() {
 
     private fun setUpDescription() {
         if (mDescription.length > 120) {
-            val readMoreOption: ReadMoreOption = ReadMoreOption.Builder(this)
+            val readMoreOption: BBConsentReadMoreOption = BBConsentReadMoreOption.Builder(this)
                 .textLength(3) // OR
-                .textLengthType(ReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
+                .textLengthType(BBConsentReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
                 .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
                 .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
                 .moreLabelColor(
