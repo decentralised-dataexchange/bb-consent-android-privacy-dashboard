@@ -20,4 +20,5 @@
     <color name="bbconsent_error_red">#B80202</color>
 
     <color name="bb_consent_faded_white">#ecf8ff</color>
+    <color name="bbConsentBlack">#000000</color>
 </resources>
