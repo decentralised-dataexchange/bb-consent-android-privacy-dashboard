@@ -11,12 +11,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.privacyDashboard.R
-import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.databinding.BbconsentActivityDashboardBinding
 import com.github.privacyDashboard.events.RefreshHome
 import com.github.privacyDashboard.models.PurposeConsent
-import com.github.privacyDashboard.models.consent.ConsentStatusRequest
-import com.github.privacyDashboard.models.consent.UpdateConsentStatusResponseV1
 import com.github.privacyDashboard.modules.BBConsentBaseActivity
 import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity
 import com.github.privacyDashboard.modules.logging.BBConsentLoggingActivity.Companion.TAG_EXTRA_ORG_ID
@@ -26,14 +23,10 @@ import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Comp
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity.Companion.TAG_EXTRA_WEB_URL
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentImageUtils
-import com.github.privacyDashboard.utils.BBConsentNetWorkUtil
 import com.github.privacyDashboard.utils.BBConsentReadMoreOption
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class BBConsentDashboardActivity : BBConsentBaseActivity() {
@@ -53,7 +46,8 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
         EventBus.getDefault().register(this)
         setUpToolBar()
         initView()
-        viewModel?.getOrganizationDetail(true, this)
+        viewModel?.getOrganizationDetail(true,this)
+        viewModel?.getDataAgreements(true, this)
     }
 
     private fun setUpToolBar() {
@@ -238,7 +232,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: RefreshHome?) {
-        viewModel?.getOrganizationDetail(false, this)
+        viewModel?.getDataAgreements(false, this)
     }
 
     override fun onDestroy() {

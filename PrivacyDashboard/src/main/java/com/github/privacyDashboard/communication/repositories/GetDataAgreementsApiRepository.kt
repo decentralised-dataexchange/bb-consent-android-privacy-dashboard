@@ -9,21 +9,18 @@ import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.
 import com.github.privacyDashboard.models.v2.dataAgreement.organization.OrganizationResponseV2
 import retrofit2.Response
 
-class GetOrganizationDetailApiRepository(private val apiService: BBConsentAPIServices) {
+class GetDataAgreementsApiRepository(private val apiService: BBConsentAPIServices) {
 
     suspend fun getOrganizationDetail(
         userId: String?,
     ): Result<OrganizationDetailResponse?> {
         return try {
             //v2
-            val organizationResponse = apiService.getOrganizationDetailV2(userId)
-
             val dataAgreementsResponse = apiService.getDataAgreementsV2(userId)
 
             val dataAgreementRecordResponseV2 = apiService.getDataAgreementRecordsV2(userId)
 
             val org = convertV2toBaseModel(
-                organizationResponse,
                 dataAgreementsResponse,
                 dataAgreementRecordResponseV2,
                 userId
@@ -45,22 +42,12 @@ class GetOrganizationDetailApiRepository(private val apiService: BBConsentAPISer
     }
 
     private suspend fun convertV2toBaseModel(
-        organizationResponse: Response<OrganizationResponseV2>,
         dataAgreementsResponse: Response<DataAgreementResponseV2>,
         dataAgreementRecordResponseV2: Response<DataAgreementRecordsResponseV2>,
         userId: String?
     ): OrganizationDetailResponse {
         return OrganizationDetailResponse(
-            organization = Organization(
-                iD = organizationResponse.body()?.organisation?.id,
-                name = organizationResponse.body()?.organisation?.name,
-                coverImageURL = organizationResponse.body()?.organisation?.coverImageUrl ?: "",
-                logoImageURL = organizationResponse.body()?.organisation?.logoImageUrl ?: "",
-                type = organizationResponse.body()?.organisation?.sector,
-                description = organizationResponse.body()?.organisation?.description,
-                location = organizationResponse.body()?.organisation?.location,
-                policyURL = organizationResponse.body()?.organisation?.policyUrl
-            ), consentID = null,
+            organization = null, consentID = null,
             purposeConsents = convertV2ListToBaseModel(
                 dataAgreementsResponse.body()?.dataAgreements,
                 dataAgreementRecordResponseV2.body()?.dataAgreementRecords, userId

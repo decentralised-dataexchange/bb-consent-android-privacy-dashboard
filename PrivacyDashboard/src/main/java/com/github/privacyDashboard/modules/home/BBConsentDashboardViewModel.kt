@@ -6,12 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.GetConsentsByIdApiRepository
-import com.github.privacyDashboard.communication.repositories.GetOrganizationDetailApiRepository
+import com.github.privacyDashboard.communication.repositories.GetDataAgreementsApiRepository
+import com.github.privacyDashboard.communication.repositories.GetOrganisationDetailApiRepository
 import com.github.privacyDashboard.communication.repositories.UpdateDataAgreementStatusApiRepository
 import com.github.privacyDashboard.models.Organization
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.PurposeConsent
-import com.github.privacyDashboard.models.consent.ConsentStatusRequest
 import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
@@ -32,17 +32,23 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
     var consentId: String? = null
     val purposeConsents = MutableLiveData<ArrayList<PurposeConsent>>()
 
+    var isListLoading = MutableLiveData<Boolean>()
+
     private fun updateUI(orgDetail: OrganizationDetailResponse?) {
-        organization.value = orgDetail?.organization
-        orgName.value = orgDetail?.organization?.name
-        orgLocation.value = orgDetail?.organization?.location
-        orgDescription.value = orgDetail?.organization?.description
         consentId = orgDetail?.consentID
         purposeConsents.value = orgDetail?.purposeConsents ?: ArrayList()
     }
 
+    private fun updateOrganization(orgDetail: OrganizationDetailResponse?) {
+        organization.value = orgDetail?.organization
+        orgName.value = orgDetail?.organization?.name
+        orgLocation.value = orgDetail?.organization?.location
+        orgDescription.value = orgDetail?.organization?.description
+    }
+
     init {
         isLoading.value = true
+        isListLoading.value = false
         organization.value = null
         purposeConsents.value = ArrayList()
     }
@@ -62,7 +68,7 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                 )
             )?.service!!
 
-            val organizationDetailRepository = GetOrganizationDetailApiRepository(apiService)
+            val organizationDetailRepository = GetOrganisationDetailApiRepository(apiService)
 
             GlobalScope.launch {
                 val result = organizationDetailRepository.getOrganizationDetail(
@@ -75,11 +81,52 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                 if (result.isSuccess) {
                     withContext(Dispatchers.Main) {
                         isLoading.value = false
-                        updateUI(result.getOrNull())
+                        isListLoading.value = purposeConsents.value?.isEmpty()
+                        updateOrganization(result.getOrNull())
                     }
                 } else {
                     withContext(Dispatchers.Main) {
                         isLoading.value = false
+                        isListLoading.value = purposeConsents.value?.isEmpty()
+                    }
+                }
+            }
+        }
+    }
+
+    fun getDataAgreements(showProgress: Boolean, context: Context) {
+        if (BBConsentNetWorkUtil.isConnectedToInternet(context)) {
+//            isLoading.value = showProgress
+
+            val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN
+                ) ?: "",
+                BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                )
+            )?.service!!
+
+            val organizationDetailRepository = GetDataAgreementsApiRepository(apiService)
+
+            GlobalScope.launch {
+                val result = organizationDetailRepository.getOrganizationDetail(
+                    BBConsentDataUtils.getStringValue(
+                        context,
+                        BBConsentDataUtils.EXTRA_TAG_USERID
+                    )
+                )
+
+                if (result.isSuccess) {
+                    withContext(Dispatchers.Main) {
+                        isListLoading.value = false
+                        updateUI(result.getOrNull())
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        isListLoading.value = false
                     }
                 }
             }
@@ -119,7 +166,7 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                 if (result.isSuccess) {
                     withContext(Dispatchers.Main) {
                         isLoading.value = false
-                        getOrganizationDetail(false, context)
+                        getDataAgreements(false, context)
                     }
                 } else {
                     withContext(Dispatchers.Main) {
