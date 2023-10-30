@@ -13,6 +13,7 @@ import com.github.privacyDashboard.models.Organization
 import com.github.privacyDashboard.models.OrganizationDetailResponse
 import com.github.privacyDashboard.models.PurposeConsent
 import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
+import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementLatestRecordResponseV2
 import com.github.privacyDashboard.modules.base.BBConsentBaseViewModel
 import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeListingActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
@@ -166,7 +167,8 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                 if (result.isSuccess) {
                     withContext(Dispatchers.Main) {
                         isLoading.value = false
-                        getDataAgreements(false, context)
+//                        getDataAgreements(false, context)
+                        updatePurposeConsent(result.getOrNull())
                     }
                 } else {
                     withContext(Dispatchers.Main) {
@@ -177,6 +179,16 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
         } else {
 //            adapter!!.notifyDataSetChanged()
         }
+    }
+
+    private fun updatePurposeConsent(record: DataAgreementLatestRecordResponseV2?) {
+        val count =
+            purposeConsents.value?.find { it.purpose?.iD == record?.dataAgreementRecord?.dataAgreementId }?.count?.total
+
+        purposeConsents.value?.find { it.purpose?.iD == record?.dataAgreementRecord?.dataAgreementId }?.count?.consented =
+            if (record?.dataAgreementRecord?.optIn == true) count else 0
+
+        purposeConsents.value = purposeConsents.value
     }
 
     fun getConsentList(consent: PurposeConsent?, context: Context) {
