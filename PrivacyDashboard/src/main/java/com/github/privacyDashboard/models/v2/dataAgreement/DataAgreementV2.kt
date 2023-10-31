@@ -1,5 +1,6 @@
 package com.github.privacyDashboard.models.v2.dataAgreement
 
+import com.github.privacyDashboard.models.v2.dataAgreement.dataAttributes.DataAttributesV2
 import com.google.gson.annotations.SerializedName
 
 data class DataAgreementV2(
@@ -12,6 +13,7 @@ data class DataAgreementV2(
     @SerializedName("policy") var policy: PolicyV2? = PolicyV2(),
     @SerializedName("purpose") var purpose: String? = null,
     @SerializedName("purposeDescription") var purposeDescription: String? = null,
+    @SerializedName("dataAttributes") var dataAttributes:ArrayList<DataAttributesV2>? =null,
     @SerializedName("lawfulBasis") var lawfulBasis: String? = null,
     @SerializedName("methodOfUse") var methodOfUse: String? = null,
     @SerializedName("dpiaDate") var dpiaDate: String? = null,

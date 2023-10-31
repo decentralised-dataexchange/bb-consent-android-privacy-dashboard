@@ -7,7 +7,7 @@ import com.github.privacyDashboard.models.v2.PaginationV2
 import com.google.gson.annotations.SerializedName
 
 class ConsentHistoryResponseV2(
-    @SerializedName("dataAgreementRecordHistory")
+    @SerializedName("consentRecordHistory")
     var dataAgreementRecordHistory: ArrayList<ConsentHistoryV2?>? = arrayListOf(),
     @SerializedName("pagination")
     var pagination: PaginationV2? = PaginationV2()

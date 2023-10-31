@@ -73,7 +73,6 @@ class GetDataAgreementsApiRepository(private val apiService: BBConsentAPIService
                     dataAgreementRecordsV2 = createDataAgreementResponse.body()?.dataAgreementRecord
                 }
             }
-            val dataAgreementRecordResponseV2 = apiService.getAttributeListV2(userId, it.id)
 
             PurposeConsent(
                 purpose = PurposeV1(
@@ -84,8 +83,8 @@ class GetDataAgreementsApiRepository(private val apiService: BBConsentAPIService
                     policyURL = it.policy?.url
                 ),
                 count = Count(
-                    total = dataAgreementRecordResponseV2?.body()?.dataAttributes?.size,
-                    consented = if (dataAgreementRecordsV2?.optIn == true) dataAgreementRecordResponseV2?.body()?.dataAttributes?.size else 0
+                    total = it.dataAttributes?.size,
+                    consented = if (dataAgreementRecordsV2?.optIn == true) it.dataAttributes?.size else 0
                 )
             )
         }
