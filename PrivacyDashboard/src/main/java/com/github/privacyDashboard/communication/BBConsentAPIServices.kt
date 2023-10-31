@@ -36,7 +36,7 @@ interface BBConsentAPIServices {
         @Header("X-ConsentBB-IndividualId") userID: String?,
     ): Response<DataAgreementResponseV2>
 
-    @GET("v2/service/individual/record/data-agreement-record")
+    @GET("v2/service/individual/record/consent-record")
     suspend fun getDataAgreementRecordsV2(
         @Header("X-ConsentBB-IndividualId") userID: String?
     ): Response<DataAgreementRecordsResponseV2>
@@ -55,7 +55,7 @@ interface BBConsentAPIServices {
         @Query("startid") startid: String?
     ): Response<ConsentHistoryResponseV1?>
 
-    @GET("v2/service/individual/record/data-agreement-record/history")
+    @GET("v2/service/individual/record/consent-record/history")
     suspend fun getConsentHistoryV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Query("offset") offset: Int?,
@@ -101,7 +101,7 @@ interface BBConsentAPIServices {
         @Path("dataAgreementId") dataAgreementId: String?,
     ): Response<DataAgreementLatestRecordResponseV2?>?
 
-    @PUT("v2/service/individual/record/data-agreement-record/{dataAgreementRecordId}")
+    @PUT("v2/service/individual/record/consent-record/{dataAgreementRecordId}")
     suspend fun setOverallStatusV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Path("dataAgreementRecordId") dataAgreementRecordId: String?,
