@@ -45,7 +45,7 @@ interface BBConsentAPIServices {
     suspend fun createDataAgreementRecordV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Path("dataAgreementId") dataAgreementId: String?
-    ): Response<CreateDataAgreementRecordResponseV2>
+    ): Response<DataAgreementLatestRecordResponseV2?>?
 
     @GET("v1/users/{userID}/consenthistory")
     suspend fun getConsentHistory(

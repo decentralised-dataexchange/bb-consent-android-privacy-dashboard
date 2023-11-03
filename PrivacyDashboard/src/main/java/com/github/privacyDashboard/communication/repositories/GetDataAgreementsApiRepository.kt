@@ -70,7 +70,7 @@ class GetDataAgreementsApiRepository(private val apiService: BBConsentAPIService
                 if (!(it.lawfulBasis == "consent" || it.lawfulBasis == "legitimate_interest")) {
                     val createDataAgreementResponse =
                         apiService.createDataAgreementRecordV2(userId, it.id)
-                    dataAgreementRecordsV2 = createDataAgreementResponse.body()?.dataAgreementRecord
+                    dataAgreementRecordsV2 = createDataAgreementResponse?.body()?.dataAgreementRecord
                 }
             }
 
