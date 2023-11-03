@@ -150,6 +150,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvEmptyMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="200dp"
+                        android:text="@string/bb_consent_dashboard_empty_message"
+                        android:textColor="@color/bbConsentTextColor"
+                        android:textSize="@dimen/text_size_medium"
+                        android:gravity="center"
+                        android:visibility="gone"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="60dp" />

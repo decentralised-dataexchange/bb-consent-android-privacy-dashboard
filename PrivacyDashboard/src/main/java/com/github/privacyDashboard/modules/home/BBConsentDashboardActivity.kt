@@ -222,6 +222,10 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                             }
                         })
                     binding.rvDataAgreements.adapter = adapter
+                    binding.tvEmptyMessage.visibility = View.GONE
+                }
+                else{
+                    binding.tvEmptyMessage.visibility = if (viewModel?.isListLoading?.value == true || viewModel?.isLoading?.value == true) View.GONE else View.VISIBLE
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
