@@ -5,6 +5,7 @@ import com.github.privacyDashboard.models.consent.ConsentStatusRequest
 import com.github.privacyDashboard.models.interfaces.consent.UpdateConsentStatusResponse
 import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementLatestRecordResponseV2
+import retrofit2.Response
 
 class UpdateDataAgreementStatusApiRepository(private val apiService: BBConsentAPIServices) {
 
@@ -15,15 +16,17 @@ class UpdateDataAgreementStatusApiRepository(private val apiService: BBConsentAP
     ): Result<DataAgreementLatestRecordResponseV2?> {
         return try {
             val dataAgreementRecord = apiService.getDataAgreementRecordV2(userId, dataAgreementId)
+            var response: Response<DataAgreementLatestRecordResponseV2?>? = null
             if (dataAgreementRecord?.isSuccessful != true) {
-                apiService.createDataAgreementRecordV2(userId, dataAgreementId)
+                response = apiService.createDataAgreementRecordV2(userId, dataAgreementId)
+            } else {
+                response = apiService.setOverallStatusV2(
+                    userID = userId,
+                    dataAgreementRecordId = dataAgreementRecord?.body()?.dataAgreementRecord?.id,
+                    dataAgreementId = dataAgreementId,
+                    body = body
+                )
             }
-            val response = apiService.setOverallStatusV2(
-                userID = userId,
-                dataAgreementRecordId = dataAgreementRecord?.body()?.dataAgreementRecord?.id,
-                dataAgreementId = dataAgreementId,
-                body = body
-            )
             if (response?.isSuccessful == true) {
                 val data = response.body()
                 if (data != null) {
