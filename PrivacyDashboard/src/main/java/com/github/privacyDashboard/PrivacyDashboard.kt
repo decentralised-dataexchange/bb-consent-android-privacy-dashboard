@@ -1,11 +1,10 @@
 package com.github.privacyDashboard
 
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.fragment.app.Fragment
+import android.content.res.Resources
+import android.util.Log
 import com.github.privacyDashboard.modules.home.BBConsentDashboardActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_BASE_URL
@@ -132,7 +131,7 @@ object PrivacyDashboard {
      *
      * @return Intent for [BBConsentDashboardActivity]
      */
-    fun getIntent(context: Context): Intent? {
+    private fun getIntent(context: Context): Intent? {
         mPrivacyDashboardIntent?.setClass(context, BBConsentDashboardActivity::class.java)
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_BASE_URL, this.mBaseUrl)
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_ORG_ID, this.mOrgId)
