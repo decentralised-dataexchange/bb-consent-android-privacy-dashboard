@@ -148,18 +148,22 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
             try {
                 BBConsentImageUtils.setImage(
                     binding.ivLogo,
-                    "${BBConsentDataUtils.getStringValue(
-                        this,
-                        BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                    )}/v2/service/organisation/logoimage",
+                    newData?.logoImageURL ?: "${
+                        BBConsentDataUtils.getStringValue(
+                            this,
+                            BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                        )
+                    }/v2/service/organisation/logoimage",
                     R.drawable.bb_consent_default_logo
                 )
                 BBConsentImageUtils.setImage(
                     binding.ivCoverUrl,
-                    "${BBConsentDataUtils.getStringValue(
-                        this,
-                        BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                    )}/v2/service/organisation/coverimage",
+                    newData?.coverImageURL?:"${
+                        BBConsentDataUtils.getStringValue(
+                            this,
+                            BBConsentDataUtils.EXTRA_TAG_BASE_URL
+                        )
+                    }/v2/service/organisation/coverimage",
                     R.drawable.bb_consent_default_cover
                 )
                 if (viewModel?.organization?.value?.description != null || !viewModel?.organization?.value?.description.equals(
