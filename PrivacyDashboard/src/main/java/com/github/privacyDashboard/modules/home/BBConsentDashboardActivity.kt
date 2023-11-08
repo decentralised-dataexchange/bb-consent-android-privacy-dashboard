@@ -28,7 +28,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-
 class BBConsentDashboardActivity : BBConsentBaseActivity() {
 
     private lateinit var binding: BbconsentActivityDashboardBinding
@@ -46,7 +45,7 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
         EventBus.getDefault().register(this)
         setUpToolBar()
         initView()
-        viewModel?.getOrganizationDetail(true,this)
+        viewModel?.getOrganizationDetail(true, this)
         viewModel?.getDataAgreements(true, this)
     }
 
@@ -148,22 +147,12 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
             try {
                 BBConsentImageUtils.setImage(
                     binding.ivLogo,
-                    newData?.logoImageURL ?: "${
-                        BBConsentDataUtils.getStringValue(
-                            this,
-                            BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                        )
-                    }/v2/service/organisation/logoimage",
+                    newData?.logoImageURL ?: "",
                     R.drawable.bb_consent_default_logo
                 )
                 BBConsentImageUtils.setImage(
                     binding.ivCoverUrl,
-                    newData?.coverImageURL?:"${
-                        BBConsentDataUtils.getStringValue(
-                            this,
-                            BBConsentDataUtils.EXTRA_TAG_BASE_URL
-                        )
-                    }/v2/service/organisation/coverimage",
+                    newData?.coverImageURL ?: "",
                     R.drawable.bb_consent_default_cover
                 )
                 if (viewModel?.organization?.value?.description != null || !viewModel?.organization?.value?.description.equals(
@@ -171,26 +160,27 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                     )
                 ) {
                     if ((viewModel?.organization?.value?.description?.length ?: 0) > 120) {
-                        val readMoreOption: BBConsentReadMoreOption = BBConsentReadMoreOption.Builder(this)
-                            .textLength(3) // OR
-                            .textLengthType(BBConsentReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
-                            .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
-                            .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
-                            .moreLabelColor(
-                                ContextCompat.getColor(
-                                    this,
-                                    R.color.bb_consent_read_more_color
+                        val readMoreOption: BBConsentReadMoreOption =
+                            BBConsentReadMoreOption.Builder(this)
+                                .textLength(3) // OR
+                                .textLengthType(BBConsentReadMoreOption.TYPE_LINE) //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
+                                .moreLabel(resources.getString(R.string.bb_consent_dashboard_read_more))
+                                .lessLabel(resources.getString(R.string.bb_consent_dashboard_read_less))
+                                .moreLabelColor(
+                                    ContextCompat.getColor(
+                                        this,
+                                        R.color.bb_consent_read_more_color
+                                    )
                                 )
-                            )
-                            .lessLabelColor(
-                                ContextCompat.getColor(
-                                    this,
-                                    R.color.bb_consent_read_more_color
+                                .lessLabelColor(
+                                    ContextCompat.getColor(
+                                        this,
+                                        R.color.bb_consent_read_more_color
+                                    )
                                 )
-                            )
-                            .labelUnderLine(false)
-                            .expandAnimation(true)
-                            .build()
+                                .labelUnderLine(false)
+                                .expandAnimation(true)
+                                .build()
 
                         readMoreOption.addReadMoreTo(
                             binding.tvDescription,
@@ -222,14 +212,18 @@ class BBConsentDashboardActivity : BBConsentBaseActivity() {
                                 consent: PurposeConsent?,
                                 isChecked: Boolean?
                             ) {
-                                viewModel?.setOverallStatus(consent, isChecked,this@BBConsentDashboardActivity)
+                                viewModel?.setOverallStatus(
+                                    consent,
+                                    isChecked,
+                                    this@BBConsentDashboardActivity
+                                )
                             }
                         })
                     binding.rvDataAgreements.adapter = adapter
                     binding.tvEmptyMessage.visibility = View.GONE
-                }
-                else{
-                    binding.tvEmptyMessage.visibility = if (viewModel?.isListLoading?.value == true || viewModel?.isLoading?.value == true) View.GONE else View.VISIBLE
+                } else {
+                    binding.tvEmptyMessage.visibility =
+                        if (viewModel?.isListLoading?.value == true || viewModel?.isLoading?.value == true) View.GONE else View.VISIBLE
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

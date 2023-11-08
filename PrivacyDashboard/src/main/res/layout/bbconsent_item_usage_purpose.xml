@@ -55,13 +55,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <com.suke.widget.SwitchButton
+                <com.github.privacyDashboard.customView.SwitchButton
                     android:id="@+id/switch_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:sb_show_indicator="false" />
 
-                <com.suke.widget.SwitchButton
+                <com.github.privacyDashboard.customView.SwitchButton
                     android:id="@+id/switch_button_disabled"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
