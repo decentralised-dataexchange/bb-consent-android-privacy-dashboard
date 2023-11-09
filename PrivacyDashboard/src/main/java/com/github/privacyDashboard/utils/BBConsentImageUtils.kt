@@ -36,7 +36,8 @@ object BBConsentImageUtils {
                     "X-ConsentBB-IndividualId",
                     BBConsentDataUtils.getStringValue(
                         imageView.context,
-                        BBConsentDataUtils.EXTRA_TAG_USERID
+                        BBConsentDataUtils.EXTRA_TAG_USERID,
+                        null
                     ) ?: ""
                 )
             val glideUrl = GlideUrl(url, builder.build())

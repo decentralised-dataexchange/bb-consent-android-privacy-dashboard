@@ -7,6 +7,7 @@ import android.content.res.Resources
 import android.util.Log
 import com.github.privacyDashboard.modules.home.BBConsentDashboardActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
+import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_BASE_URL
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_ASK_ME
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_ATTRIBUTE_LEVEL_CONSENT
@@ -18,8 +19,9 @@ import com.github.privacyDashboard.utils.BBConsentLocaleHelper
 
 object PrivacyDashboard {
 
-    private var mUserId: String? = ""
-    private var mApiKey: String? = ""
+    private var mUserId: String? = null
+    private var mApiKey: String? = null
+    private var mAccessToken: String? = null
     private var mOrgId: String? = ""
     private var mBaseUrl: String? = ""
     private var mLocale: String? = ""
@@ -40,7 +42,7 @@ object PrivacyDashboard {
      * @param userId
      */
     fun withUserId(userId: String?): PrivacyDashboard {
-        this.mUserId = userId
+        this.mUserId = if (userId == "") null else userId
         return this
     }
 
@@ -50,7 +52,17 @@ object PrivacyDashboard {
      * @param apiKey
      */
     fun withApiKey(apiKey: String?): PrivacyDashboard {
-        this.mApiKey = apiKey
+        this.mApiKey = if (apiKey == "") null else apiKey
+        return this
+    }
+
+    /**
+     * Set Access token for the iGrant Sdk.
+     *
+     * @param accessToken
+     */
+    fun withAccessToken(accessToken: String?): PrivacyDashboard {
+        this.mAccessToken = if (accessToken == "") null else accessToken
         return this
     }
 
@@ -114,7 +126,8 @@ object PrivacyDashboard {
      * @param activity Activity to start activity
      */
     fun start(activity: Activity) {
-        activity.startActivity(getIntent(activity))
+        if (mAccessToken != null || (mApiKey != null && mUserId != null))
+            activity.startActivity(getIntent(activity))
     }
 
     /**
@@ -123,7 +136,8 @@ object PrivacyDashboard {
      * @param context Context to start activity
      */
     fun start(context: Context) {
-        context.startActivity(getIntent(context))
+        if (mAccessToken != null || (mApiKey != null && mUserId != null))
+            context.startActivity(getIntent(context))
     }
 
     /**
@@ -137,6 +151,7 @@ object PrivacyDashboard {
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_ORG_ID, this.mOrgId)
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_USERID, this.mUserId)
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_TOKEN, this.mApiKey)
+        BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_ACCESS_TOKEN, this.mAccessToken)
         BBConsentLocaleHelper.setLocale(context, mLocale ?: "en")
         BBConsentDataUtils.saveBooleanValues(
             context,

@@ -59,11 +59,17 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
             isLoading.value = showProgress
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -75,7 +81,8 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                 val result = organizationDetailRepository.getOrganizationDetail(
                     BBConsentDataUtils.getStringValue(
                         context,
-                        BBConsentDataUtils.EXTRA_TAG_USERID
+                        BBConsentDataUtils.EXTRA_TAG_USERID,
+                        null
                     )
                 )
 
@@ -100,11 +107,17 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
 //            isLoading.value = showProgress
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -116,7 +129,8 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                 val result = organizationDetailRepository.getOrganizationDetail(
                     BBConsentDataUtils.getStringValue(
                         context,
-                        BBConsentDataUtils.EXTRA_TAG_USERID
+                        BBConsentDataUtils.EXTRA_TAG_USERID,
+                        null
                     )
                 )
 
@@ -141,11 +155,17 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
             body.optIn = isChecked == true
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ) ,
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -158,7 +178,8 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                 val result = updateDataAgreementStatusApiRepository.updateDataAgreementStatus(
                     userId = BBConsentDataUtils.getStringValue(
                         context,
-                        BBConsentDataUtils.EXTRA_TAG_USERID
+                        BBConsentDataUtils.EXTRA_TAG_USERID,
+                        null
                     ),
                     dataAgreementId = consent?.purpose?.iD,
                     body = body
@@ -196,11 +217,17 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(context)) {
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -212,7 +239,8 @@ class BBConsentDashboardViewModel() : BBConsentBaseViewModel() {
                 val result = consentListRepository.getConsentsById(
                     userId = BBConsentDataUtils.getStringValue(
                         context,
-                        BBConsentDataUtils.EXTRA_TAG_USERID
+                        BBConsentDataUtils.EXTRA_TAG_USERID,
+                        null
                     ),
                     dataAgreementId = consent?.purpose?.iD,
                     isAllAllowed = consent?.count?.consented == consent?.count?.total

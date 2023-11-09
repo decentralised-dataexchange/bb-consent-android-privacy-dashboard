@@ -33,11 +33,17 @@ class BBConsentUserRequestStatusViewModel() : BBConsentBaseViewModel() {
             isLoading.value = true
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -90,11 +96,17 @@ class BBConsentUserRequestStatusViewModel() : BBConsentBaseViewModel() {
             isLoading.value = true
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
