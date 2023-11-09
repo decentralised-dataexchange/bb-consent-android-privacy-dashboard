@@ -53,11 +53,17 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
             if (showProgress) binding.llProgressBar.visibility = View.VISIBLE
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     this,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    this,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     this,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -69,7 +75,8 @@ class BBConsentLoggingActivity : BBConsentBaseActivity() {
                 val result = consentHistoryRepository.getConsentHistory(
                     userID = BBConsentDataUtils.getStringValue(
                         this@BBConsentLoggingActivity,
-                        BBConsentDataUtils.EXTRA_TAG_USERID
+                        BBConsentDataUtils.EXTRA_TAG_USERID,
+                        null
                     ), offset = startId, limit = 10
                 )
 

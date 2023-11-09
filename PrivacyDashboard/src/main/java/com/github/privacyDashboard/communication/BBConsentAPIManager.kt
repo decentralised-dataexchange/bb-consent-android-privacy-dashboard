@@ -11,7 +11,8 @@ class BBConsentAPIManager private constructor() {
     val service: BBConsentAPIServices?
         get() = Companion.service
 
-    private class HttpInterceptor(var token: String) : Interceptor {
+    private class HttpInterceptor(val accessToken: String? = null, val apiKey: String? = null) :
+        Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
             var request: Request = chain.request()
@@ -19,8 +20,10 @@ class BBConsentAPIManager private constructor() {
             //Build new request
             val builder: Request.Builder = request.newBuilder()
             builder.header("Accept", "application/json")
-            if (!token.equals("", ignoreCase = true)) {
-                setAuthHeader(builder, token)
+            if (accessToken != null && !accessToken.equals("", ignoreCase = true)) {
+                setAccessTokenAuthHeader(builder, accessToken)
+            } else if (apiKey != null && apiKey != "") {
+                setAuthHeader(builder, apiKey)
             }
             request = builder.build()
             var response: Response =
@@ -32,6 +35,11 @@ class BBConsentAPIManager private constructor() {
             if (token != null) //Add Auth token to each request if authorized
                 builder.header("Authorization", "ApiKey $token")
         }
+
+        private fun setAccessTokenAuthHeader(builder: Request.Builder, token: String?) {
+            if (token != null) //Add Auth token to each request if authorized
+                builder.header("Authorization", "Bearer $token")
+        }
     }
 
     companion object {
@@ -39,7 +47,11 @@ class BBConsentAPIManager private constructor() {
         private var service: BBConsentAPIServices? = null
         private var httpClient: OkHttpClient.Builder? = null
         private var apiManager: BBConsentAPIManager? = null
-        fun getApi(token: String, baseUrl: String?): BBConsentAPIManager? {
+        fun getApi(
+            accessToken: String? = null,
+            apiKey: String? = null,
+            baseUrl: String?
+        ): BBConsentAPIManager? {
             if (apiManager == null) {
                 apiManager = BBConsentAPIManager()
                 httpClient = OkHttpClient.Builder()
@@ -47,7 +59,7 @@ class BBConsentAPIManager private constructor() {
                 val httpLoggingInterceptor = HttpLoggingInterceptor()
                 httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
                 httpClient?.addInterceptor(httpLoggingInterceptor)
-                httpClient?.interceptors()?.add(HttpInterceptor(token))
+                httpClient?.interceptors()?.add(HttpInterceptor(accessToken, apiKey))
                 okClient = httpClient?.build()
                 val retrofit = Retrofit.Builder()
                     .baseUrl(baseUrl)

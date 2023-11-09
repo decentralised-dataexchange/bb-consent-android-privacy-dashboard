@@ -7,6 +7,7 @@ object BBConsentDataUtils {
 
     const val EXTRA_TAG_USERID = "com.github.privacyDashboard.utils.BBConsentDataUtils.userid"
     const val EXTRA_TAG_TOKEN = "com.github.privacyDashboard.utils.BBConsentDataUtils.token"
+    const val EXTRA_TAG_ACCESS_TOKEN = "com.github.privacyDashboard.utils.BBConsentDataUtils.accessToken"
     const val EXTRA_TAG_ORG_ID = "com.github.privacyDashboard.utils.BBConsentDataUtils.orgId"
     const val EXTRA_TAG_BASE_URL = "com.github.privacyDashboard.utils.BBConsentDataUtils.baseUrl"
     const val EXTRA_TAG_ENABLE_USER_REQUEST = "com.github.privacyDashboard.utils.BBConsentDataUtils.enableUserRequest"
@@ -21,10 +22,10 @@ object BBConsentDataUtils {
         editor.commit()
     }
 
-    fun getStringValue(context: Context?, tag: String?): String? {
+    fun getStringValue(context: Context?, tag: String?, defaultValue:String? = ""): String? {
         return try {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            sharedPreferences.getString(tag, "")
+            sharedPreferences.getString(tag, defaultValue)
         } catch (e: Exception) {
             ""
         }

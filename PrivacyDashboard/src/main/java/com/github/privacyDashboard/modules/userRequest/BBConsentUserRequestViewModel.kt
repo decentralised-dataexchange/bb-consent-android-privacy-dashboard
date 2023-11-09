@@ -46,11 +46,17 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
             isLoading.value = true
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -94,11 +100,17 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
             if (showProgress) isLoading.value = true
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -191,11 +203,17 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(context, true)) {
             isLoading.value = true
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -229,11 +247,17 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
         if (BBConsentNetWorkUtil.isConnectedToInternet(context, true)) {
             isLoading.value = true
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -268,11 +292,17 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
             isLoading.value = true
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
@@ -311,11 +341,17 @@ class BBConsentUserRequestViewModel() : BBConsentBaseViewModel() {
             isLoading.value = true
 
             val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
-                BBConsentDataUtils.getStringValue(
+                apiKey = BBConsentDataUtils.getStringValue(
                     context,
-                    BBConsentDataUtils.EXTRA_TAG_TOKEN
-                ) ?: "",
-                BBConsentDataUtils.getStringValue(
+                    BBConsentDataUtils.EXTRA_TAG_TOKEN,
+                    null
+                ),
+                accessToken = BBConsentDataUtils.getStringValue(
+                    context,
+                    BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN,
+                    null
+                ),
+                baseUrl = BBConsentDataUtils.getStringValue(
                     context,
                     BBConsentDataUtils.EXTRA_TAG_BASE_URL
                 )
