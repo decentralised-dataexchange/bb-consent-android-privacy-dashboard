@@ -70,7 +70,10 @@ object PrivacyDashboard {
      * @param baseUrl
      */
     fun withBaseUrl(baseUrl: String?): PrivacyDashboard {
-        this.mBaseUrl = baseUrl
+        if (baseUrl?.last().toString() == "/")
+            this.mBaseUrl = baseUrl
+        else
+            this.mBaseUrl = "$baseUrl/"
         return this
     }
 
