@@ -78,7 +78,10 @@ object DataSharingUI {
      * @param baseUrl
      */
     fun withBaseUrl(baseUrl: String?): DataSharingUI {
-        this.mBaseUrl = baseUrl
+        if (baseUrl?.last().toString() == "/")
+            this.mBaseUrl = baseUrl
+        else
+            this.mBaseUrl = "$baseUrl/"
         return this
     }
 
@@ -88,7 +91,7 @@ object DataSharingUI {
      * @param applicationName
      * @param logoUrl
      */
-    fun withOtherApplication(applicationName: String?, logoUrl: String?): DataSharingUI {
+    fun withThirdPartyApplication(applicationName: String?, logoUrl: String?): DataSharingUI {
         mDataSharingUIIntent?.putExtra(
             BBConsentDataSharingActivity.TAG_EXTRA_OTHER_APPLICATION_NAME,
             applicationName

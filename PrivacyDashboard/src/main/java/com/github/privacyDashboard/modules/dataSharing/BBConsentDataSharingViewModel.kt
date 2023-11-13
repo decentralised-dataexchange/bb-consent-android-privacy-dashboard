@@ -72,7 +72,7 @@ class BBConsentDataSharingViewModel : BBConsentBaseViewModel() {
                     )
                 )
 
-                if (result.isSuccess) {
+                if (result.isSuccess && result.getOrNull()?.dataAgreementRecord != null) {
                     withContext(Dispatchers.Main) {
                         isLoading.value = false
                         dataAgreementRecord.value = result.getOrNull()?.dataAgreementRecord
@@ -123,7 +123,7 @@ class BBConsentDataSharingViewModel : BBConsentBaseViewModel() {
                 if (result.isSuccess) {
                     withContext(Dispatchers.Main) {
                         isLoading.value = false
-                        getDataAgreement(true, context,result.getOrNull()?.organization)
+                        getDataAgreement(true, context, result.getOrNull()?.organization)
                     }
                 } else {
                     withContext(Dispatchers.Main) {
