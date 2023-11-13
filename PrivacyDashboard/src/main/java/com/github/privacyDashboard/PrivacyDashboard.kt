@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
+import com.github.privacyDashboard.communication.repositories.GetDataAgreementApiRepository
 import com.github.privacyDashboard.communication.repositories.UpdateDataAgreementStatusApiRepository
 import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
 import com.github.privacyDashboard.modules.home.BBConsentDashboardActivity
@@ -199,6 +200,39 @@ object PrivacyDashboard {
 
         return if (result.isSuccess) {
             Gson().toJson(result.getOrNull()?.dataAgreementRecord)
+        } else {
+            null
+        }
+
+    }
+
+    suspend fun getDataAgreement(
+        dataAgreementId: String,
+        baseUrl: String,
+        accessToken: String? = null,
+        apiKey: String? = null,
+        userId: String? = null,
+    ): String? {
+
+        val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+            apiKey = apiKey,
+            accessToken = accessToken,
+            baseUrl = (if (baseUrl.last().toString() == "/")
+                baseUrl
+            else
+                "$baseUrl/")
+        )?.service!!
+
+        val dataAgreementApiRepository =
+            GetDataAgreementApiRepository(apiService)
+
+        val result = dataAgreementApiRepository.getDataAgreement(
+            userId = userId,
+            dataAgreementId = dataAgreementId
+        )
+
+        return if (result.isSuccess) {
+            Gson().toJson(result.getOrNull()?.dataAgreement)
         } else {
             null
         }
