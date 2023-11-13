@@ -2,10 +2,6 @@ package com.github.privacyDashboard.communication.repositories
 
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.models.*
-import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementResponseV2
-import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementV2
-import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordsResponseV2
-import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordsV2
 import com.github.privacyDashboard.models.v2.dataAgreement.organization.OrganizationResponseV2
 import retrofit2.Response
 

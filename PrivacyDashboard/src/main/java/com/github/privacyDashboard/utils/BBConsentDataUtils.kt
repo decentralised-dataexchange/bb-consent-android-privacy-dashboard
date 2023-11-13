@@ -9,6 +9,7 @@ object BBConsentDataUtils {
     const val EXTRA_TAG_TOKEN = "com.github.privacyDashboard.utils.BBConsentDataUtils.token"
     const val EXTRA_TAG_ACCESS_TOKEN = "com.github.privacyDashboard.utils.BBConsentDataUtils.accessToken"
     const val EXTRA_TAG_ORG_ID = "com.github.privacyDashboard.utils.BBConsentDataUtils.orgId"
+    const val EXTRA_TAG_DATA_AGREEMENT_ID = "com.github.privacyDashboard.utils.BBConsentDataUtils.dataAgreementId"
     const val EXTRA_TAG_BASE_URL = "com.github.privacyDashboard.utils.BBConsentDataUtils.baseUrl"
     const val EXTRA_TAG_ENABLE_USER_REQUEST = "com.github.privacyDashboard.utils.BBConsentDataUtils.enableUserRequest"
     const val EXTRA_TAG_ENABLE_ASK_ME = "com.github.privacyDashboard.utils.BBConsentDataUtils.enableAskMe"

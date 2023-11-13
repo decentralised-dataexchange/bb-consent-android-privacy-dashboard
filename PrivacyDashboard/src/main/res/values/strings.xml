@@ -51,5 +51,23 @@
     <string name="bb_consent_error_unexpected">Unexpected error, Please try again.</string>
     <string name="bb_consent_data_attribute_disallow_all">Disallow All</string>
     <string name="bb_consent_dashboard_empty_message">No active data agreements available.</string>
+    <string name="bb_consent_data_sharing_main_desc"><![CDATA[<b>%1$s</b> wants to access the following data from <b>%2$s</b> for %3$s]]></string>
+    <string name="bb_consent_data_sharing_sensitive_info_see_data_agreement_details_and_terms_of_services">You may be sharing sensitive info with this site or app. See the Data Agreement details and Terms of Services</string>
+    <string name="bb_consent_data_sharing_make_sure_that_you_trust">Make sure that you trust %1$s</string>
+    <string name="bb_consent_data_sharing_by_authrizing_text">By clicking authorize, %1$s App will be able to read the following data attributes</string>
+
+    <string name="bb_consent_data_agreement_policy_data_agreement">Data Agreement</string>
+    <string name="bb_consent_data_agreement_policy_purpose">Purpose</string>
+    <string name="bb_consent_data_agreement_policy_purpose_description">Purpose description</string>
+    <string name="bb_consent_data_agreement_policy_lawful_basis_of_processing">Lawful usage of processing</string>
+    <string name="bb_consent_data_agreement_policy_policy_url">Policy URL</string>
+    <string name="bb_consent_data_agreement_policy_jurisdiction">Jurisdiction</string>
+    <string name="bb_consent_data_agreement_policy_third_party_disclosure">Third party disclosure</string>
+    <string name="bb_consent_data_agreement_policy_industry_scope">Industry scope</string>
+    <string name="bb_consent_data_agreement_policy_geographic_restriction">Geographic restriction</string>
+    <string name="bb_consent_data_agreement_policy_retention_period">Retention period</string>
+    <string name="bb_consent_data_agreement_policy_storage_location">Storage location</string>
+    <string name="bb_consent_data_sharing_authorize">Authorize</string>
+    <string name="bb_consent_data_sharing_cancel">Cancel</string>
 
 </resources>

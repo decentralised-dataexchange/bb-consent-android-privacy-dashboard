@@ -34,7 +34,13 @@ interface BBConsentAPIServices {
     @GET("v2/service/data-agreements")
     suspend fun getDataAgreementsV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
-    ): Response<DataAgreementResponseV2>
+    ): Response<DataAgreementsResponseV2>
+
+    @GET("v2/service/data-agreement/{dataAgreementId}")
+    suspend fun getDataAgreementV2(
+        @Header("X-ConsentBB-IndividualId") userID: String?,
+        @Path("dataAgreementId") dataAgreementId: String?
+    ): Response<DataAgreementResponseV2?>?
 
     @GET("v2/service/individual/record/consent-record")
     suspend fun getDataAgreementRecordsV2(
