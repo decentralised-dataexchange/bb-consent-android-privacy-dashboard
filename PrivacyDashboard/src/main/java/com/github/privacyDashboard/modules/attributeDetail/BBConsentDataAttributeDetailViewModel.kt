@@ -61,10 +61,7 @@ class BBConsentDataAttributeDetailViewModel() : BBConsentBaseViewModel() {
 
             GlobalScope.launch {
                 val result = updateDataAttributeStatusApiRepository.updateAttributeStatus(
-                    BBConsentDataUtils.getStringValue(
-                        context,
-                        BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                    ),
+                    "",//todo need to update these APIs when available
                     BBConsentDataUtils.getStringValue(
                         context,
                         BBConsentDataUtils.EXTRA_TAG_USERID,

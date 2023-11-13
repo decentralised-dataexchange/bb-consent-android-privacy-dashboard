@@ -54,17 +54,13 @@ class BBConsentUserRequestStatusViewModel() : BBConsentBaseViewModel() {
             GlobalScope.launch {
                 val result = if (isDownloadData == true)
                     cancelDataRequestApiRepository.cancelDataRequest(
-                        BBConsentDataUtils.getStringValue(
-                            context,
-                            BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                        ), requestId
+                       "",//todo need to update these APIs when available
+                        requestId
                     )
                 else
                     cancelDataRequestApiRepository.cancelDeleteDataRequest(
-                        BBConsentDataUtils.getStringValue(
-                            context,
-                            BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                        ), requestId
+                       "",//todo need to update these APIs when available
+                        requestId
                     )
 
                 if (result?.isSuccess == true) {
@@ -117,17 +113,11 @@ class BBConsentUserRequestStatusViewModel() : BBConsentBaseViewModel() {
             GlobalScope.launch {
                 val result = if (mIsDownloadData == true)
                     userRequestStatusApiRepository.dataDownloadStatusRequest(
-                        BBConsentDataUtils.getStringValue(
-                            context,
-                            BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                        )
+                        ""//todo need to update these APIs when available
                     )
                 else
                     userRequestStatusApiRepository.deleteDataStatusRequest(
-                        BBConsentDataUtils.getStringValue(
-                            context,
-                            BBConsentDataUtils.EXTRA_TAG_ORG_ID
-                        )
+                        ""//todo need to update these APIs when available
                     )
 
                 if (result?.isSuccess == true) {
