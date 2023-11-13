@@ -12,7 +12,6 @@ import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_DATA_AGREE
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_ASK_ME
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_ATTRIBUTE_LEVEL_CONSENT
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_USER_REQUEST
-import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ORG_ID
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_TOKEN
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_USERID
 import com.github.privacyDashboard.utils.BBConsentLocaleHelper

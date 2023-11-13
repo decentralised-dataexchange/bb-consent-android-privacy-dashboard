@@ -45,7 +45,6 @@ We can initiate the privacy dashboard by calling the below.
 ```
 PrivacyDashboard.showPrivacyDashboard().withApiKey(<API key>)
                 .withUserId(<User ID>)
-                .withOrgId(<Org ID>)
                 .withBaseUrl(<Base URL>).start(this)
 ```
 

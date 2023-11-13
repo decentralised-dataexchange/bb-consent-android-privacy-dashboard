@@ -12,7 +12,6 @@ import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_BASE_URL
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_ASK_ME
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_ATTRIBUTE_LEVEL_CONSENT
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_USER_REQUEST
-import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ORG_ID
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_TOKEN
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_USERID
 import com.github.privacyDashboard.utils.BBConsentLocaleHelper
@@ -22,7 +21,6 @@ object PrivacyDashboard {
     private var mUserId: String? = null
     private var mApiKey: String? = null
     private var mAccessToken: String? = null
-    private var mOrgId: String? = ""
     private var mBaseUrl: String? = ""
     private var mLocale: String? = ""
     private var mEnableUserRequest: Boolean? = false
@@ -63,16 +61,6 @@ object PrivacyDashboard {
      */
     fun withAccessToken(accessToken: String?): PrivacyDashboard {
         this.mAccessToken = if (accessToken == "") null else accessToken
-        return this
-    }
-
-    /**
-     * Set organization id for the iGrant Sdk.
-     *
-     * @param orgId
-     */
-    fun withOrgId(orgId: String?): PrivacyDashboard {
-        this.mOrgId = orgId
         return this
     }
 
@@ -148,7 +136,6 @@ object PrivacyDashboard {
     private fun getIntent(context: Context): Intent? {
         mPrivacyDashboardIntent?.setClass(context, BBConsentDashboardActivity::class.java)
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_BASE_URL, this.mBaseUrl)
-        BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_ORG_ID, this.mOrgId)
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_USERID, this.mUserId)
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_TOKEN, this.mApiKey)
         BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_ACCESS_TOKEN, this.mAccessToken)
