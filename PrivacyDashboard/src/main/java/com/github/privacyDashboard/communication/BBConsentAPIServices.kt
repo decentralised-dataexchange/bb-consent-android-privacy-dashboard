@@ -12,7 +12,7 @@ import com.github.privacyDashboard.models.userRequests.UserRequestStatusV1
 import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
 import com.github.privacyDashboard.models.v2.consentHistory.ConsentHistoryResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementResponseV2
-import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.CreateDataAgreementRecordResponseV2
+import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementsResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementLatestRecordResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordsResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAttributes.DataAttributesListResponseV2
@@ -95,7 +95,7 @@ interface BBConsentAPIServices {
         @Body body: ConsentStatusRequest?
     ): Response<UpdateConsentStatusResponseV1?>?
 
-    @GET("v2/service/verification/data-agreement/{dataAgreementId}")
+    @GET("v2/service/individual/record/data-agreement/{dataAgreementId}")
     suspend fun getDataAgreementRecordV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Path("dataAgreementId") dataAgreementId: String?,
