@@ -2,11 +2,10 @@ package com.github.privacyDashboard.communication.repositories
 
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.models.*
-import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementResponseV2
+import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementsResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordsResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordsV2
-import com.github.privacyDashboard.models.v2.dataAgreement.organization.OrganizationResponseV2
 import retrofit2.Response
 
 class GetDataAgreementsApiRepository(private val apiService: BBConsentAPIServices) {
@@ -42,7 +41,7 @@ class GetDataAgreementsApiRepository(private val apiService: BBConsentAPIService
     }
 
     private suspend fun convertV2toBaseModel(
-        dataAgreementsResponse: Response<DataAgreementResponseV2>,
+        dataAgreementsResponse: Response<DataAgreementsResponseV2>,
         dataAgreementRecordResponseV2: Response<DataAgreementRecordsResponseV2>,
         userId: String?
     ): OrganizationDetailResponse {

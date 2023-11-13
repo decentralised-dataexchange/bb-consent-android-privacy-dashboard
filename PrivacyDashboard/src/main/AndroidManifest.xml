@@ -20,5 +20,9 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".modules.userRequestStatus.BBConsentUserRequestStatusActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".modules.dataSharing.BBConsentDataSharingActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".modules.dataAgreementPolicy.BBConsentDataAgreementPolicyActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 </manifest>
