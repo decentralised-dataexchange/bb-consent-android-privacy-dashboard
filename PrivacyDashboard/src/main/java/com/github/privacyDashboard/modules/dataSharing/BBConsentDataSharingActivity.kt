@@ -56,7 +56,8 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
     }
 
     private fun getIntentData() {
-        viewModel?.otherApplicationName = intent.getStringExtra(TAG_EXTRA_OTHER_APPLICATION_NAME)?:"Application"
+        viewModel?.otherApplicationName =
+            intent.getStringExtra(TAG_EXTRA_OTHER_APPLICATION_NAME) ?: "Application"
         viewModel?.otherApplicationLogo = intent.getStringExtra(TAG_EXTRA_OTHER_APPLICATION_LOGO)
         val secondaryButtonText = intent.getStringExtra(TAG_EXTRA_SECONDARY_BUTTON_TEXT)
         if (secondaryButtonText != null)
@@ -137,55 +138,53 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
 
     private fun initListeners() {
         viewModel?.dataAgreement?.observe(this, Observer { newData ->
+            if (newData != null)
+                if (newData.methodOfUse != "data_source" || newData.policy?.thirdPartyDataSharing == false) {
+                    val resultIntent = Intent()
+                    setResult(RESULT_CANCELED, resultIntent)
+                    finish()
+                } else {
+                    binding.tvMainDesc.text = Html.fromHtml(
+                        resources.getString(
+                            R.string.bb_consent_data_sharing_main_desc,
+                            if ((viewModel?.dataAgreement?.value?.methodOfUse
+                                    ?: "") == "data_using_service"
+                            ) viewModel?.organization?.value?.name else viewModel?.otherApplicationName,
+                            if ((viewModel?.dataAgreement?.value?.methodOfUse
+                                    ?: "") == "data_using_service"
+                            ) viewModel?.otherApplicationName else viewModel?.organization?.value?.name,
+                            viewModel?.dataAgreement?.value?.purpose ?: ""
+                        )
+                    )
 
-            binding.tvMainDesc.text = Html.fromHtml(
-                resources.getString(
-                    R.string.bb_consent_data_sharing_main_desc,
-                    if ((viewModel?.dataAgreement?.value?.methodOfUse
-                            ?: "") == "data_using_service"
-                    ) viewModel?.organization?.value?.name else viewModel?.otherApplicationName,
-                    if ((viewModel?.dataAgreement?.value?.methodOfUse
-                            ?: "") == "data_using_service"
-                    ) viewModel?.otherApplicationName else viewModel?.organization?.value?.name,
-                    viewModel?.dataAgreement?.value?.purpose ?: ""
-                )
-            )
+                    BBConsentImageUtils.setImage(
+                        binding.ivAppLogo,
+                        viewModel?.organization?.value?.logoImageURL ?: "",
+                        R.drawable.bb_consent_default_logo
+                    )
 
-            BBConsentImageUtils.setImage(
-                binding.ivAppLogo,
-                if ((viewModel?.dataAgreement?.value?.methodOfUse
-                        ?: "") == "data_using_service"
-                ) viewModel?.otherApplicationLogo else viewModel?.organization?.value?.logoImageURL ?: "",
-                R.drawable.bb_consent_default_logo
-            )
+                    BBConsentImageUtils.setImage(
+                        binding.iv3ppLogo,
+                        viewModel?.otherApplicationLogo,
+                        R.drawable.bb_consent_default_logo,
+                    )
 
-            BBConsentImageUtils.setImage(
-                binding.iv3ppLogo,
-                if ((viewModel?.dataAgreement?.value?.methodOfUse
-                        ?: "") == "data_using_service"
-                ) viewModel?.organization?.value?.logoImageURL ?: "" else viewModel?.otherApplicationLogo,
-                R.drawable.bb_consent_default_logo,
-            )
+                    binding.tvMakeSureTrust.text = resources.getString(
+                        R.string.bb_consent_data_sharing_make_sure_that_you_trust,
+                        viewModel?.otherApplicationName
+                    )
 
-            binding.tvMakeSureTrust.text = resources.getString(
-                R.string.bb_consent_data_sharing_make_sure_that_you_trust,
-                if ((viewModel?.dataAgreement?.value?.methodOfUse
-                        ?: "") == "data_using_service"
-                ) viewModel?.organization?.value?.name else viewModel?.otherApplicationName
-            )
+                    binding.tvDesc.text = resources.getString(
+                        R.string.bb_consent_data_sharing_by_authrizing_text,
+                        viewModel?.otherApplicationName
+                    )
 
-            binding.tvDesc.text = resources.getString(
-                R.string.bb_consent_data_sharing_by_authrizing_text,
-                if ((viewModel?.dataAgreement?.value?.methodOfUse
-                        ?: "") == "data_using_service"
-                ) viewModel?.organization?.value?.name else viewModel?.otherApplicationName
-            )
-
-            adapter = BBConsentDataSharingAttributesAdapter(
-                newData?.dataAttributes ?: ArrayList()
-            )
-            binding.rvDataAttributes.layoutManager = LinearLayoutManager(this)
-            binding.rvDataAttributes.adapter = adapter
+                    adapter = BBConsentDataSharingAttributesAdapter(
+                        newData?.dataAttributes ?: ArrayList()
+                    )
+                    binding.rvDataAttributes.layoutManager = LinearLayoutManager(this)
+                    binding.rvDataAttributes.adapter = adapter
+                }
         })
 
         viewModel?.dataAgreementRecord?.observe(this, Observer { newData ->
@@ -282,7 +281,7 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
         subList.add(
             DataAgreementPolicyModel(
                 resources.getString(R.string.bb_consent_data_agreement_policy_third_party_disclosure),
-                dataAgreement?.policy?.thirdPartyDataSharing
+                dataAgreement?.policy?.thirdPartyDataSharing.toString()
             )
         )
         subList.add(

@@ -12,7 +12,7 @@ data class PolicyV2(
     @SerializedName("dataRetentionPeriodDays") var dataRetentionPeriodDays: Int? = null,
     @SerializedName("geographicRestriction") var geographicRestriction: String? = null,
     @SerializedName("storageLocation") var storageLocation: String? = null,
-    @SerializedName("thirdPartyDataSharing") var thirdPartyDataSharing: String? = null,
+    @SerializedName("thirdPartyDataSharing") var thirdPartyDataSharing: Boolean? = null,
     @SerializedName("id") var id: String? = null
 
 )

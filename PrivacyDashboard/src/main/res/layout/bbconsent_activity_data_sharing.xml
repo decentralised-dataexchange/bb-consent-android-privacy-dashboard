@@ -46,7 +46,7 @@
                     android:layout_marginTop="10dp">
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cvAppLogo"
+                        android:id="@+id/cv3ppLogo"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         app:cardBackgroundColor="@color/bbConsentWhite"
@@ -57,7 +57,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
-                            android:id="@+id/ivAppLogo"
+                            android:id="@+id/iv3ppLogo"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:src="@drawable/bb_consent_default_logo" />
@@ -69,15 +69,15 @@
                         android:layout_height="50dp"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
-                        android:src="@drawable/ic_arrow_forward"
+                        android:src="@drawable/ic_sync_24"
                         android:visibility="visible"
-                        app:layout_constraintBottom_toBottomOf="@+id/cvAppLogo"
-                        app:layout_constraintEnd_toStartOf="@+id/cv3ppLogo"
-                        app:layout_constraintStart_toEndOf="@+id/cvAppLogo"
-                        app:layout_constraintTop_toTopOf="@+id/cvAppLogo" />
+                        app:layout_constraintBottom_toBottomOf="@+id/cv3ppLogo"
+                        app:layout_constraintEnd_toStartOf="@+id/cvAppLogo"
+                        app:layout_constraintStart_toEndOf="@+id/cv3ppLogo"
+                        app:layout_constraintTop_toTopOf="@+id/cv3ppLogo" />
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cv3ppLogo"
+                        android:id="@+id/cvAppLogo"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:visibility="visible"
@@ -88,7 +88,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
-                            android:id="@+id/iv3ppLogo"
+                            android:id="@+id/ivAppLogo"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:src="@drawable/bb_consent_default_logo" />
@@ -108,7 +108,7 @@
                         android:textSize="@dimen/text_size_normal"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cvAppLogo" />
+                        app:layout_constraintTop_toBottomOf="@+id/cv3ppLogo" />
 
                     <TextView
                         android:id="@+id/tvDesc"
