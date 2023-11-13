@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             PrivacyDashboard.showPrivacyDashboard()
                 .withApiKey("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTY29wZXMiOlsic2VydmljZSJdLCJPcmdhbmlzYXRpb25JZCI6IjY1MjY1Nzk2OTM4MGYzNWZhMWMzMDI0NSIsIk9yZ2FuaXNhdGlvbkFkbWluSWQiOiI2NTI2NTc5NjkzODBmMzVmYTFjMzAyNDMiLCJleHAiOjE3MDI0NDUyMjR9.iMbsEe-nN_EHzWg0KOeUGTUR1F3xYH8lQBP90Mpt_ZY")
                 .withUserId("65366979db611cb1948aca50")
-                .withBaseUrl("https://staging-consent-bb-api.igrant.io/")
+                .withBaseUrl("https://staging-consent-bb-api.igrant.io/v2")
                 .start(this)
         }
 

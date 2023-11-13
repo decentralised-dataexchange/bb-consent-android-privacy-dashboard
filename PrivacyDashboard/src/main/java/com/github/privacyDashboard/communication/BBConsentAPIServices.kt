@@ -21,39 +21,39 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface BBConsentAPIServices {
-    @GET("v1/GetUserOrgsAndConsents")
+    @GET("GetUserOrgsAndConsents")
     suspend fun getOrganizationDetail(
         @Query("orgID") orgID: String?
     ): Response<OrganizationDetailResponse?>?
 
-    @GET("v2/service/organisation")
+    @GET("service/organisation")
     suspend fun getOrganizationDetailV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
     ): Response<OrganizationResponseV2>
 
-    @GET("v2/service/data-agreements")
+    @GET("service/data-agreements")
     suspend fun getDataAgreementsV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
     ): Response<DataAgreementsResponseV2>
 
-    @GET("v2/service/data-agreement/{dataAgreementId}")
+    @GET("service/data-agreement/{dataAgreementId}")
     suspend fun getDataAgreementV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Path("dataAgreementId") dataAgreementId: String?
     ): Response<DataAgreementResponseV2?>?
 
-    @GET("v2/service/individual/record/consent-record")
+    @GET("service/individual/record/consent-record")
     suspend fun getDataAgreementRecordsV2(
         @Header("X-ConsentBB-IndividualId") userID: String?
     ): Response<DataAgreementRecordsResponseV2>
 
-    @POST("v2/service/individual/record/data-agreement/{dataAgreementId}")
+    @POST("service/individual/record/data-agreement/{dataAgreementId}")
     suspend fun createDataAgreementRecordV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Path("dataAgreementId") dataAgreementId: String?
     ): Response<DataAgreementLatestRecordResponseV2?>?
 
-    @GET("v1/users/{userID}/consenthistory")
+    @GET("users/{userID}/consenthistory")
     suspend fun getConsentHistory(
         @Path("userID") userID: String?,
         @Query("limit") limit: Int,
@@ -61,14 +61,14 @@ interface BBConsentAPIServices {
         @Query("startid") startid: String?
     ): Response<ConsentHistoryResponseV1?>
 
-    @GET("v2/service/individual/record/consent-record/history")
+    @GET("service/individual/record/consent-record/history")
     suspend fun getConsentHistoryV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Query("offset") offset: Int?,
         @Query("limit") limit: Int?,
     ): Response<ConsentHistoryResponseV2?>
 
-    @GET("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}")
+    @GET("organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}")
     suspend fun getConsentList(
         @Path("orgID") orgID: String?,
         @Path("userId") userId: String?,
@@ -76,13 +76,13 @@ interface BBConsentAPIServices {
         @Path("purposeId") purposeId: String?
     ): Response<DataAttributesResponseV1?>?
 
-    @GET("v2/service/data-agreement/{dataAgreementId}/data-attributes")
+    @GET("service/data-agreement/{dataAgreementId}/data-attributes")
     suspend fun getAttributeListV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Path("dataAgreementId") dataAgreementId: String?
     ): Response<DataAttributesListResponseV2?>?
 
-    @PATCH("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}/attributes/{attributeId}")
+    @PATCH("organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}/attributes/{attributeId}")
     suspend fun setAttributeStatus(
         @Path("orgID") orgID: String?,
         @Path("userId") userId: String?,
@@ -92,7 +92,7 @@ interface BBConsentAPIServices {
         @Body body: ConsentStatusRequest?
     ): Response<ResultResponseV1?>?
 
-    @POST("v1/organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}/status")
+    @POST("organizations/{orgID}/users/{userId}/consents/{consentId}/purposes/{purposeId}/status")
     suspend fun setOverallStatus(
         @Path("orgID") orgID: String?,
         @Path("userId") userId: String?,
@@ -101,13 +101,13 @@ interface BBConsentAPIServices {
         @Body body: ConsentStatusRequest?
     ): Response<UpdateConsentStatusResponseV1?>?
 
-    @GET("v2/service/individual/record/data-agreement/{dataAgreementId}")
+    @GET("service/individual/record/data-agreement/{dataAgreementId}")
     suspend fun getDataAgreementRecordV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Path("dataAgreementId") dataAgreementId: String?,
     ): Response<DataAgreementLatestRecordResponseV2?>?
 
-    @PUT("v2/service/individual/record/consent-record/{dataAgreementRecordId}")
+    @PUT("service/individual/record/consent-record/{dataAgreementRecordId}")
     suspend fun setOverallStatusV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
         @Path("dataAgreementRecordId") dataAgreementRecordId: String?,
@@ -115,40 +115,40 @@ interface BBConsentAPIServices {
         @Body body: ConsentStatusRequestV2?
     ): Response<DataAgreementLatestRecordResponseV2?>?
 
-    @GET("v1/user/organizations/{orgId}/data-status")
+    @GET("user/organizations/{orgId}/data-status")
     suspend fun getOrgRequestStatus(
         @Path("orgId") orgId: String?,
         @Query("startid") startid: String?
     ): Response<UserRequestHistoryResponseV1>
 
     //data download and delete
-    @GET("v1/user/organizations/{orgId}/data-download/status")
+    @GET("user/organizations/{orgId}/data-download/status")
     suspend fun getDataDownloadStatus(
         @Path("orgId") orgId: String?
     ): Response<UserRequestStatusV1?>
 
-    @GET("v1/user/organizations/{orgId}/data-delete/status")
+    @GET("user/organizations/{orgId}/data-delete/status")
     suspend fun getDataDeleteStatus(
         @Path("orgId") orgId: String?
     ): Response<UserRequestStatusV1?>
 
-    @POST("v1/user/organizations/{orgId}/data-delete")
+    @POST("user/organizations/{orgId}/data-delete")
     suspend fun dataDeleteRequest(
         @Path("orgId") orgId: String?
     ): Response<Void>
 
-    @POST("v1/user/organizations/{orgId}/data-download")
+    @POST("user/organizations/{orgId}/data-download")
     suspend fun dataDownloadRequest(
         @Path("orgId") orgId: String?
     ): Response<Void>
 
-    @POST("v1/user/organizations/{orgId}/data-delete/{requestId}/cancel")
+    @POST("user/organizations/{orgId}/data-delete/{requestId}/cancel")
     suspend fun dataDeleteCancelRequest(
         @Path("orgId") orgId: String?,
         @Path("requestId") requestId: String?
     ): Response<UserRequestGenResponseV1?>
 
-    @POST("v1/user/organizations/{orgId}/data-download/{requestId}/cancel")
+    @POST("user/organizations/{orgId}/data-download/{requestId}/cancel")
     suspend fun dataDownloadCancelRequest(
         @Path("orgId") orgId: String?,
         @Path("requestId") requestId: String?
