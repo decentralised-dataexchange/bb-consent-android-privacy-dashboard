@@ -109,7 +109,7 @@ interface BBConsentAPIServices {
 
     @PUT("service/individual/record/consent-record/{dataAgreementRecordId}")
     suspend fun setOverallStatusV2(
-        @Header("X-ConsentBB-IndividualId") userID: String?,
+        @Header("X-ConsentBB-IndividualId") userID: String? = null,
         @Path("dataAgreementRecordId") dataAgreementRecordId: String?,
         @Query("dataAgreementId") dataAgreementId: String?,
         @Body body: ConsentStatusRequestV2?

@@ -3,8 +3,10 @@ package com.github.privacyDashboard
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.util.Log
+import com.github.privacyDashboard.communication.BBConsentAPIManager
+import com.github.privacyDashboard.communication.BBConsentAPIServices
+import com.github.privacyDashboard.communication.repositories.UpdateDataAgreementStatusApiRepository
+import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
 import com.github.privacyDashboard.modules.home.BBConsentDashboardActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN
@@ -15,6 +17,8 @@ import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ENABLE_USE
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_TOKEN
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_USERID
 import com.github.privacyDashboard.utils.BBConsentLocaleHelper
+import com.google.gson.Gson
+
 
 object PrivacyDashboard {
 
@@ -163,5 +167,41 @@ object PrivacyDashboard {
 
     fun setLocale(context: Context, languageCode: String) {
         BBConsentLocaleHelper.setLocale(context, languageCode)
+    }
+
+    suspend fun optInToDataAgreement(
+        dataAgreementId: String,
+        baseUrl: String,
+        accessToken: String? = null,
+        apiKey: String? = null,
+        userId: String? = null,
+    ): String? {
+        val body = ConsentStatusRequestV2()
+        body.optIn = false
+
+        val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+            apiKey = apiKey,
+            accessToken = accessToken,
+            baseUrl = (if (baseUrl.last().toString() == "/")
+                baseUrl
+            else
+                "$baseUrl/")
+        )?.service!!
+
+        val updateDataAgreementStatusApiRepository =
+            UpdateDataAgreementStatusApiRepository(apiService)
+
+        val result = updateDataAgreementStatusApiRepository.updateDataAgreementStatus(
+            userId = userId,
+            dataAgreementId = dataAgreementId,
+            body = body
+        )
+
+        return if (result.isSuccess) {
+            Gson().toJson(result.getOrNull()?.dataAgreementRecord)
+        } else {
+            null
+        }
+
     }
 }

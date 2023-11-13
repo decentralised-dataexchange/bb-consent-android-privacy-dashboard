@@ -17,7 +17,7 @@ class UpdateDataAgreementStatusApiRepository(private val apiService: BBConsentAP
         return try {
             val dataAgreementRecord = apiService.getDataAgreementRecordV2(userId, dataAgreementId)
             var response: Response<DataAgreementLatestRecordResponseV2?>? = null
-            if (dataAgreementRecord?.isSuccessful != true) {
+            if (dataAgreementRecord?.isSuccessful != true || dataAgreementRecord.body()?.dataAgreementRecord == null) {
                 response = apiService.createDataAgreementRecordV2(userId, dataAgreementId)
             } else {
                 response = apiService.setOverallStatusV2(
