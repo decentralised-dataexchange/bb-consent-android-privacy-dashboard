@@ -34,6 +34,8 @@ interface BBConsentAPIServices {
     @GET("service/data-agreements")
     suspend fun getDataAgreementsV2(
         @Header("X-ConsentBB-IndividualId") userID: String?,
+        @Query("offset") offset: Int?,
+        @Query("limit") limit: Int?,
     ): Response<DataAgreementsResponseV2>
 
     @GET("service/data-agreement/{dataAgreementId}")
@@ -44,7 +46,9 @@ interface BBConsentAPIServices {
 
     @GET("service/individual/record/consent-record")
     suspend fun getDataAgreementRecordsV2(
-        @Header("X-ConsentBB-IndividualId") userID: String?
+        @Header("X-ConsentBB-IndividualId") userID: String?,
+        @Query("offset") offset: Int?,
+        @Query("limit") limit: Int?,
     ): Response<DataAgreementRecordsResponseV2>
 
     @POST("service/individual/record/data-agreement/{dataAgreementId}")
