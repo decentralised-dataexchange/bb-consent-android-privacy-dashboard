@@ -7,7 +7,11 @@ import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.GetDataAgreementApiRepository
 import com.github.privacyDashboard.communication.repositories.UpdateDataAgreementStatusApiRepository
+import com.github.privacyDashboard.models.DataAgreementPolicyModel
+import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAgreement
 import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
+import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementV2
+import com.github.privacyDashboard.modules.dataAgreementPolicy.BBConsentDataAgreementPolicyActivity
 import com.github.privacyDashboard.modules.home.BBConsentDashboardActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_ACCESS_TOKEN
@@ -23,6 +27,8 @@ import com.google.gson.Gson
 
 object PrivacyDashboard {
 
+    private var destination: Int? = -1
+
     private var mUserId: String? = null
     private var mApiKey: String? = null
     private var mAccessToken: String? = null
@@ -31,12 +37,103 @@ object PrivacyDashboard {
     private var mEnableUserRequest: Boolean? = false
     private var mEnableAskMe: Boolean? = false
     private var mEnableAttributeLevelConsent: Boolean? = false
-
-    private var mPrivacyDashboardIntent: Intent? = null
+    private var mDataAgreement: String? = null
+    private var mIntent: Intent? = null
 
     fun showPrivacyDashboard(): PrivacyDashboard {
-        mPrivacyDashboardIntent = Intent()
+        destination = 0
+        mIntent = Intent()
         return this
+    }
+
+    fun showDataAgreementPolicy(): PrivacyDashboard {
+        destination = 1
+        mIntent = Intent()
+        return this
+    }
+
+    /**
+     * Set data agreement for igrant sdk.
+     *
+     * @param userId
+     */
+    fun withDataAgreement(dataAgreement: String?): PrivacyDashboard {
+        this.mDataAgreement = if (dataAgreement == "") null else
+            dataAgreement
+        return this
+    }
+
+    private fun buildListForDataAgreementPolicy(
+        context: Context,
+        dataAgreement: DataAgreementV2?
+    ): String {
+        var list: ArrayList<ArrayList<DataAgreementPolicyModel>> = ArrayList()
+        var subList: ArrayList<DataAgreementPolicyModel> = ArrayList()
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_purpose),
+                dataAgreement?.purpose
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_purpose_description),
+                dataAgreement?.purposeDescription
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_lawful_basis_of_processing),
+                dataAgreement?.lawfulBasis
+            )
+        )
+        list.add(subList)
+        subList = ArrayList()
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_policy_url),
+                dataAgreement?.policy?.url
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_jurisdiction),
+                dataAgreement?.policy?.jurisdiction
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_third_party_disclosure),
+                dataAgreement?.policy?.thirdPartyDataSharing.toString()
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_industry_scope),
+                dataAgreement?.policy?.industrySector
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_geographic_restriction),
+                dataAgreement?.policy?.geographicRestriction
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_retention_period),
+                dataAgreement?.policy?.dataRetentionPeriodDays.toString()
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_storage_location),
+                dataAgreement?.policy?.storageLocation
+            )
+        )
+        list.add(subList)
+
+        return Gson().toJson(list)
     }
 
     /**
@@ -122,8 +219,13 @@ object PrivacyDashboard {
      * @param activity Activity to start activity
      */
     fun start(activity: Activity) {
-        if (mAccessToken != null || (mApiKey != null && mUserId != null))
-            activity.startActivity(getIntent(activity))
+        if (destination == 0) {
+            if (mAccessToken != null || (mApiKey != null && mUserId != null))
+                activity.startActivity(getIntent(activity))
+        } else if (destination == 1) {
+            if (mDataAgreement != null)
+                activity.startActivity(getIntent(activity))
+        }
     }
 
     /**
@@ -132,8 +234,13 @@ object PrivacyDashboard {
      * @param context Context to start activity
      */
     fun start(context: Context) {
-        if (mAccessToken != null || (mApiKey != null && mUserId != null))
-            context.startActivity(getIntent(context))
+        if (destination == 0) {
+            if (mAccessToken != null || (mApiKey != null && mUserId != null))
+                context.startActivity(getIntent(context))
+        } else if (destination == 1) {
+            if (mDataAgreement != null)
+                context.startActivity(getIntent(context))
+        }
     }
 
     /**
@@ -142,28 +249,42 @@ object PrivacyDashboard {
      * @return Intent for [BBConsentDashboardActivity]
      */
     private fun getIntent(context: Context): Intent? {
-        mPrivacyDashboardIntent?.setClass(context, BBConsentDashboardActivity::class.java)
-        BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_BASE_URL, this.mBaseUrl)
-        BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_USERID, this.mUserId)
-        BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_TOKEN, this.mApiKey)
-        BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_ACCESS_TOKEN, this.mAccessToken)
-        BBConsentLocaleHelper.setLocale(context, mLocale ?: "en")
-        BBConsentDataUtils.saveBooleanValues(
-            context,
-            EXTRA_TAG_ENABLE_USER_REQUEST,
-            this.mEnableUserRequest
-        )
-        BBConsentDataUtils.saveBooleanValues(
-            context,
-            EXTRA_TAG_ENABLE_ASK_ME,
-            this.mEnableAskMe
-        )
-        BBConsentDataUtils.saveBooleanValues(
-            context,
-            EXTRA_TAG_ENABLE_ATTRIBUTE_LEVEL_CONSENT,
-            this.mEnableAttributeLevelConsent
-        )
-        return mPrivacyDashboardIntent
+        if (destination == 0) {
+            mIntent?.setClass(context, BBConsentDashboardActivity::class.java)
+            BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_BASE_URL, this.mBaseUrl)
+            BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_USERID, this.mUserId)
+            BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_TOKEN, this.mApiKey)
+            BBConsentDataUtils.saveStringValues(context, EXTRA_TAG_ACCESS_TOKEN, this.mAccessToken)
+            BBConsentLocaleHelper.setLocale(context, mLocale ?: "en")
+            BBConsentDataUtils.saveBooleanValues(
+                context,
+                EXTRA_TAG_ENABLE_USER_REQUEST,
+                this.mEnableUserRequest
+            )
+            BBConsentDataUtils.saveBooleanValues(
+                context,
+                EXTRA_TAG_ENABLE_ASK_ME,
+                this.mEnableAskMe
+            )
+            BBConsentDataUtils.saveBooleanValues(
+                context,
+                EXTRA_TAG_ENABLE_ATTRIBUTE_LEVEL_CONSENT,
+                this.mEnableAttributeLevelConsent
+            )
+            return mIntent
+        } else {
+            if (mDataAgreement != null)
+                mIntent?.setClass(context, BBConsentDataAgreementPolicyActivity::class.java)
+            BBConsentLocaleHelper.setLocale(context, mLocale ?: "en")
+            mIntent?.putExtra(
+                BBConsentDataAgreementPolicyActivity.TAG_EXTRA_ATTRIBUTE_LIST,
+                buildListForDataAgreementPolicy(
+                    context,
+                    Gson().fromJson(mDataAgreement, DataAgreementV2::class.java)
+                )
+            )
+            return mIntent
+        }
     }
 
     fun setLocale(context: Context, languageCode: String) {
@@ -178,7 +299,7 @@ object PrivacyDashboard {
         userId: String? = null,
     ): String? {
         val body = ConsentStatusRequestV2()
-        body.optIn = true
+        body.optIn = false
 
         val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
             apiKey = apiKey,
