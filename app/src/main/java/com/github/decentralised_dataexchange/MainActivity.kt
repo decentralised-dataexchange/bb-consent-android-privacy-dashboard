@@ -59,6 +59,14 @@ class MainActivity : AppCompatActivity() {
                 .withBaseUrl("https://staging-consent-bb-api.igrant.io/v2")
                 .start(this)
 
+            /* DAta agreement policy
+            PrivacyDashboard.showDataAgreementPolicy().withDataAgreement(
+                "{\"active\":true,\"compatibleWithVersionId\":\"\",\"controllerId\":\"652657969380f35fa1c30245\",\"controllerName\":\"\",\"controllerUrl\":\"\",\"dataAttributes\":[{\"category\":\"string\",\"description\":\"Backup\",\"id\":\"65534a939a6116c5c2b98d54\",\"name\":\"Backup\",\"sensitivity\":false}],\"dpiaDate\":\"2023-11-14T10:22\",\"dpiaSummaryUrl\":\"https://privacyant.se/dpia_results.html\",\"forgettable\":false,\"id\":\"65534a939a6116c5c2b98d51\",\"lawfulBasis\":\"consent\",\"lifecycle\":\"complete\",\"methodOfUse\":\"data_using_service\",\"policy\":{\"dataRetentionPeriodDays\":730,\"geographicRestriction\":\"Europe\",\"id\":\"65534a939a6116c5c2b98d52\",\"industrySector\":\"Retail\",\"jurisdiction\":\"Sweden\",\"name\":\"string\",\"storageLocation\":\"Sweden\",\"thirdPartyDataSharing\":false,\"url\":\"https://uidai.gov.in/en/privacy-policy.html\",\"version\":\"\"},\"purpose\":\"Backup and Restore (DO NOT DELETE)\",\"purposeDescription\":\"Backup and restore\",\"signature\":{\"id\":\"65534a939a6116c5c2b98d53\",\"objectReference\":\"\",\"objectType\":\"\",\"payload\":\"\",\"signature\":\"\",\"signedWithoutObjectReference\":false,\"timestamp\":\"\",\"verificationArtifact\":\"\",\"verificationJwsHeader\":\"\",\"verificationMethod\":\"\",\"verificationPayload\":\"\",\"verificationPayloadHash\":\"\",\"verificationSignedAs\":\"\",\"verificationSignedBy\":\"\"},\"version\":\"1.0.0\"}"
+            )
+                .start(this)
+
+            DAta agreement policy */
+
             /*Optin to data agreement sample
             GlobalScope.launch {
                 PrivacyDashboard.optInToDataAgreement(
