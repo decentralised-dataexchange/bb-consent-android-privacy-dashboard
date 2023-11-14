@@ -70,7 +70,7 @@ dependencies {
 }
 
 def getVersionName = { ->
-    return "2023.11.4"  // Replace with version Name
+    return "2023.11.5"  // Replace with version Name
 }
 
 def getArtifactId = { ->
