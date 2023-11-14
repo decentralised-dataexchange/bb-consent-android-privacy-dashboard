@@ -178,7 +178,7 @@ object PrivacyDashboard {
         userId: String? = null,
     ): String? {
         val body = ConsentStatusRequestV2()
-        body.optIn = false
+        body.optIn = true
 
         val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
             apiKey = apiKey,
