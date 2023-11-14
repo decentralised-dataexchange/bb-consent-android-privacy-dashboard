@@ -50,6 +50,28 @@
     <string name="bb_consent_error_internet">Nätverk ej tillgängligt</string>
     <string name="bb_consent_error_unexpected">Oväntat fel, försök igen.</string>
     <string name="bb_consent_data_attribute_disallow_all">Disallow All</string>
-    <string name="bb_consent_dashboard_empty_message">No active data agreements available.</string>
+    <string name="bb_consent_dashboard_empty_message">Inga aktiva dataavtal tillgängliga.</string>
 
+    <string name="bb_consent_data_sharing_main_desc"><![CDATA[<b>%1$s</b> vill ha tillgång till följande data från <b>%2$s</b> för %3$s]]></string>
+    <string name="bb_consent_data_sharing_sensitive_info_see_data_agreement_details_and_terms_of_services">Du kanske delar känslig information med den här webbplatsen eller appen. Se detaljerna i Dataavtalet och Villkoren för tjänster</string>
+    <string-array name="bb_consent_data_sharing_links">
+        <item>detaljerna i Dataavtalet</item>
+        <item>Villkoren för tjänster</item>
+    </string-array>
+    <string name="bb_consent_data_sharing_make_sure_that_you_trust">Kontrollera att du litar på %1$s</string>
+    <string name="bb_consent_data_sharing_by_authrizing_text">Genom att klicka på godkänn kommer %1$s App att kunna läsa följande dataattribut</string>
+
+    <string name="bb_consent_data_agreement_policy_data_agreement">Personuppgiftsavtal</string>
+    <string name="bb_consent_data_agreement_policy_purpose">Syfte</string>
+    <string name="bb_consent_data_agreement_policy_purpose_description">Syfte beskrivning</string>
+    <string name="bb_consent_data_agreement_policy_lawful_basis_of_processing">Laglig grund för databehandling</string>
+    <string name="bb_consent_data_agreement_policy_policy_url">Policy URL</string>
+    <string name="bb_consent_data_agreement_policy_jurisdiction">Jurisdiktion</string>
+    <string name="bb_consent_data_agreement_policy_third_party_disclosure">Utlämnande till tredje part</string>
+    <string name="bb_consent_data_agreement_policy_industry_scope">Branschens omfattning</string>
+    <string name="bb_consent_data_agreement_policy_geographic_restriction">Geografisk begränsning</string>
+    <string name="bb_consent_data_agreement_policy_retention_period">Lagringstid</string>
+    <string name="bb_consent_data_agreement_policy_storage_location">Lagringsplats</string>
+    <string name="bb_consent_data_sharing_authorize">Godkännande</string>
+    <string name="bb_consent_data_sharing_cancel">Avbryt</string>
 </resources>

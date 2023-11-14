@@ -109,7 +109,7 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
         setClickableString(
             resources.getString(R.string.bb_consent_data_sharing_sensitive_info_see_data_agreement_details_and_terms_of_services),
             binding.tvTermsOfServices,
-            arrayOf("Data Agreement details", "Terms of Services"),
+            resources.getStringArray(R.array.bb_consent_data_sharing_links),
             arrayOf(dataAgreementDetails, termsOfServiceClick)
         )
     }
@@ -236,10 +236,8 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
-        textView.setHighlightColor(
-            Color.TRANSPARENT
-        ) // prevent TextView change background when highlight
-        textView.setMovementMethod(LinkMovementMethod.getInstance())
+        textView.highlightColor = Color.TRANSPARENT // prevent TextView change background when highlight
+        textView.movementMethod = LinkMovementMethod.getInstance()
         textView.setText(spannableString, TextView.BufferType.SPANNABLE)
     }
 
