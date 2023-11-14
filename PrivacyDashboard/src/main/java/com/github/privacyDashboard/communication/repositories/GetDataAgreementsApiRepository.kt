@@ -15,9 +15,10 @@ class GetDataAgreementsApiRepository(private val apiService: BBConsentAPIService
     ): Result<OrganizationDetailResponse?> {
         return try {
             //v2
-            val dataAgreementsResponse = apiService.getDataAgreementsV2(userId)
+            val dataAgreementsResponse = apiService.getDataAgreementsV2(userId, 0, 10000)
 
-            val dataAgreementRecordResponseV2 = apiService.getDataAgreementRecordsV2(userId)
+            val dataAgreementRecordResponseV2 =
+                apiService.getDataAgreementRecordsV2(userId, 0, 10000)
 
             val org = convertV2toBaseModel(
                 dataAgreementsResponse,
@@ -69,7 +70,8 @@ class GetDataAgreementsApiRepository(private val apiService: BBConsentAPIService
                 if (!(it.lawfulBasis == "consent" || it.lawfulBasis == "legitimate_interest")) {
                     val createDataAgreementResponse =
                         apiService.createDataAgreementRecordV2(userId, it.id)
-                    dataAgreementRecordsV2 = createDataAgreementResponse?.body()?.dataAgreementRecord
+                    dataAgreementRecordsV2 =
+                        createDataAgreementResponse?.body()?.dataAgreementRecord
                 }
             }
 
