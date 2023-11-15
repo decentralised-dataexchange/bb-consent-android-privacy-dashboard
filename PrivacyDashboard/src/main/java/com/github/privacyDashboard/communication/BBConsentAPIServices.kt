@@ -17,6 +17,7 @@ import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordsResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAttributes.DataAttributesListResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.organization.OrganizationResponseV2
+import com.github.privacyDashboard.models.v2.individual.IndividualRequest
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -157,4 +158,26 @@ interface BBConsentAPIServices {
         @Path("orgId") orgId: String?,
         @Path("requestId") requestId: String?
     ): Response<UserRequestGenResponseV1?>?
+
+    @POST("service/individual")
+    suspend fun createAnIndividual(
+        @Body body: IndividualRequest?
+    ): Response<IndividualRequest?>?
+
+    @GET("service/individual/{individualId}")
+    suspend fun readAnIndividual(
+        @Path("individualId") individualId: String?,
+    ): Response<IndividualRequest?>?
+
+    @PUT("service/individual/{individualId}")
+    suspend fun updateAnIndividual(
+        @Body body: IndividualRequest?,
+        @Path("individualId") individualId: String?,
+    ): Response<IndividualRequest?>?
+
+    @GET("service/individuals")
+    suspend fun getAllIndividual(
+        @Query("offset") offset: Int?,
+        @Query("limit") limit: Int?,
+    ): Response<IndividualRequest?>?
 }
