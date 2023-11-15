@@ -6,11 +6,13 @@ import android.content.Intent
 import com.github.privacyDashboard.communication.BBConsentAPIManager
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.communication.repositories.GetDataAgreementApiRepository
+import com.github.privacyDashboard.communication.repositories.IndividualApiRepository
 import com.github.privacyDashboard.communication.repositories.UpdateDataAgreementStatusApiRepository
 import com.github.privacyDashboard.models.DataAgreementPolicyModel
 import com.github.privacyDashboard.models.interfaces.dataAttributesList.DataAgreement
 import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
 import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementV2
+import com.github.privacyDashboard.models.v2.individual.IndividualRequest
 import com.github.privacyDashboard.modules.dataAgreementPolicy.BBConsentDataAgreementPolicyActivity
 import com.github.privacyDashboard.modules.home.BBConsentDashboardActivity
 import com.github.privacyDashboard.utils.BBConsentDataUtils
@@ -358,5 +360,95 @@ object PrivacyDashboard {
             null
         }
 
+    }
+
+    suspend fun createAnIndividual(
+        accessToken: String? = null,
+        apiKey: String? = null,
+        baseUrl: String? = null,
+        name: String? = null,
+        email: String? = null,
+        phone: String? = null
+    ): String? {
+        val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+            accessToken,
+            apiKey,
+            baseUrl
+        )?.service!!
+
+        val individualApiRepository = IndividualApiRepository(apiService)
+
+        val result =
+            individualApiRepository.createAnIndividual(
+                name, email, phone
+            )
+        return Gson().toJson(result?.getOrNull())
+    }
+
+    suspend fun fetchTheIndividual(
+        accessToken: String? = null,
+        apiKey: String? = null,
+        baseUrl: String? = null,
+        individualId: String
+    ): String? {
+        val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+            accessToken,
+            apiKey,
+            baseUrl
+        )?.service!!
+
+        val individualApiRepository = IndividualApiRepository(apiService)
+
+        val result =
+            individualApiRepository.readTheIndividual(
+                individualId
+            )
+        return Gson().toJson(result?.getOrNull())
+    }
+
+    suspend fun updateTheIndividual(
+        accessToken: String? = null,
+        apiKey: String? = null,
+        baseUrl: String? = null,
+        name: String,
+        email: String,
+        phone: String,
+        individualId: String
+    ): String? {
+        val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+            accessToken,
+            apiKey,
+            baseUrl
+        )?.service!!
+
+        val individualApiRepository = IndividualApiRepository(apiService)
+
+        val result =
+            individualApiRepository.updateIndividual(
+                individualId, name, email, phone
+            )
+        return Gson().toJson(result?.getOrNull())
+    }
+
+    suspend fun getAllIndividuals(
+        accessToken: String? = null,
+        apiKey: String? = null,
+        baseUrl: String? = null,
+        offset: Int?,
+        limit: Int?
+    ): String? {
+        val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
+            accessToken,
+            apiKey,
+            baseUrl
+        )?.service!!
+
+        val individualApiRepository = IndividualApiRepository(apiService)
+
+        val result =
+            individualApiRepository.getAllIndividuals(
+                offset, limit
+            )
+        return Gson().toJson(result?.getOrNull())
     }
 }
