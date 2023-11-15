@@ -36,6 +36,14 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         binding.container.btPrivacyDashboard.setOnClickListener {
+            /* to create an individual
+            GlobalScope.launch {
+                PrivacyDashboard.createAnIndividual(
+                    apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTY29wZXMiOlsic2VydmljZSJdLCJPcmdhbmlzYXRpb25JZCI6IjY1MjY1Nzk2OTM4MGYzNWZhMWMzMDI0NSIsIk9yZ2FuaXNhdGlvbkFkbWluSWQiOiI2NTI2NTc5NjkzODBmMzVmYTFjMzAyNDMiLCJleHAiOjE3MDI0NDUyMjR9.iMbsEe-nN_EHzWg0KOeUGTUR1F3xYH8lQBP90Mpt_ZY",
+                    baseUrl = "https://staging-consent-bb-api.igrant.io/v2/"
+                )
+            }
+            to create an individual*/
 
             /*data sharing UI sample
 
