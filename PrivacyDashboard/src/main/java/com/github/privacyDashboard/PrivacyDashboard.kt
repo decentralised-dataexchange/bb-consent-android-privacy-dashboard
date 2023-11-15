@@ -373,7 +373,10 @@ object PrivacyDashboard {
         val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
             accessToken,
             apiKey,
-            baseUrl
+            if (baseUrl?.last().toString() == "/")
+                baseUrl
+            else
+                "$baseUrl/"
         )?.service!!
 
         val individualApiRepository = IndividualApiRepository(apiService)
@@ -394,7 +397,10 @@ object PrivacyDashboard {
         val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
             accessToken,
             apiKey,
-            baseUrl
+            if (baseUrl?.last().toString() == "/")
+                baseUrl
+            else
+                "$baseUrl/"
         )?.service!!
 
         val individualApiRepository = IndividualApiRepository(apiService)
@@ -418,7 +424,10 @@ object PrivacyDashboard {
         val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
             accessToken,
             apiKey,
-            baseUrl
+            if (baseUrl?.last().toString() == "/")
+                baseUrl
+            else
+                "$baseUrl/"
         )?.service!!
 
         val individualApiRepository = IndividualApiRepository(apiService)
@@ -440,7 +449,10 @@ object PrivacyDashboard {
         val apiService: BBConsentAPIServices = BBConsentAPIManager.getApi(
             accessToken,
             apiKey,
-            baseUrl
+            if (baseUrl?.last().toString() == "/")
+                baseUrl
+            else
+                "$baseUrl/"
         )?.service!!
 
         val individualApiRepository = IndividualApiRepository(apiService)
