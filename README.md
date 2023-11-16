@@ -21,6 +21,10 @@
 
 This repository hosts source code for the reference implementation of the GovStack Consent Building Block Privacy Dashboard towards individuals.
 
+## Release Status
+
+Released. Refer to the [wiki page](https://github.com/decentralised-dataexchange/bb-consent-docs/wiki/wps-and-deliverables) for the latest status of the deliverables.
+
 ## Configuration
 
 Gradle:
