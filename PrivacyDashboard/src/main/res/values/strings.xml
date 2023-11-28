@@ -71,6 +71,9 @@
     <string name="bb_consent_data_agreement_policy_geographic_restriction">Geographic restriction</string>
     <string name="bb_consent_data_agreement_policy_retention_period">Retention period</string>
     <string name="bb_consent_data_agreement_policy_storage_location">Storage location</string>
+    <string name="bb_consent_data_agreement_policy_dpia_date">DPIA Date</string>
+    <string name="bb_consent_data_agreement_policy_dpia_summary">DPIA Summary</string>
+    <string name="bb_consent_data_agreement_policy_version">Version</string>
     <string name="bb_consent_data_sharing_authorize">Authorize</string>
     <string name="bb_consent_data_sharing_cancel">Cancel</string>
 

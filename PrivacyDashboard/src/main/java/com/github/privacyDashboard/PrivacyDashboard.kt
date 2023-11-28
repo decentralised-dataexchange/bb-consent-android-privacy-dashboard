@@ -73,6 +73,12 @@ object PrivacyDashboard {
         var subList: ArrayList<DataAgreementPolicyModel> = ArrayList()
         subList.add(
             DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_version),
+                dataAgreement?.version
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
                 context.resources.getString(R.string.bb_consent_data_agreement_policy_purpose),
                 dataAgreement?.purpose
             )
@@ -105,20 +111,14 @@ object PrivacyDashboard {
         )
         subList.add(
             DataAgreementPolicyModel(
-                context.resources.getString(R.string.bb_consent_data_agreement_policy_third_party_disclosure),
-                dataAgreement?.policy?.thirdPartyDataSharing.toString()
-            )
-        )
-        subList.add(
-            DataAgreementPolicyModel(
                 context.resources.getString(R.string.bb_consent_data_agreement_policy_industry_scope),
                 dataAgreement?.policy?.industrySector
             )
         )
         subList.add(
             DataAgreementPolicyModel(
-                context.resources.getString(R.string.bb_consent_data_agreement_policy_geographic_restriction),
-                dataAgreement?.policy?.geographicRestriction
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_storage_location),
+                dataAgreement?.policy?.storageLocation
             )
         )
         subList.add(
@@ -129,8 +129,28 @@ object PrivacyDashboard {
         )
         subList.add(
             DataAgreementPolicyModel(
-                context.resources.getString(R.string.bb_consent_data_agreement_policy_storage_location),
-                dataAgreement?.policy?.storageLocation
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_geographic_restriction),
+                dataAgreement?.policy?.geographicRestriction
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_third_party_disclosure),
+                dataAgreement?.policy?.thirdPartyDataSharing.toString()
+            )
+        )
+        list.add(subList)
+        subList = ArrayList()
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_dpia_summary),
+                dataAgreement?.dpiaSummaryUrl
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                context.resources.getString(R.string.bb_consent_data_agreement_policy_dpia_date),
+                dataAgreement?.dpiaDate
             )
         )
         list.add(subList)

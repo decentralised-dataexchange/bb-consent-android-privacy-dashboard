@@ -72,6 +72,9 @@
     <string name="bb_consent_data_agreement_policy_geographic_restriction">Geografisk begränsning</string>
     <string name="bb_consent_data_agreement_policy_retention_period">Lagringstid</string>
     <string name="bb_consent_data_agreement_policy_storage_location">Lagringsplats</string>
+    <string name="bb_consent_data_agreement_policy_dpia_date">DPIA Datum</string>
+    <string name="bb_consent_data_agreement_policy_dpia_summary">DPIA Sammanfattning</string>
+    <string name="bb_consent_data_agreement_policy_version">Version</string>
     <string name="bb_consent_data_sharing_authorize">Godkännande</string>
     <string name="bb_consent_data_sharing_cancel">Avbryt</string>
 </resources>

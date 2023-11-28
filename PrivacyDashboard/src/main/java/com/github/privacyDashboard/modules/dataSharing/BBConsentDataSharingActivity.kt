@@ -236,7 +236,8 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
-        textView.highlightColor = Color.TRANSPARENT // prevent TextView change background when highlight
+        textView.highlightColor =
+            Color.TRANSPARENT // prevent TextView change background when highlight
         textView.movementMethod = LinkMovementMethod.getInstance()
         textView.setText(spannableString, TextView.BufferType.SPANNABLE)
     }
@@ -244,6 +245,12 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
     private fun buildListForDataAgreementPolicy(dataAgreement: DataAgreementV2?): String {
         var list: ArrayList<ArrayList<DataAgreementPolicyModel>> = ArrayList()
         var subList: ArrayList<DataAgreementPolicyModel> = ArrayList()
+        subList.add(
+            DataAgreementPolicyModel(
+                resources.getString(R.string.bb_consent_data_agreement_policy_version),
+                dataAgreement?.version
+            )
+        )
         subList.add(
             DataAgreementPolicyModel(
                 resources.getString(R.string.bb_consent_data_agreement_policy_purpose),
@@ -278,20 +285,14 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
         )
         subList.add(
             DataAgreementPolicyModel(
-                resources.getString(R.string.bb_consent_data_agreement_policy_third_party_disclosure),
-                dataAgreement?.policy?.thirdPartyDataSharing.toString()
-            )
-        )
-        subList.add(
-            DataAgreementPolicyModel(
                 resources.getString(R.string.bb_consent_data_agreement_policy_industry_scope),
                 dataAgreement?.policy?.industrySector
             )
         )
         subList.add(
             DataAgreementPolicyModel(
-                resources.getString(R.string.bb_consent_data_agreement_policy_geographic_restriction),
-                dataAgreement?.policy?.geographicRestriction
+                resources.getString(R.string.bb_consent_data_agreement_policy_storage_location),
+                dataAgreement?.policy?.storageLocation
             )
         )
         subList.add(
@@ -302,8 +303,28 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
         )
         subList.add(
             DataAgreementPolicyModel(
-                resources.getString(R.string.bb_consent_data_agreement_policy_storage_location),
-                dataAgreement?.policy?.storageLocation
+                resources.getString(R.string.bb_consent_data_agreement_policy_geographic_restriction),
+                dataAgreement?.policy?.geographicRestriction
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                resources.getString(R.string.bb_consent_data_agreement_policy_third_party_disclosure),
+                dataAgreement?.policy?.thirdPartyDataSharing.toString()
+            )
+        )
+        list.add(subList)
+        subList = ArrayList()
+        subList.add(
+            DataAgreementPolicyModel(
+                resources.getString(R.string.bb_consent_data_agreement_policy_dpia_summary),
+                dataAgreement?.dpiaSummaryUrl
+            )
+        )
+        subList.add(
+            DataAgreementPolicyModel(
+                resources.getString(R.string.bb_consent_data_agreement_policy_dpia_date),
+                dataAgreement?.dpiaDate
             )
         )
         list.add(subList)
