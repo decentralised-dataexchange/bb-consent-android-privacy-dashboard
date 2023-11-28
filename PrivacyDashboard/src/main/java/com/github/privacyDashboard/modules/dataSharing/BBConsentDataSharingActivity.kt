@@ -26,6 +26,7 @@ import com.github.privacyDashboard.modules.dataAttribute.BBConsentDataAttributeL
 import com.github.privacyDashboard.modules.webView.BBConsentWebViewActivity
 import com.github.privacyDashboard.utils.BBConsentImageUtils
 import com.google.gson.Gson
+import kotlin.math.floor
 
 class BBConsentDataSharingActivity : BBConsentBaseActivity() {
 
@@ -295,10 +296,19 @@ class BBConsentDataSharingActivity : BBConsentBaseActivity() {
                 dataAgreement?.policy?.storageLocation
             )
         )
+        var retentionPeriod = "${dataAgreement?.policy?.dataRetentionPeriodDays.toString()} days"
+        try {
+            var years = floor(
+                (dataAgreement?.policy?.dataRetentionPeriodDays?.div(365)?.toDouble()
+                    ?: 0) as Double
+            )
+            retentionPeriod = "$years years"
+        } catch (e: Exception) {
+        }
         subList.add(
             DataAgreementPolicyModel(
                 resources.getString(R.string.bb_consent_data_agreement_policy_retention_period),
-                dataAgreement?.policy?.dataRetentionPeriodDays.toString()
+                retentionPeriod
             )
         )
         subList.add(
