@@ -72,6 +72,9 @@
     <string name="bb_consent_data_agreement_policy_geographic_restriction">Maantieteellinen rajoitus</string>
     <string name="bb_consent_data_agreement_policy_retention_period">Säilytysaika</string>
     <string name="bb_consent_data_agreement_policy_storage_location">Säilytyspaikka</string>
+    <string name="bb_consent_data_agreement_policy_dpia_date">DPIA-päivämäärä</string>
+    <string name="bb_consent_data_agreement_policy_dpia_summary">DPIA-yhteenveto</string>
+    <string name="bb_consent_data_agreement_policy_version">Versio</string>
     <string name="bb_consent_data_sharing_authorize">Valtuuttaa</string>
     <string name="bb_consent_data_sharing_cancel">Keskeytä</string>
 </resources>
