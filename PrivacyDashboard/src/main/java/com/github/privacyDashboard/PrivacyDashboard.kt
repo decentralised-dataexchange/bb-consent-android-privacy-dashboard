@@ -25,6 +25,7 @@ import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_TOKEN
 import com.github.privacyDashboard.utils.BBConsentDataUtils.EXTRA_TAG_USERID
 import com.github.privacyDashboard.utils.BBConsentLocaleHelper
 import com.google.gson.Gson
+import kotlin.math.floor
 
 
 object PrivacyDashboard {
@@ -121,10 +122,19 @@ object PrivacyDashboard {
                 dataAgreement?.policy?.storageLocation
             )
         )
+        var retentionPeriod = "${dataAgreement?.policy?.dataRetentionPeriodDays.toString()} days"
+        try {
+            var years = floor(
+                (dataAgreement?.policy?.dataRetentionPeriodDays?.div(365)?.toDouble()
+                    ?: 0) as Double
+            )
+            retentionPeriod = "$years years"
+        } catch (e: Exception) {
+        }
         subList.add(
             DataAgreementPolicyModel(
                 context.resources.getString(R.string.bb_consent_data_agreement_policy_retention_period),
-                dataAgreement?.policy?.dataRetentionPeriodDays.toString()
+                retentionPeriod
             )
         )
         subList.add(
