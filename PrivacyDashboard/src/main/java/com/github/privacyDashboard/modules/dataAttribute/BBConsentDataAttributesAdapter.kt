@@ -38,12 +38,21 @@ class BBConsentDataAttributesAdapter(
     class ViewHolder(itemRowBinding: BbconsentItemDataAttributeBinding) :
         RecyclerView.ViewHolder(itemRowBinding.root) {
         var itemRowBinding: BbconsentItemDataAttributeBinding
-        fun bind(attribute: DataAttribute?, mListener: DataAttributeClickListener, isLast: Boolean) {
+        fun bind(
+            attribute: DataAttribute?,
+            mListener: DataAttributeClickListener,
+            isLast: Boolean
+        ) {
             itemRowBinding.ctvItemName.text = attribute?.description
             if (attribute?.status?.consented != null && !attribute.status?.consented.equals("")
             ) {
                 itemRowBinding.ctvStatus.text = BBConsentStringUtils.toCamelCase(
-                    attribute.status?.consented
+                    if (attribute.status?.consented.equals("allow", true))
+                        itemRowBinding.ctvStatus.context.resources.getString(R.string.bb_consent_data_attribute_allow)
+                    else if (attribute.status?.consented.equals("disallow", true))
+                        itemRowBinding.ctvStatus.context.resources.getString(R.string.bb_consent_dashboard_disallow)
+                    else
+                        attribute.status?.consented
                 )
             } else {
                 itemRowBinding.ctvStatus.text =
