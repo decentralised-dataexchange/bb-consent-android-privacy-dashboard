@@ -28,24 +28,26 @@
     <string name="bb_consent_data_attribute_detail_disallow_consent_rule">Jos valitset \"Disallow\", kiellät henkilötietojesi käytön analyyttiseen tai kolmannen osapuolen käyttöön muuhun kuin niihin tarkoituksiin, joihin olet rekisteröitynyt.</string>
     <string name="bb_consent_data_attribute_detail_askme_consent_rule">Jos valitset \"Kysy minulta\", annat suostumuksesi tietojesi käyttöön valitun ajanjakson ajan. Kun ajanjakso päättyy, saat reaaliaikaisen ilmoituksen, jossa pyydät suostumusta, kun tietojen toimittaja käyttää tietojasi.</string>
     <string name="bb_consent_data_attribute_detail_consent">Suostumus</string>
-    <string name="bb_consent_data_attribute_detail_days_with_count">%1$d Days</string>
+    <string name="bb_consent_data_attribute_detail_days_with_count">%1$d päivää</string>
 
-    <string name="bb_consent_user_request_new_request">New Request</string>
-    <string name="bb_consent_user_request_user_request">User Requests</string>
-    <string name="bb_consent_user_request_download_data">Download data</string>
-    <string name="bb_consent_user_request_delete_data">Delete Data</string>
+    <string name="bb_consent_user_request_new_request">Uusi pyyntö</string>
+    <string name="bb_consent_user_request_user_request">Käyttäjän pyynnöt</string>
+    <string name="bb_consent_user_request_download_data">Lataa tiedot</string>
+    <string name="bb_consent_user_request_delete_data">Poista tiedot</string>
+
     <string name="bb_consent_user_request_download_data_status">Download Data Request Status</string>
     <string name="bb_consent_user_request_delete_data_status">Delete Data Request Status</string>
-    <string name="bb_consent_user_request_forget_me">Forgot me</string>
-    <string name="bb_consent_user_request_cancel_request">Cancel request</string>
-    <string name="bb_consent_user_request_request_initiated">Request Initiated</string>
-    <string name="bb_consent_user_request_request_acknowledged">Request Acknowledged</string>
-    <string name="bb_consent_user_request_request_processed">Request processed</string>
-    <string name="bb_consent_user_request_confirmation">Confirmation</string>
-    <string name="bb_consent_user_request_confirmation_message">A new request to %1$s will be sent to the %2$s</string>
-    <string name="bb_consent_user_request_data_delete">data delete</string>
-    <string name="bb_consent_user_request_confirm">Confirm</string>
-    <string name="bb_consent_user_request_request_cancelled">Request cancelled successfully.</string>
+
+    <string name="bb_consent_user_request_forget_me">Unohda minut</string>
+    <string name="bb_consent_user_request_cancel_request">Peruuta pyyntö</string>
+    <string name="bb_consent_user_request_request_initiated">Pyyntö aloitettu</string>
+    <string name="bb_consent_user_request_request_acknowledged">Pyyntö kuitattu</string>
+    <string name="bb_consent_user_request_request_processed">Pyyntö käsitelty</string>
+    <string name="bb_consent_user_request_confirmation">Konfirmaatio</string>
+    <string name="bb_consent_user_request_confirmation_message">Uusi pyyntö %1$s lähetetään %2$s</string>
+    <string name="bb_consent_user_request_data_delete">Radera data</string>
+    <string name="bb_consent_user_request_confirm">Vahvista</string>
+    <string name="bb_consent_user_request_request_cancelled">Pyyntö peruutettu onnistuneesti.</string>
 
     <string name="bb_consent_error_internet">Verkko ei ole käytettävissä.</string>
     <string name="bb_consent_error_unexpected">Unexpected error, Please try again.</string>
