@@ -2,6 +2,7 @@ package com.github.privacyDashboard.communication.repositories
 
 import com.github.privacyDashboard.communication.BBConsentAPIServices
 import com.github.privacyDashboard.models.*
+import com.github.privacyDashboard.models.v2.consent.ConsentStatusRequestV2
 import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementsResponseV2
 import com.github.privacyDashboard.models.v2.dataAgreement.DataAgreementV2
 import com.github.privacyDashboard.models.v2.dataAgreement.dataAgreementRecords.DataAgreementRecordsResponseV2
@@ -66,6 +67,20 @@ class GetDataAgreementsApiRepository(private val apiService: BBConsentAPIService
             try {
                 dataAgreementRecordsV2 =
                     dataAgreementRecords?.last { dataAgreementRecordsV2 -> dataAgreementRecordsV2.dataAgreementId == it.id }
+                if (!(it.lawfulBasis == "consent" || it.lawfulBasis == "legitimate_interest")){
+                    if(dataAgreementRecordsV2!=null){
+                        if (dataAgreementRecordsV2?.optIn == false){
+                            val body = ConsentStatusRequestV2()
+                            body.optIn = true
+                            val updateDataAgreementStatusApiRepository =
+                                UpdateDataAgreementStatusApiRepository(apiService)
+                            val updateDataAgreementResponse=updateDataAgreementStatusApiRepository.updateDataAgreementStatus(userId,it.id,body)
+                            if (updateDataAgreementResponse.isSuccess) {
+                                dataAgreementRecordsV2=updateDataAgreementResponse.getOrNull()?.dataAgreementRecord
+                            }
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 if (!(it.lawfulBasis == "consent" || it.lawfulBasis == "legitimate_interest")) {
                     val createDataAgreementResponse =
