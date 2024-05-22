@@ -25,7 +25,7 @@ This repository hosts source code for the reference implementation of the GovSta
 
 Released. Refer to the [wiki page](https://github.com/decentralised-dataexchange/bb-consent-docs/wiki/wps-and-deliverables) for the latest status of the deliverables.
 
-## Configuration
+## Installation
 
 Gradle:
 ```gradle
@@ -43,7 +43,7 @@ Maven:
 </dependency>
 ```
 
-## Integration
+## Initialisation
 
 #### Privacy Dasboard
 We can initiate the privacy dashboard by calling the below.
@@ -72,6 +72,9 @@ To enable Ask me we just need to add the following before the `start(this)`
 ```
 .enableAskMe()
 ```
+
+## Supported Functions
+
 #### Data Sharing UI
 
 Register activity for result to get the response back from the Data sharing UI
